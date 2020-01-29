@@ -2,10 +2,11 @@
 <html lang="en-US" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Flowchart</title>
-    <link rel="stylesheet" type="text/css" href="../styling/style.css">
-    <script src="../../scripts/main.js"></script>
-  </head>
+      <title>Flowchart</title>
+      <link rel="stylesheet" type="text/css" href="../styling/style.css">
+      <!--<script src="../../scripts/main.js"></script>-->
+      
+    </head>
   <body>
     <div class="container">
       <div class="menu">
@@ -32,23 +33,30 @@
           Function/Command: <br/>
           <input type="text"></input>
         </div>
+
+        <button id="newObject"> Create new object </button>
+
         
         <div id="filemenu">
           <input type="text"></input>
         </div>
-        
+        <!--
         <button class="newObject" onclick="createNewObject()"> Create new object </button>
-        
+        -->
       </div>
       <div class="workspace">
         <h1> Flowchart goes here </h1>
-        <div id="add-element-button" onclick="createNewObject()">+
-          <img src="/static/assets"/>
-        </div>
         <div id="element-picker"> </div>
+        
+        <div id="add-element-button" onclick="createNewObject()">
+          <img src="../assets/addbutton.png"/>
+        </div>
+        
       </div>
     </div>
   </body>
+  <script src="../../dist/bundle.js"></script>
 </html>
 <!DOCTYPE html>
+
 
