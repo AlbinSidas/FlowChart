@@ -54,6 +54,7 @@ body{
 }
 
 #element-picker {
+    background-color: orange;
     visibility: hidden;
     position: fixed;
     right: 3%;
