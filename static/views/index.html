@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <title>Flowchart</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" href="../styling/style.css">
+    <script src="../../scripts/main.js"></script>
   </head>
   <body>
     <div class="container">
       <div class="menu">
         <h1> Menu </h1>
-        <div id="description">          
+        <div id="description">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis euismod erat. Mauris lobortis ultricies arcu non ullamcorper. Nulla facilisi. 
           Integer rutrum, nisl vel faucibus ultrices, leo eros eleifend lectus, ut maximus leo metus non mi. Suspendisse molestie gravida ipsum. Nam ullamcorper, purus 
           quis facilisis interdum, nulla nibh convallis ante, sed interdum odio nulla eu tellus. Sed eget nisl nec ligula rutrum sodales a vel justo. Nullam non molestie mauris.
@@ -21,19 +21,33 @@
 
           Integer sed arcu rutru
         </div>
-        <button class="newObject" onclick="createNewObject()"> Create new object </button>
+
+        <div id="input"> 
+          Input: <br/>
+        </div>
+        <div id="output">
+           Output: <br/>
+        </div>
+        <div> 
+          Function/Command: <br/>
+          <input type="text"></input>
+        </div>
         
         <div id="filemenu">
           <input type="text"></input>
         </div>
-      
+        
+        <button class="newObject" onclick="createNewObject()"> Create new object </button>
+        
       </div>
       <div class="workspace">
         <h1> Flowchart goes here </h1>
+        <div id="add-element-button" onclick="createNewObject()">+
+          <img src="/static/assets"/>
+        </div>
+        <div id="element-picker"> </div>
       </div>
     </div>
-
-
   </body>
 </html>
 <!DOCTYPE html>

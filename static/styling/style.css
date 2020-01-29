@@ -1,0 +1,69 @@
+body{
+    margin:0;
+    padding:0;
+    border:0;
+}
+
+.container {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 0px;
+}
+
+.menu {
+    text-align: center;
+    flex-grow: 1;
+    background-color: blue;
+    max-width: 20%;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    border-right: solid;
+    border-color: black;
+}
+
+.filemenu {
+    margin-top: 20vh;
+    background-color: mediumturquoise;
+}
+
+.workspace {
+    flex-grow: 8;
+    background-color: mediumseagreen;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    /*position: fixed;*/
+}
+
+#add-element-button {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    position: fixed;
+    right: 3%;
+    bottom: 3%;
+    background-color: orangered;
+}
+#add-elemeent-button img {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+#element-picker {
+    visibility: hidden;
+    position: fixed;
+    right: 3%;
+    bottom: 3%;
+    height: 10vh;
+    width: 10vw;
+}
+
+
+
+.newObject {
+    
+}
