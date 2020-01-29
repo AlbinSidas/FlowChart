@@ -16,7 +16,7 @@ body{
 .menu {
     text-align: center;
     flex-grow: 1;
-    background-color: blue;
+    /*background-color: blue;*/
     max-width: 20%;
     height: 100vh;
     padding: 0;
@@ -27,12 +27,12 @@ body{
 
 .filemenu {
     margin-top: 20vh;
-    background-color: mediumturquoise;
+    /*background-color: mediumturquoise;*/
 }
 
 .workspace {
     flex-grow: 8;
-    background-color: mediumseagreen;
+    /*background-color: mediumseagreen;*/
     height: 100vh;
     padding: 0;
     margin: 0;
