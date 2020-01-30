@@ -18,5 +18,9 @@
   "homepage": "https://github.com/AlbinSidas/FlowChart#readme",
   "dependencies": {
     "uuid": "^3.4.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }
