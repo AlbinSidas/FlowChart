@@ -1,4 +1,4 @@
-import FlowchartNode from "../flowchart-node";
+import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
 let markedObject = {};
 
