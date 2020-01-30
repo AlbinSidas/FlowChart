@@ -32,7 +32,7 @@ body{
 
 #workspace-root {
     flex-grow: 8;
-    
+    position: relative;   
     background-color: mediumseagreen;
     height: 100vh;
     padding: 0;
@@ -75,6 +75,6 @@ body{
     width: 100px;
     height: 100px;
     cursor: move;
-    position: relative;
+    position: absolute;
     background-color: cornflowerblue;
 }

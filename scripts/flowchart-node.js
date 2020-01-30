@@ -35,8 +35,6 @@ class FlowchartNode {
     elementDrag(e) {
         e = e || window.event;
         e.preventDefault();
-        console.log(e.clientX)
-        console.log(e.clientY)
         console.log(this.element.style.top)
         // calculate the new cursor position:
         //this.offsetX = this.oldX - e.clientX;
@@ -46,10 +44,16 @@ class FlowchartNode {
         //this.oldX = e.clientX;  
         //this.oldY = e.clientY;
         // set the element's new position:
-        this.posY = e.clientY-this.offsetY;
-        this.posX = e.clientX-this.offsetX;
-        this.element.style.top = `${e.clientY-this.offsetY}px`// (this.element.offsetTop  - this.offsetY) + "px";
-        this.element.style.left = `${e.clientX-this.offsetX}px`// (this.element.offsetLeft - this.offsetX) + "px";
+        let nextX = e.clientX-this.offsetX
+        let nextY = e.clientY-this.offsetY
+        nextX  = nextX < 0 ? 0 : nextX 
+        console.log(nextX)
+        console.log(nextY)
+        this.element.style.top  = `${nextY}px`// (this.element.offsetTop  - this.offsetY) + "px";
+        this.element.style.left = `${nextX}px`// (this.element.offsetLeft - this.offsetX) + "px";
+        
+        this.posY = nextY;
+        this.posX = nextX;
     }
 
     closeDragElement() {
