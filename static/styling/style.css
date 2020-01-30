@@ -74,5 +74,7 @@ body{
 .flowchart-square {
     width: 100px;
     height: 100px;
+    cursor: move;
+    position: relative;
     background-color: cornflowerblue;
 }
