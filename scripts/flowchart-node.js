@@ -20,6 +20,9 @@ class FlowchartNode {
         this.dragMouseDown = this.dragMouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
         this.element.onmousedown = this.dragMouseDown;
+        this.setPosY = this.setPosY.bind(this);
+        this.scrollChecker;
+        this.closeDragElement = this.closeDragElement.bind(this);
     }
 
     render() {
@@ -35,7 +38,6 @@ class FlowchartNode {
     elementDrag(e) {
         e = e || window.event;
         e.preventDefault();
-        console.log(this.element.style.top)
         // calculate the new cursor position:
         //this.offsetX = this.oldX - e.clientX;
         //this.offsetY = this.oldY - e.clientY;
@@ -47,11 +49,9 @@ class FlowchartNode {
         let nextX = e.clientX-this.offsetX
         let nextY = e.clientY-this.offsetY
         nextX  = nextX < 0 ? 0 : nextX 
-        console.log(nextX)
-        console.log(nextY)
+
         this.element.style.top  = `${nextY}px`// (this.element.offsetTop  - this.offsetY) + "px";
-        this.element.style.left = `${nextX}px`// (this.element.offsetLeft - this.offsetX) + "px";
-        
+        this.element.style.left = `${nextX}px`// (this.element.offsetLeft - this.offsetX) + "px";,        
         this.posY = nextY;
         this.posX = nextX;
     }
@@ -60,8 +60,24 @@ class FlowchartNode {
         /* stop moving when mouse button is released:*/
         document.onmouseup = null;
         document.onmousemove = null;
+        clearInterval(this.scrollChecker)
+
     }
 
+    moveScreenUp(){
+        window.scrollBy(0,-1);
+    }
+
+    moveScreenDown(){
+        this.element.getBoundingClientRect().bottom;
+        window.scrollBy(0, 1);
+        this.setPosY(this.posY + 1);
+    }
+
+    setPosY(y) {
+        this.posY = y;
+        this.element.style.top = `${this.posY}px`
+    }
 
     dragMouseDown(e) {
         e = e || window.event;
@@ -70,7 +86,14 @@ class FlowchartNode {
         // get the mouse cursor position at startup:
         this.offsetX = e.clientX - this.posX; //e.clientX;
         this.offsetY = e.clientY - this.posY ; //e.clientY;
-        
+        this.scrollChecker = setInterval(() => {
+            console.log("aaa")
+            const offsetFromBottom = window.innerHeight - this.element.getBoundingClientRect().bottom
+            if(offsetFromBottom <= 0){
+                this.moveScreenDown();
+            }
+            
+        }, 5);
         console.log(document);
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})//this.closeDragElement);
         // call a function whenever the cursor moves:
