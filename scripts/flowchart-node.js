@@ -104,8 +104,8 @@ class FlowchartNode {
     }
 
     attachToWheel(e) {
-
-        if(document.scrollHeight - document.scrollTop === document.clientHeight) {
+        console.log("F", document)
+        if(window.scrollY + window.innerHeight >= document.querySelector('#workspace-root').clientHeight){//window.scrollHeight - window.scrollTop === window.clientHeight) {
             return;
         }
         this.setPosY(this.posY + e.deltaY)
