@@ -104,14 +104,8 @@ function main() {
     }
 
     function connectNodes(){
-<<<<<<< HEAD
-        //let outputNode = document.getElementsById("box-output"); // hitta "parent box" 
-        console.log("BLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
-=======
 
         outputNode = document.getElementById("box1"); // hitta "parent box"
->>>>>>> modal_menu
-        
     }
 
     document.querySelector("#newObject").addEventListener("click", createNewObject)

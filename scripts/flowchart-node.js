@@ -23,12 +23,8 @@ class FlowchartNode {
         this.output = ""
         this.eventEmitter = eventEmitter;
         this.element = document.createElement("div");
-        this.element.classList.add("flowchart-square");
-<<<<<<< HEAD
         this.element.setAttribute("id", id);
-=======
         this.element.id = id;
->>>>>>> modal_menu
         this.elementDrag = this.elementDrag.bind(this);
         this.dragMouseDown = this.dragMouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
