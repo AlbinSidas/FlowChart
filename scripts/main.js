@@ -32,24 +32,23 @@ function main() {
                     modal.style.display = "none";
                 }
             }
-
         } else {
             markedObject = obj;
             // Lägg till en styling för att visa marked
+            //currentElement = document.getElementById(id);
             console.log("markedObject: ", markedObject);
         }
-
-
-
     })
 
     
 
+    eventEmitter.on("outputClicked", function(id) {
+        console.log("hallooooooooooooooooooooj" + id);
+    })
+
 
     function createNewObject(){
         // Funktion som kallas då knappen "skapa nytt objekt trycks"
-
-
         if (document.getElementById("element-picker").style.visibility == "hidden"){
             document.getElementById("element-picker").style.visibility = "visible";
         }
@@ -69,27 +68,6 @@ function main() {
         // const inputObj = new inputObj(id);
 
         workspaceRoot.appendChild(flowObj.render());
-        
-        const currentNode = document.getElementById(id.toString());
-        
-        const inputDiv = document.createElement("div");
-        inputDiv.classList.add("box-input");
-        inputDiv.setAttribute("id", id+"input");
-
-
-        const nodeContent = document.createElement("div");
-        nodeContent.classList.add("node-content");
-        nodeContent.setAttribute("id", id+"content");
-
-
-        const outputDiv = document.createElement("div");
-        outputDiv.classList.add("box-output");
-        outputDiv.setAttribute("id", id+"output");
-
-        
-        currentNode.appendChild(inputDiv);
-        currentNode.appendChild(nodeContent);        
-        currentNode.appendChild(outputDiv);
 
         
         flowObj.print();
@@ -98,18 +76,17 @@ function main() {
     }
 
 
-    function selectOutput(e){
+    //function selectOutput(e){
         // let output =  document.getElementById(e).parentElement.nodeName();
-        console.log("hejsan");
-    }
+    //    console.log("hejsan");
+    //}
 
-    function connectNodes(){
-
-        outputNode = document.getElementById("box1"); // hitta "parent box"
-    }
+    // function connectNodes(){
+    //    console.log("jag är clickad!!!!!1!!")
+    // }
 
     document.querySelector("#newObject").addEventListener("click", createNewObject)
-    document.querySelector("#box-output").addEventListener("click", connectNodes)
+    //document.querySelector("#box-output").addEventListener("click", connectNodes)
 
 }
 

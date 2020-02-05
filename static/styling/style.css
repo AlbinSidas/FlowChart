@@ -65,30 +65,33 @@ body{
     width: 15vw;
 }
 
-
+/*Input circle*/
 .box-input {
- border-radius: 50%;
- height: 50px;
+ border-radius: 27.5px 27.5px 0px 0px;
+ height: 25px;
  width: 50px;
  margin-top: -25px;
  margin-left: 25px;
  background-color: green;
+ cursor: pointer;
 }
 
-.node-content {
+/* .node-content {
     height: 50px;
     width: 100px;
     background-color: salmon;
     visibility: hidden;
-}
+} */
 
+/*Output circle*/
 .box-output {
-    border-radius: 50%;
-    height: 50px;
+    border-radius: 0px 0px 27.5px 27.5px;
+    height: 25px;
     width: 50px;
-    margin-top: 0px;
+    margin-top: 100px;
     margin-left: 25px;
     background-color: red;
+    cursor: pointer;
 }
 
 

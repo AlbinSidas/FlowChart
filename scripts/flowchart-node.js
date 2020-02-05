@@ -14,16 +14,22 @@ class FlowchartNode {
 
         console.log(id);
         
-        
         //flow
         this.onClick = this.onClick.bind(this);
         this.id = id;
         this.functionDescription = "No function yet"
-        this.input = ""
-        this.output = ""
+        this.input = new NodeIO(this, "box-input", eventEmitter);
+        //Multiple outputs should be able to be created
+        this.output = new NodeIO(this, "box-output", eventEmitter); 
+        
         this.eventEmitter = eventEmitter;
         this.element = document.createElement("div");
-        this.element.setAttribute("id", id);
+        this.element.classList.add("flowchart-square");
+        
+        this.element.appendChild(this.input.element);
+        this.element.appendChild(this.output.element);
+    
+        
         this.element.id = id;
         this.elementDrag = this.elementDrag.bind(this);
         this.dragMouseDown = this.dragMouseDown.bind(this);
@@ -45,7 +51,7 @@ class FlowchartNode {
     elementDrag(e) {
         e = e || window.event;
         e.preventDefault();
-        console.log(this.element.style.top)
+        //console.log(this.element.style.top)
         // calculate the new cursor position:
         //this.offsetX = this.oldX - e.clientX;
         //this.offsetY = this.oldY - e.clientY;
@@ -82,18 +88,66 @@ class FlowchartNode {
         this.offsetX = e.clientX - this.posX; //e.clientX;
         this.offsetY = e.clientY - this.posY ; //e.clientY;
 
-        console.log(document);
+        //console.log(document);
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})//this.closeDragElement);
         // call a function whenever the cursor moves:
         document.onmousemove = (e) => {this.elementDrag(e)};
-        console.log(document.onmousemove)
+        //console.log(document.onmousemove)
      }
 
     onClick(e) { 
         this.dragMouseDown(e);
         this.eventEmitter.emit("clicked", this.id);
     }
+
+   
+    
+
+
 }
 
+// class NodeContent {
+//     constructor(){
+
+//     }
+// }
+
+//class for the input and output nodes
+class NodeIO {
+    constructor(parent, inputOutput, eventEmitter) {
+
+        this.parent = parent;
+        this.eventEmitter = eventEmitter;
+        this.onClick = this.onClick.bind(this);
+        this.id = parent.id+inputOutput;
+        this.element = document.createElement("div");
+        this.element.classList.add(inputOutput);
+        // Temporary id????
+        this.element.setAttribute("id", parent.id);
+        this.connections = [];
+        this.element.onclick = this.onClick;
+        //.appendChild(this.element)
+
+
+        //OnClick NodeIO -> 
+        /*En funktion i outputen/flowchartnoden som tar klickade (this) flowchart id/objektet + efterklickade inputen/flowchartnoden 
+        och sparar det i outputens connections lista. Informationen skickas vidare till den inputklickade nodens NodeIO input connections
+        lista*/
+    }
+    
+    onClick(e) { 
+        alert("AHAHHHEOiAHEUGO");
+        this.parent.closeDragElement();
+        this.testFunc(e); 
+        this.eventEmitter.emit("outputClicked", this.id);
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+        //this.eventEmitter.emit("inputClicked", this.id);
+    }
+
+    testFunc(e){
+        console.log(this.id);
+        console.log("^^^^^^^");
+    }
+}
 
 export default FlowchartNode;
