@@ -9,6 +9,7 @@ class FlowchartNode {
         this.oldY = this.posY;
         this.offsetX = 0;
         this.offsetY = 0;
+        this.height = 100;
         //flow
         this.id = id;
         this.functionDescription = "No function yet"
@@ -17,16 +18,17 @@ class FlowchartNode {
         this.element = document.createElement("div");
         this.element.classList.add("flowchart-square");
         this.elementDrag = this.elementDrag.bind(this);
-        this.dragMouseDown = this.dragMouseDown.bind(this);
+        this.mouseDown = this.mouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
-        this.element.onmousedown = this.dragMouseDown;
+        this.element.onmousedown = this.mouseDown;
         this.setPosY = this.setPosY.bind(this);
         this.scrollChecker;
         this.closeDragElement = this.closeDragElement.bind(this);
+        this.onScrolledCallbacks = []
     }
 
     render() {
-        this.element.setAttribute('style', `left: ${this.posX}px; top:${this.posY}px;`)
+        this.element.setAttribute('style', `left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
         return this.element;
     }   
 
@@ -49,7 +51,7 @@ class FlowchartNode {
         let nextX = e.clientX-this.offsetX
         let nextY = e.clientY-this.offsetY
         nextX  = nextX < 0 ? 0 : nextX 
-
+        nextY  = nextY < 0 ? 0 : nextY
         this.element.style.top  = `${nextY}px`// (this.element.offsetTop  - this.offsetY) + "px";
         this.element.style.left = `${nextX}px`// (this.element.offsetLeft - this.offsetX) + "px";,        
         this.posY = nextY;
@@ -60,18 +62,36 @@ class FlowchartNode {
         /* stop moving when mouse button is released:*/
         document.onmouseup = null;
         document.onmousemove = null;
+        document.onwheel = null;
+        console.log("HALLÅ")
         clearInterval(this.scrollChecker)
-
+        console.log("ASDASD",this.scrollChecker)
+        
     }
 
     moveScreenUp(){
-        window.scrollBy(0,-1);
+        this.element.getBoundingClientRect().top;
+        if(this.posY <= 0) { 
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            return;
+        }
+        window.scrollBy(0, -1);
+        this.setPosY(this.posY - 1);
+        this.offsetY += 1; // lowering ofset when scrolling
     }
 
     moveScreenDown(){
         this.element.getBoundingClientRect().bottom;
         window.scrollBy(0, 1);
         this.setPosY(this.posY + 1);
+        this.offsetY -= 1; // lowering ofset when scrolling
+        this.onScrolledCallbacks.forEach(callback => {
+            callback(this.posY,this.height)
+        });
+
     }
 
     setPosY(y) {
@@ -79,7 +99,20 @@ class FlowchartNode {
         this.element.style.top = `${this.posY}px`
     }
 
-    dragMouseDown(e) {
+    onScrolled(callback) {
+        this.onScrolledCallbacks.push(callback);
+    }
+
+    attachToWheel(e) {
+
+        if(document.scrollHeight - document.scrollTop === document.clientHeight) {
+            return;
+        }
+        this.setPosY(this.posY + e.deltaY)
+        this.offsetY -= e.deltaY;
+    }
+
+    mouseDown(e) {
         e = e || window.event;
         e.preventDefault();
                // console.log("apa dtagh modude down")
@@ -92,12 +125,16 @@ class FlowchartNode {
             if(offsetFromBottom <= 0){
                 this.moveScreenDown();
             }
+            else if(offsetFromBottom >= window.innerHeight - this.height) {
+                this.moveScreenUp()
+            }
             
         }, 5);
         console.log(document);
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})//this.closeDragElement);
         // call a function whenever the cursor moves:
-        document.onmousemove = (e) => {this.elementDrag(e)};
+        document.onmousemove = (e) => { this.elementDrag(e)   };
+        document.onwheel     = (e) => { this.attachToWheel(e) };
         console.log(document.onmousemove)
      }
 

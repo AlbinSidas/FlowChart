@@ -1,4 +1,5 @@
 import FlowchartNode from "./flowchart-node";
+import Container from "./container"
 const uuidv1 = require('uuid/v1');
 let markedObject = {};
 //let nodes = [];
@@ -8,7 +9,10 @@ function main() {
     
     let selected_output = "";
 
-
+    //const workspaceRoot = ;
+    const workspaceObject = new Container(document.querySelector('#workspace-root'));
+    workspaceObject.rerender()
+    
     function createNewObject(){
         // Funktion som kallas då knappen "skapa nytt objekt trycks"
 
@@ -22,8 +26,9 @@ function main() {
         const id = uuidv1();
         objectIds.push(id);
         const flowObj = new FlowchartNode(id);
-        const workspaceRoot = document.querySelector('#workspace-root');
-        workspaceRoot.appendChild(flowObj.render());
+        //const container_root = document.querySelector('#container-root')
+        workspaceObject.addBox(flowObj);
+        //workspaceRoot.appendChild(flowObj.render());
         flowObj.print();
     }
 
