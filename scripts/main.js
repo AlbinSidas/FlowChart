@@ -1,5 +1,6 @@
 import FlowchartNode from "./flowchart-node";
 const EventEmitter = require("events");
+import Container from "./container";
 const uuidv1 = require('uuid/v1');
 //let nodes = [];
 
@@ -51,8 +52,8 @@ function main() {
             console.log(event.clientY, obj.offsetY, typeof(toString(event.clientY - obj.offsetY)))
 
             
-            let x = (event.clientX - obj.offsetX).toString();
-            let y = (event.clientY - obj.offsetY).toString();
+            let x = (0/*event.clientX - obj.offsetX*/).toString();
+            let y = (0/*event.clientY - obj.offsetY*/).toString();
             let s = " box-shadow: " + x + "px " + y + "px" + " 40px 20px #0ff;";
             let elementStyle = document.getElementById(obj.id).style.cssText;
             document.getElementById(obj.id).setAttribute("style", elementStyle + s);
@@ -93,6 +94,11 @@ function main() {
         footer.textContent = "Clows";
     }
 
+
+    //const workspaceRoot = ;
+    const workspaceObject = new Container(document.querySelector('#workspace-root'));
+    workspaceObject.rerender()
+    
     function createNewObject(){
         // Funktion som kallas då knappen "skapa nytt objekt trycks"
 
@@ -105,10 +111,18 @@ function main() {
         }
         const id = uuidv1();
         objectIds.push(id);
+
+
         const flowObj = new FlowchartNode(id, eventEmitter);
         objects.push(flowObj);
-        const workspaceRoot = document.querySelector('#workspace-root');
-        workspaceRoot.appendChild(flowObj.render());
+  //      const workspaceRoot = document.querySelector('#workspace-root');
+//        workspaceRoot.appendChild(flowObj.render());
+
+
+        //const flowObj = new FlowchartNode(id);
+        //const container_root = document.querySelector('#container-root')
+        workspaceObject.addBox(flowObj);
+        //workspaceRoot.appendChild(flowObj.render());
         flowObj.print();
     }
 
