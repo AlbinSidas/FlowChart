@@ -1,8 +1,18 @@
 class Container {
-    constructor(htmlElement) {
+    constructor(htmlElement, ee) {
+        this.eventEmitter = ee;
+        this.onClick = this.onClick.bind(this);
+        
         this.height = window.innerHeight;
         this.htmlElement = htmlElement;
         this.childScrolled = this.childScrolled.bind(this)
+
+        this.htmlElement.onclick = this.onClick;
+    }
+
+    onClick(e) {
+        //console.log("Klick på container med print i containerobjekt")
+        this.eventEmitter.emit("clickedWorkspace", e);
     }
 
     rerender() {

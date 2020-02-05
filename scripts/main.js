@@ -10,11 +10,28 @@ function main() {
     let selected_output = "";
     let objectIds = [];
     let objects = [];
-    let markedObject = {};
+    let markedObject = null;
+    let objectClick = {};
 
+
+    eventEmitter.on("clickedWorkspace", (e) => {
+
+        // Remove marked object
+        if ((e.clientX != objectClick.clientX || e.clientY != objectClick.clientY) && markedObject != null) {
+            let css = document.getElementById(markedObject.id).style.cssText;
+            css = css.split(" box-shadow")[0];
+            document.getElementById(markedObject.id).style.cssText = css;
+            markedObject = null;
+        }
+    })
 
     eventEmitter.on("clicked", function(id, e) {
+        /* 
+            Set the mouseevent to objectClick to compare the 
+            event on workspace to determine if it's a "mark off" or click on object.
+        */
 
+        objectClick = e;
         // Finds the correct node in the created nodes.
         let obj = objects.find((obj) => {
             return obj.id == id;
@@ -33,7 +50,7 @@ function main() {
             let modalTitle = children[1];
             let modalContent = children[3];
             let modalFooter = children[5];
-            addContentToModal(modalTitle, modalContent, modalFooter);
+            addContentToModal(modalTitle, modalContent, modalFooter, obj);
 
             window.onclick = function(event) {
                 if (event.target == modal) {
@@ -42,61 +59,29 @@ function main() {
             }
         } else {
             markedObject = obj;
-            console.log(obj)
-            console.log(document.getElementById(obj.id))
-            
-            
-            //let addGlow = document.getElementById(obj.id).getAttribute("class") + " " + "markedObject";
-            console.log("events")
-            console.log(event.clientX, obj.offsetX, event.clientX - obj.offsetX)
-            console.log(event.clientY, obj.offsetY, typeof(toString(event.clientY - obj.offsetY)))
-
-            
-            let x = (0/*event.clientX - obj.offsetX*/).toString();
-            let y = (0/*event.clientY - obj.offsetY*/).toString();
-            let s = " box-shadow: " + x + "px " + y + "px" + " 40px 20px #0ff;";
-            let elementStyle = document.getElementById(obj.id).style.cssText;
-            document.getElementById(obj.id).setAttribute("style", elementStyle + s);
-            console.log("ELEMENTSTYLE", document.getElementById(obj.id).getAttribute("style"));
-            /*
-            console.log(document.getElementById(obj.id).style.cssText + " background-color: black;")
-            let glowStyle = " box-shadow: " + (event.clientX - obj.offsetX).toString + "px " + (event.clientY - obj.offsetY).toString() + "px " + "40px 20px #0ff;";
-            console.log("glow", glowStyle)
-            document.getElementById(obj.id).style.cssText = document.getElementById(obj.id).style.cssText + (" box-shadow: " + event.clientX - obj.offsetX + "px " 
-                                                           + event.clientY - obj.offsetY + "px "
-                                                           + "40px 20px #0ff;");
-
-                console.log(document.getElementById(obj.id).style.cssText)
-            */
-            /*document.getElementById(obj.id).style.cssText = document.getElementById(obj.id).style.cssText + " background-color:black;";*//*(" box-shadow: " + event.clientX - obj.offsetX + "px " 
-                                                                            + event.clientY - obj.offsetY + "px "
-                                                                            + "40px 20px #0ff;"); */
-             /*("style", "background-color: black;")*/ /*"box-shadow: " + event.clientX - obj.offsetX + "px " 
-                                                                                 + event.clientY - obj.offsetY + "px "
-                                                                                 + "40px 20px #0ff")
-                                                                                   //"box-shadow: 120px 80px 40px 20px #0ff")
-            
-            // Lägg till en styling för att visa marked
-            console.log("markedObject: ", markedObject);
-            */
         }
     })
 
     
-    function addContentToModal(title, content, footer) {
-        title.textContent = "Title";
-        /* 
-         setContent() Bör vara en funktion som kallas här som ska
-         hantera all content som kan variera beroende på vad man är
-         inne i.
-        */
-        content.textContent = "Fest";
-        footer.textContent = "Clows";
+    function addContentToModal(title, content, footer, obj) {
+        title.textContent = "ID: " + obj.id.toString();
+
+        setConent(content, obj);
+
+        footer.textContent = "Close";
+
+        function setConent(content, obj){
+            content.innerHTML = `<div> 
+                                    Input: ${obj.input} </br> 
+                                    Output: ${obj.output} </br>
+                                    Description: ${obj.functionDescription}
+                                 </div>`;
+        }
     }
 
 
     //const workspaceRoot = ;
-    const workspaceObject = new Container(document.querySelector('#workspace-root'));
+    const workspaceObject = new Container(document.querySelector('#workspace-root'), eventEmitter);
     workspaceObject.rerender()
     
     function createNewObject(){

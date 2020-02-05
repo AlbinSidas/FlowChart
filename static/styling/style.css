@@ -100,11 +100,6 @@ body{
     margin-left: 100px;
     padding: 0px;
 }
-/*
-.markedObject {
-  box-shadow: 120px 80px 40px 20px #0ff;
-}
-*/
 
 .flowchart-square {
     width: 100px;
@@ -132,29 +127,31 @@ body{
 .modal-header {
   /*padding: 2px 16px;
   */
-  width: 100%;
+  margin: 15% auto 0;
+  width: 80%;
   background-color: #BEBEBE;
+
   
 }
 
 /* Modal Footer */
 .modal-footer {
-  /* padding: 2px 16px; */
-  width: 100%;
+  margin: 0 auto;
+  width: 80%;
   background-color: #BEBEBE;
 }
 
 /* Modal Content/Box */
 .modal-content {
+  margin: 0 auto;
   background-color: #fefefe;
-  /*margin: 15% auto; */ /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 77%; /* Could be more or less, depending on screen size */
 }
 
 /* The Close Button */
-.close {
+/*.close {
   color: #aaa;
   float: right;
   font-size: 28px;
@@ -167,3 +164,4 @@ body{
   text-decoration: none;
   cursor: pointer;
 }
+*/

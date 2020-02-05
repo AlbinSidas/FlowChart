@@ -25,9 +25,7 @@ class FlowchartNode {
         this.elementDrag = this.elementDrag.bind(this);
         this.mouseDown = this.mouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
-
         this.element.onclick = this.onClick;
-
         this.element.onmousedown = this.mouseDown;
         this.setPosY = this.setPosY.bind(this);
         this.scrollChecker;
@@ -42,7 +40,7 @@ class FlowchartNode {
 
     print() {
         console.log(data.apa);
-        console.log(uuidv1());
+        //console.log(uuidv1());
     }
 
     elementDrag(e) {
@@ -71,9 +69,9 @@ class FlowchartNode {
         document.onmouseup = null;
         document.onmousemove = null;
         document.onwheel = null;
-        console.log("HALLÅ")
+        //console.log("HALLÅ")
         clearInterval(this.scrollChecker)
-        console.log("ASDASD",this.scrollChecker)
+        //console.log("ASDASD",this.scrollChecker)
         
     }
 
@@ -129,7 +127,7 @@ class FlowchartNode {
         this.offsetY = e.clientY - this.posY ; //e.clientY;
 
         this.scrollChecker = setInterval(() => {
-            console.log("aaa")
+            //console.log("aaa")
             const offsetFromBottom = window.innerHeight - this.element.getBoundingClientRect().bottom
             if(offsetFromBottom <= 0){
                 this.moveScreenDown();
@@ -144,11 +142,16 @@ class FlowchartNode {
         // call a function whenever the cursor moves:
         document.onmousemove = (e) => { this.elementDrag(e)   };
         document.onwheel     = (e) => { this.attachToWheel(e) };
-        console.log(document.onmousemove)
+        //console.log(document.onmousemove)
+
+        let x = (0).toString();
+        let y = (0).toString();
+        let shadow = ` box-shadow: ${x}px ${y}px 40px 20px #0ff;`;
+        let elementStyle = document.getElementById(this.id).style.cssText;
+        document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
      }
 
     onClick(e) { 
-        //this.mouseDown(e);
         this.eventEmitter.emit("clicked", this.id, e);
     }
 }
