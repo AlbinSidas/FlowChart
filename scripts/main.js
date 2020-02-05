@@ -16,12 +16,11 @@ function main() {
 
     eventEmitter.on("clickedWorkspace", (e) => {
 
+        /* BUGG : OM JAG MARKERAR EN NOD OCH SEDAN EN ANNAN SÅ ÄR BÄGGE MARKERADE*/
+
         // Remove marked object
         if ((e.clientX != objectClick.clientX || e.clientY != objectClick.clientY) && markedObject != null) {
-            let css = document.getElementById(markedObject.id).style.cssText;
-            css = css.split(" box-shadow")[0];
-            document.getElementById(markedObject.id).style.cssText = css;
-            markedObject = null;
+            removeMarked();
         }
     })
 
@@ -58,16 +57,23 @@ function main() {
                 }
             }
         } else {
+            if (markedObject != null) {
+                removeMarked();
+            }
             markedObject = obj;
         }
     })
 
+    function removeMarked() {
+        let css = document.getElementById(markedObject.id).style.cssText;
+        css = css.split(" box-shadow")[0];
+        document.getElementById(markedObject.id).style.cssText = css;
+        markedObject = null;
+    }
     
     function addContentToModal(title, content, footer, obj) {
         title.textContent = "ID: " + obj.id.toString();
-
         setConent(content, obj);
-
         footer.textContent = "Close";
 
         function setConent(content, obj){
