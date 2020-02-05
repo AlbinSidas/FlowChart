@@ -1,7 +1,9 @@
 import data from './test.js';
 const uuidv1 = require('uuid/v1');
+
 class FlowchartNode {
-    constructor(id){
+    constructor(id, eventEmitter){
+        console.log("EventEmit:", eventEmitter.emit("clicked", id))
         //ui
         this.posX = 100;
         this.posY = 100;
@@ -14,17 +16,24 @@ class FlowchartNode {
         
         
         //flow
+        this.onClick = this.onClick.bind(this);
         this.id = id;
         this.functionDescription = "No function yet"
         this.input = ""
         this.output = ""
+        this.eventEmitter = eventEmitter;
         this.element = document.createElement("div");
         this.element.classList.add("flowchart-square");
+<<<<<<< HEAD
         this.element.setAttribute("id", id);
+=======
+        this.element.id = id;
+>>>>>>> modal_menu
         this.elementDrag = this.elementDrag.bind(this);
         this.dragMouseDown = this.dragMouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
-        this.element.onmousedown = this.dragMouseDown;
+
+        this.element.onmousedown = this.onClick;
     }
 
     render() {
@@ -68,6 +77,7 @@ class FlowchartNode {
     }
 
 
+    // Denna är endast mousedown. När vi fångar denna bör den läggas  till i marked
     dragMouseDown(e) {
         e = e || window.event;
         e.preventDefault();
@@ -75,7 +85,7 @@ class FlowchartNode {
         // get the mouse cursor position at startup:
         this.offsetX = e.clientX - this.posX; //e.clientX;
         this.offsetY = e.clientY - this.posY ; //e.clientY;
-        
+
         console.log(document);
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})//this.closeDragElement);
         // call a function whenever the cursor moves:
@@ -83,11 +93,11 @@ class FlowchartNode {
         console.log(document.onmousemove)
      }
 
-
+    onClick(e) { 
+        this.dragMouseDown(e);
+        this.eventEmitter.emit("clicked", this.id);
+    }
 }
-
-
-
 
 
 export default FlowchartNode;
