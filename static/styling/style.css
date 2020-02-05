@@ -65,41 +65,32 @@ body{
     width: 15vw;
 }
 
-#box1 {
-    background-color: mediumaquamarine;
-    height: 100px;
-    width: 100px;
-    margin-right: 400px;
-    margin-bottom: 200px;
-    margin-left: 40px;
-    padding: 0px;
-}
 
 .box-input {
  border-radius: 50%;
  height: 50px;
  width: 50px;
- margin-top: 25px;
- margin-left: -25px;
- background-color: salmon;
+ margin-top: -25px;
+ margin-left: 25px;
+ background-color: green;
+}
+
+.node-content {
+    height: 50px;
+    width: 100px;
+    background-color: salmon;
+    visibility: hidden;
 }
 
 .box-output {
     border-radius: 50%;
     height: 50px;
     width: 50px;
-    margin-top: -25px;
-    margin-left: 75px;
-    background-color: orange;
+    margin-top: 0px;
+    margin-left: 25px;
+    background-color: red;
 }
 
-#box2 {
-    background-color: gold;
-    height: 100px;
-    width: 100px;
-    margin-left: 100px;
-    padding: 0px;
-}
 
 
 .newObject {
@@ -107,6 +98,7 @@ body{
 }
 
 .flowchart-square {
+    flex-direction: row;
     width: 100px;
     height: 100px;
     cursor: move;

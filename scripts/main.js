@@ -19,31 +19,61 @@ function main() {
         else {
             document.getElementById("element-picker").style.visibility = "hidden";
         }
+        
+        
+        
         const id = uuidv1();
         objectIds.push(id);
         const flowObj = new FlowchartNode(id);
         const workspaceRoot = document.querySelector('#workspace-root');
+
+        // const outputObj = new outputObj(id);
+        // const inputObj = new inputObj(id);
+
         workspaceRoot.appendChild(flowObj.render());
+        
+        const currentNode = document.getElementById(id.toString());
+        
+        const inputDiv = document.createElement("div");
+        inputDiv.classList.add("box-input");
+        inputDiv.setAttribute("id", id+"input");
+
+
+        const nodeContent = document.createElement("div");
+        nodeContent.classList.add("node-content");
+        nodeContent.setAttribute("id", id+"content");
+
+
+        const outputDiv = document.createElement("div");
+        outputDiv.classList.add("box-output");
+        outputDiv.setAttribute("id", id+"output");
+
+        
+        currentNode.appendChild(inputDiv);
+        currentNode.appendChild(nodeContent);        
+        currentNode.appendChild(outputDiv);
+
+        
         flowObj.print();
+        //outputObj.print();
+        //inputObj.print();
     }
 
 
     function selectOutput(e){
-
         // let output =  document.getElementById(e).parentElement.nodeName();
         console.log("hejsan");
     }
 
     function connectNodes(){
-
-        outputNode = document.getElementById("box1"); // hitta "parent box"
-
-
+        //let outputNode = document.getElementsById("box-output"); // hitta "parent box" 
+        console.log("BLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
         
     }
 
 
     document.querySelector("#newObject").addEventListener("click", createNewObject)
+    document.querySelector("#box-output").addEventListener("click", connectNodes)
 
 }
 
