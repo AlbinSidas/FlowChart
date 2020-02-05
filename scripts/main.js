@@ -9,42 +9,89 @@ function main() {
     let selected_output = "";
     let objectIds = [];
     let objects = [];
-    let markedObject = {"Kalle" : 1};
+    let markedObject = {};
 
 
-    eventEmitter.on("clicked", function(id) {
-        //console.log("Back in main");
-        //console.log(id);
+    eventEmitter.on("clicked", function(id, e) {
 
-        // Hittare korret nod
+        // Finds the correct node in the created nodes.
         let obj = objects.find((obj) => {
             return obj.id == id;
         });
+
+        // If the click is on the marked object it's a doubleclick and will open the modal.
         if (obj == markedObject) {
-            // Öppna modal
-            /* https://www.w3schools.com/howto/howto_css_modals.asp */
-            console.log("Open modal");
+            console.log("Open modal", obj);
+            // Prevents further draging after doubleclick.
+            obj.closeDragElement();
+
             let modal = document.getElementById("modal");
-            //let span = document.getElementById("close")[0];
             modal.style.display = "block";
+
+            let children = modal.childNodes;
+            let modalTitle = children[1];
+            let modalContent = children[3];
+            let modalFooter = children[5];
+            addContentToModal(modalTitle, modalContent, modalFooter);
+
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
                 }
             }
-
         } else {
             markedObject = obj;
+            console.log(obj)
+            console.log(document.getElementById(obj.id))
+            
+            
+            //let addGlow = document.getElementById(obj.id).getAttribute("class") + " " + "markedObject";
+            console.log("events")
+            console.log(event.clientX, obj.offsetX, event.clientX - obj.offsetX)
+            console.log(event.clientY, obj.offsetY, typeof(toString(event.clientY - obj.offsetY)))
+
+            
+            let x = (event.clientX - obj.offsetX).toString();
+            let y = (event.clientY - obj.offsetY).toString();
+            let s = " box-shadow: " + x + "px " + y + "px" + " 40px 20px #0ff;";
+            let elementStyle = document.getElementById(obj.id).style.cssText;
+            document.getElementById(obj.id).setAttribute("style", elementStyle + s);
+            console.log("ELEMENTSTYLE", document.getElementById(obj.id).getAttribute("style"));
+            /*
+            console.log(document.getElementById(obj.id).style.cssText + " background-color: black;")
+            let glowStyle = " box-shadow: " + (event.clientX - obj.offsetX).toString + "px " + (event.clientY - obj.offsetY).toString() + "px " + "40px 20px #0ff;";
+            console.log("glow", glowStyle)
+            document.getElementById(obj.id).style.cssText = document.getElementById(obj.id).style.cssText + (" box-shadow: " + event.clientX - obj.offsetX + "px " 
+                                                           + event.clientY - obj.offsetY + "px "
+                                                           + "40px 20px #0ff;");
+
+                console.log(document.getElementById(obj.id).style.cssText)
+            */
+            /*document.getElementById(obj.id).style.cssText = document.getElementById(obj.id).style.cssText + " background-color:black;";*//*(" box-shadow: " + event.clientX - obj.offsetX + "px " 
+                                                                            + event.clientY - obj.offsetY + "px "
+                                                                            + "40px 20px #0ff;"); */
+             /*("style", "background-color: black;")*/ /*"box-shadow: " + event.clientX - obj.offsetX + "px " 
+                                                                                 + event.clientY - obj.offsetY + "px "
+                                                                                 + "40px 20px #0ff")
+                                                                                   //"box-shadow: 120px 80px 40px 20px #0ff")
+            
             // Lägg till en styling för att visa marked
             console.log("markedObject: ", markedObject);
+            */
         }
-
-
-
     })
 
     
-
+    function addContentToModal(title, content, footer) {
+        title.textContent = "Title";
+        /* 
+         setContent() Bör vara en funktion som kallas här som ska
+         hantera all content som kan variera beroende på vad man är
+         inne i.
+        */
+        content.textContent = "Fest";
+        footer.textContent = "Clows";
+    }
 
     function createNewObject(){
         // Funktion som kallas då knappen "skapa nytt objekt trycks"

@@ -3,7 +3,7 @@ const uuidv1 = require('uuid/v1');
 
 class FlowchartNode {
     constructor(id, eventEmitter){
-        console.log("EventEmit:", eventEmitter.emit("clicked", id))
+        //console.log("EventEmit:", eventEmitter.emit("clicked", id))
         //ui
         this.posX = 100;
         this.posY = 100;
@@ -12,7 +12,6 @@ class FlowchartNode {
         this.offsetX = 0;
         this.offsetY = 0;
         //flow
-        this.onClick = this.onClick.bind(this);
         this.id = id;
         this.functionDescription = "No function yet"
         this.input = ""
@@ -21,6 +20,7 @@ class FlowchartNode {
         this.element = document.createElement("div");
         this.element.classList.add("flowchart-square");
         this.element.id = id;
+        this.onClick = this.onClick.bind(this);
         this.elementDrag = this.elementDrag.bind(this);
         this.dragMouseDown = this.dragMouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
@@ -87,7 +87,7 @@ class FlowchartNode {
 
     onClick(e) { 
         this.dragMouseDown(e);
-        this.eventEmitter.emit("clicked", this.id);
+        this.eventEmitter.emit("clicked", this.id, e);
     }
 }
 
