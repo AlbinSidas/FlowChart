@@ -98,7 +98,7 @@ class FlowchartNode {
     }
 
     moveScreenDown(){
-        
+
         window.scrollBy(0, 1);
         //this.setPosY(this.posY + 1);
         //this.offsetY -= 1; // lowering ofset when scrolling
@@ -119,36 +119,9 @@ class FlowchartNode {
 
 
     attachToWheel(e) {
-        if(window.scrollY + window.innerHeight >= document.querySelector(lement.getBoundingClientRect().bottom;
-        window.scrollBy(0, 1);
-        //this.setPosY(this.posY + 1);
-        //this.offsetY -= 1; // lowering ofset when scrolling
-        this.onScrolledCallbacks.forEach(callback => {
-            callback(this.posY,this.height)
-        });
-
-    }
-'#workspace-root').clientHeight){//window.scrollHeight - window.scrollTop === window.clientHeight) {
-            return;lement.getBoundingClientRect().bottom;
-        window.scrollBy(0, 1);
-        //this.setPosY(this.posY + 1);
-        //this.offsetY -= 1; // lowering ofset when scrolling
-        this.onScrolledCallbacks.forEach(callback => {
-            callback(this.posY,this.height)
-        });
-
-    }
-
-        }lement.getBoundingClientRect().bottom;
-        window.scrollBy(0, 1);
-        //this.setPosY(this.posY + 1);
-        //this.offsetY -= 1; // lowering ofset when scrolling
-        this.onScrolledCallbacks.forEach(callback => {
-            callback(this.posY,this.height)
-        });
-
-    }
-
+        if(window.scrollY + window.innerHeight >= document.querySelector('#workspace-root').clientHeight){//window.scrollHeight - window.scrollTop === window.clientHeight) {
+            return;
+        }
         console.log("scroll", window.scrollY)
         console.log("MU", this.lastScrollPosition)
         console.log("MMOUISTE", e.clientY)
