@@ -15,9 +15,6 @@ function main() {
 
 
     eventEmitter.on("clickedWorkspace", (e) => {
-
-        /* BUGG : OM JAG MARKERAR EN NOD OCH SEDAN EN ANNAN SÅ ÄR BÄGGE MARKERADE*/
-
         // Remove marked object
         if ((e.clientX != objectClick.clientX || e.clientY != objectClick.clientY) && markedObject != null) {
             removeMarked();

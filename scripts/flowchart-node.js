@@ -3,7 +3,6 @@ const uuidv1 = require('uuid/v1');
 
 class FlowchartNode {
     constructor(id, eventEmitter){
-        //console.log("EventEmit:", eventEmitter.emit("clicked", id))
         //ui
         this.posX = 100;
         this.posY = 100;
