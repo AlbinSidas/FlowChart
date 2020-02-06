@@ -3,7 +3,7 @@ class Container {
         this.eventEmitter = ee;
         this.onClick = this.onClick.bind(this);
         
-        this.height = window.innerHeight;
+        this.height = 3000;//window.innerHeight;
         this.htmlElement = htmlElement;
         this.childScrolled = this.childScrolled.bind(this)
 
