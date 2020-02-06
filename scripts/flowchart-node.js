@@ -34,8 +34,10 @@ class FlowchartNode {
 
     render() {
         this.element.setAttribute('style', `left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
+        console.log("render id", this.id);
+        console.log(this.element.id)
         return this.element;
-    }   
+    }
 
     print() {
         console.log(data.apa);
@@ -50,15 +52,15 @@ class FlowchartNode {
         //this.offsetY = this.oldY - e.clientY;
         //pos3 = e.clientX;
         //pos4 = e.clientY;
-        //this.oldX = e.clientX;  
+        //this.oldX = e.clientX;
         //this.oldY = e.clientY;
         // set the element's new position:
         let nextX = e.clientX-this.offsetX
         let nextY = e.clientY-this.offsetY
-        nextX  = nextX < 0 ? 0 : nextX 
+        nextX  = nextX < 0 ? 0 : nextX
         nextY  = nextY < 0 ? 0 : nextY
         this.element.style.top  = `${nextY}px`// (this.element.offsetTop  - this.offsetY) + "px";
-        this.element.style.left = `${nextX}px`// (this.element.offsetLeft - this.offsetX) + "px";,        
+        this.element.style.left = `${nextX}px`// (this.element.offsetLeft - this.offsetX) + "px";,
         this.posY = nextY;
         this.posX = nextX;
     }
@@ -71,12 +73,12 @@ class FlowchartNode {
         //console.log("HALLÅ")
         clearInterval(this.scrollChecker)
         //console.log("ASDASD",this.scrollChecker)
-        
+
     }
 
     moveScreenUp(){
         this.element.getBoundingClientRect().top;
-        if(this.posY <= 0) { 
+        if(this.posY <= 0) {
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
@@ -134,7 +136,7 @@ class FlowchartNode {
             else if(offsetFromBottom >= window.innerHeight - this.height) {
                 this.moveScreenUp()
             }
-            
+
         }, 5);
         console.log(document);
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})//this.closeDragElement);
@@ -150,7 +152,7 @@ class FlowchartNode {
         document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
      }
 
-    onClick(e) { 
+    onClick(e) {
         this.eventEmitter.emit("clicked", this.id, e);
     }
 }

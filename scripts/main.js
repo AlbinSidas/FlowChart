@@ -1,6 +1,7 @@
 import FlowchartNode from "./flowchart-node";
 const EventEmitter = require("events");
 import Container from "./container";
+const cloneDeep = require("lodash.clonedeep");
 const uuidv1 = require('uuid/v1');
 //let nodes = [];
 
@@ -12,6 +13,7 @@ function main() {
     let objects = [];
     let markedObject = null;
     let objectClick = {};
+    let copyObject = {};
 
 
     eventEmitter.on("clickedWorkspace", (e) => {
@@ -21,9 +23,50 @@ function main() {
         }
     })
 
+    eventEmitter.on("copy", () => {
+      console.log("Back in main")
+      if (markedObject != null) {
+        // Create a copy without a reference to the original object.
+        //Object.assign(copyObject, markedObject);
+        copyObject = cloneDeep(markedObject);
+        //copyObject = markedObject;
+
+        console.log("APAPPAPA", markedObject === copyObject)
+        //Object.setPrototypeOf(copyObject, Object.getPrototypeOf(markedObject))
+        //console.log("efter prototype", copyObject)
+        copyObject.id = uuidv1();
+        //copyObject.element = null;
+        copyObject.element = document.createElement("div");
+        copyObject.element.classList.add("flowchart-square");
+        copyObject.element.id = copyObject.id;
+        console.log("marked", markedObject)
+        console.log("cp", copyObject);
+
+      }
+    })
+
+    eventEmitter.on("paste", () => {
+      console.log("Back in main")
+      if (copyObject != null) {
+        // Paste the copied object
+        objects.push(copyObject);
+        console.log("pushed");
+        console.log(objects);
+        //copyObject.id = uuidv1();
+        objectIds.push(copyObject.id);
+
+        workspaceObject.addBox(copyObject);
+        console.log("wsobj", workspaceObject);
+        console.log("id's", objectIds)
+        //copyObject.render();
+        //workspaceObject.rerender();
+
+      }
+    })
+
     eventEmitter.on("clicked", function(id, e) {
-        /* 
-            Set the mouseevent to objectClick to compare the 
+        /*
+            Set the mouseevent to objectClick to compare the
             event on workspace to determine if it's a "mark off" or click on object.
         */
 
@@ -67,15 +110,15 @@ function main() {
         document.getElementById(markedObject.id).style.cssText = css;
         markedObject = null;
     }
-    
+
     function addContentToModal(title, content, footer, obj) {
         title.textContent = "ID: " + obj.id.toString();
         setConent(content, obj);
         footer.textContent = "Close";
 
         function setConent(content, obj){
-            content.innerHTML = `<div> 
-                                    Input: ${obj.input} </br> 
+            content.innerHTML = `<div>
+                                    Input: ${obj.input} </br>
                                     Output: ${obj.output} </br>
                                     Description: ${obj.functionDescription}
                                  </div>`;
@@ -86,7 +129,7 @@ function main() {
     //const workspaceRoot = ;
     const workspaceObject = new Container(document.querySelector('#workspace-root'), eventEmitter);
     workspaceObject.rerender()
-    
+
     function createNewObject(){
         // Funktion som kallas då knappen "skapa nytt objekt trycks"
 
@@ -124,7 +167,7 @@ function main() {
     function connectNodes(){
 
         outputNode = document.getElementById("box1"); // hitta "parent box"
-        
+
     }
 
     document.querySelector("#newObject").addEventListener("click", createNewObject)
