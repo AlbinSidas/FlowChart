@@ -3,39 +3,47 @@ const uuidv1 = require('uuid/v1');
 
 class FlowchartNode {
     constructor(id, eventEmitter){
+        //functions
+        this.onClick          = this.onClick.bind(this);
+        this.elementDrag      = this.elementDrag.bind(this);
+        this.mouseDown        = this.mouseDown.bind(this);
+        this.setPosY          = this.setPosY.bind(this);
+        this.closeDragElement = this.closeDragElement.bind(this);
+
         //ui
-        this.posX = 100;
-        this.posY = 100;
+        this.posX    = 100;
+        this.posY    = 100;
+        this.height  = 100;
         this.oldPosY = this.posY;
         this.oldPosX = this.posX;
-        this.oldX = this.posX;
-        this.oldY = this.posY;
+        this.oldX    = this.posX;
+        this.oldY    = this.posY;
         this.offsetX = 0;
         this.offsetY = 0;
-        this.height = 100;
+
         //flow
         this.id = id;
         this.functionDescription = "No function yet"
-        this.input = ""
+
+        this.input  = ""
         this.output = ""
+
         this.eventEmitter = eventEmitter;
+
         this.element = document.createElement("div");
+
         this.element.classList.add("flowchart-square");
         this.element.id = id;
-        this.onClick = this.onClick.bind(this);
-        this.elementDrag = this.elementDrag.bind(this);
-        this.mouseDown = this.mouseDown.bind(this);
-        this.element.onclick = this.onClick;
+
+        this.element.onclick     = this.onClick;
         this.element.onmousedown = this.mouseDown;
-        this.setPosY = this.setPosY.bind(this);
-        this.closeDragElement = this.closeDragElement.bind(this);
         this.onScrolledCallbacks = []
     }
 
     render() {
         this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
         return this.element;
-    }   
+    }
 
     print() {
         console.log(data.apa);
@@ -44,16 +52,16 @@ class FlowchartNode {
     elementDrag(e) {
         e = e || window.event;
         e.preventDefault();
-        let nextX = e.clientX-this.offsetX 
+        let nextX = e.clientX-this.offsetX
         let nextY = e.clientY-this.offsetY
-        nextX = nextX < 0 ? 0 : nextX 
+        nextX = nextX < 0 ? 0 : nextX
         nextY = nextY < 0 ? 0 : nextY
         const max_height_relative_to_window      = window.innerHeight - this.height
         const box_position_relative_to_container = max_height_relative_to_window + window.scrollY
         const box_position_relative_to_window    = nextY - window.scrollY
         nextY = box_position_relative_to_window >= max_height_relative_to_window ? box_position_relative_to_container : nextY
-        this.element.style.top  = `${this.posY}px`        
-        this.element.style.left = `${nextX}px`       
+        this.element.style.top  = `${this.posY}px`
+        this.element.style.left = `${nextX}px`
         this.posX = nextX;
         this.posY = nextY
     }
@@ -62,7 +70,6 @@ class FlowchartNode {
         document.onmouseup   = null;
         document.onmousemove = null;
         document.onwheel     = null;
-        this.lastScrollPosition = 0
     }
 
     setPosY(y) {
@@ -79,20 +86,20 @@ class FlowchartNode {
         e.preventDefault();
 
         this.lastScrollPosition = window.scrollY;
-        this.offsetX = e.clientX - this.posX; 
+        this.offsetX = e.clientX - this.posX;
         this.offsetY = e.clientY - this.posY;
 
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})
         document.onmousemove = (e) => { this.elementDrag(e)   };
-        
-        let x = (0).toString();
-        let y = (0).toString();
+
+        let x = 0
+        let y = 0
         let shadow = ` box-shadow: ${x}px ${y}px 40px 20px #0ff;`;
         let elementStyle = document.getElementById(this.id).style.cssText;
         document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
      }
 
-    onClick(e) { 
+    onClick(e) {
         this.eventEmitter.emit("clicked", this.id, e);
     }
 }
