@@ -8,7 +8,7 @@ class Container {
         this.htmlElement = htmlElement;
         this.childScrolled = this.childScrolled.bind(this)
 
-        this.htmlElement.onkeypress = this.onKeyPress;
+        this.htmlElement.onkeydown = this.onKeyPress;
         this.htmlElement.onclick = this.onClick;
 
     }
@@ -19,19 +19,17 @@ class Container {
     }
 
     onKeyPress(e){
-      console.log(e)
-      //if(e.ctrlKey){
 
-        if(e.keyCode == 99){
-          console.log("kopierad");
+      if(e.ctrlKey){
+
+        if(e.keyCode == 67){
           this.eventEmitter.emit("copy");
         }
-        else if(e.which == 118){
-          console.log("inklistrad");
+        else if(e.which == 86){
           this.eventEmitter.emit("paste");
         }
 
-      //}
+      }
     }
 
     rerender() {
@@ -50,25 +48,8 @@ class Container {
     }
 
     addBox(box) {
-
-        console.log("i addbox: ", box);
-        //console.log("Innan:",this.htmlElement)
-        /*
-        let promise = new Promise(function(resolve, rej) {
-          resolve(box.render())
-        }).then((ele) => {
-            this.htmlElement.appendChild(box.render());
-        })
-        */
         this.htmlElement.appendChild(box.render());
-
-        /*
-        box.render().then((ele) => {
-            this.htmlElement.appendChild(ele);
-        })
-        */
-        console.log("efter",this.htmlElement)
-        //box.onScrolled(this.childScrolled)
+        box.onScrolled(this.childScrolled)
     }
 
     childScrolled(posY, height) {

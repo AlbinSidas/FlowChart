@@ -32,10 +32,23 @@ class FlowchartNode {
         this.onScrolledCallbacks = []
     }
 
+    copyOther(other) {
+      this.posX = other.posX;
+      this.posY = other.posY;
+      this.oldX = this.posX;
+      this.oldY = this.posY;
+      this.offsetX = other.offsetX;
+      this.offsetY = other.offsetY;
+      this.height = other.height;
+      //flow
+      //this.id = id;
+      this.functionDescription = other.functionDescription;
+      this.input = other.input;
+      this.output = other.output;
+    }
+
     render() {
         this.element.setAttribute('style', `left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
-        console.log("render id", this.id);
-        console.log(this.element.id)
         return this.element;
     }
 
@@ -138,7 +151,6 @@ class FlowchartNode {
             }
 
         }, 5);
-        console.log(document);
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})//this.closeDragElement);
         // call a function whenever the cursor moves:
         document.onmousemove = (e) => { this.elementDrag(e)   };
