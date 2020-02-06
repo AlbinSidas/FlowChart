@@ -7,11 +7,11 @@ const uuidv1 = require('uuid/v1');
 
 function main() {
     let eventEmitter = new EventEmitter();
-    let selected_output = "";
     let objectIds = [];
     let objects = [];
     let markedObject = null;
     let objectClick = {};
+    let markedOutput = "";
 
 
     eventEmitter.on("clickedWorkspace", (e) => {
@@ -82,8 +82,75 @@ function main() {
         }
     }
 
-    eventEmitter.on("outputClicked", function(id) {
-        console.log("hallooooooooooooooooooooj" + id);
+    
+    
+    eventEmitter.on("outputClicked", function(id) {   
+        markedOutput = id;
+
+    })
+
+    eventEmitter.on("inputClicked", function(id) {
+        
+        if (id == markedOutput) {
+            //modal should not pop up
+            //removeMarked()
+        } 
+        else if (markedOutput != ""){
+            //console.log("NEW INPUT!!!!!!!!!!!!!!!!!!!1");
+
+            let currNode = objects.find((temp) => {
+                return temp.id == id;
+            })
+
+            let prevNode = objects.find((temp) => {
+                return temp.id == markedOutput;
+            })
+
+            console.log("prev node: "+ prevNode.id);
+            console.log("curr node: "+ currNode.id);
+
+            currNode.input.connections.push(markedOutput);
+            prevNode.output.connections.push(currNode.id);
+            
+            markedOutput = "";
+
+            // let lineContainer = document.getElementById("connector-canvas");
+            // let newLine = document.createElement("line");
+            // newLine.classList.add("connector-line");
+                    
+            // newLine.setAttribute("x1", prevNode.posX);
+            // newLine.setAttribute("y1", prevNode.posY);
+            // newLine.setAttribute("x2", currNode.posX);
+            // newLine.setAttribute("y2", currNode.posY);
+
+            // lineContainer.appendChild(newLine);
+
+
+            // let prevNodeElement = document.getElementById(prevNode.id);
+
+            let prevNodeElement = document.getElementById("workspace-root");
+
+
+            let testDiv = document.createElement("div");
+            testDiv.classList.add("connector");
+            
+            
+            testDiv.setAttribute("height", (currNode.posY - prevNode.posY).toString() );
+            testDiv.setAttribute("width", (currNode.posX - prevNode.posX).toString() );
+
+
+            prevNodeElement.appendChild(testDiv);
+
+
+            // for (id in node.output.connections) {
+            //     console.log(node.output.connections[id]);
+            //     console.log("skriv ut detta^^^")
+            // }
+
+            // Rita pil??????????????????????????????????
+
+
+        } 
     })
 
 

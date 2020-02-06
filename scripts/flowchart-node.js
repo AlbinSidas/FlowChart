@@ -167,24 +167,21 @@ class FlowchartNode {
 
 }
 
-// class NodeContent {
-//     constructor(){
 
-//     }
-// }
 
 //class for the input and output nodes
 class NodeIO {
     constructor(parent, inputOutput, eventEmitter) {
 
+        this.type = inputOutput;
         this.parent = parent;
         this.eventEmitter = eventEmitter;
         this.onClick = this.onClick.bind(this);
-        this.id = parent.id+inputOutput;
+        this.id = parent.id;
         this.element = document.createElement("div");
         this.element.classList.add(inputOutput);
         // Temporary id????
-        this.element.setAttribute("id", parent.id);
+        this.element.setAttribute("id", parent.id+inputOutput);
         this.connections = [];
         this.element.onclick = this.onClick;
         //.appendChild(this.element)
@@ -194,21 +191,25 @@ class NodeIO {
         /*En funktion i outputen/flowchartnoden som tar klickade (this) flowchart id/objektet + efterklickade inputen/flowchartnoden 
         och sparar det i outputens connections lista. Informationen skickas vidare till den inputklickade nodens NodeIO input connections
         lista*/
+        //TODO: Fixa så att klick på noder inte kan flytta hela flowchartobjektet.
     }
     
     onClick(e) { 
-        alert("AHAHHHEOiAHEUGO");
-        this.parent.closeDragElement();
-        this.testFunc(e); 
-        this.eventEmitter.emit("outputClicked", this.id);
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+        //this.testFunc(e); 
+        if (this.type == "box-output") {
+            this.eventEmitter.emit("outputClicked", this.id); 
+        }
+        else if (this.type == "box-input") {
+            this.eventEmitter.emit("inputClicked", this.id);
+        }
+
         //this.eventEmitter.emit("inputClicked", this.id);
     }
 
-    testFunc(e){
-        console.log(this.id);
-        console.log("^^^^^^^");
-    }
+    // testFunc(e){
+    //     console.log(this.id);
+    //     console.log("^^^^^^^");
+    // }
 }
 
 export default FlowchartNode;

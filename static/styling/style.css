@@ -73,12 +73,26 @@ body{
  cursor: pointer;
 }
 
-/* .node-content {
-    height: 50px;
-    width: 100px;
-    background-color: salmon;
-    visibility: hidden;
-} */
+#connector-canvas {
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+}
+
+.connector-line {
+    stroke-width: 10;
+    stroke: black;
+    fill: yellowgreen;
+    /*stroke:rgb(255,255,0);*/
+}
+
+.connector {
+    z-index: 100;
+    /* background: transparent; */
+    background-color: blue;
+    pointer-events: none;
+}
 
 /*Output circle*/
 .box-output {
@@ -139,4 +153,6 @@ body{
   border: 1px solid #888;
   width: 77%; 
 }
+
+
 
