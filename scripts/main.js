@@ -15,7 +15,7 @@ function main() {
     let objectClick = {};
     let copyObject = {};
 
-    const v = new SizeButton()
+    const v = new SizeButton();
 
 
     eventEmitter.on("clickedWorkspace", (e) => {
@@ -34,8 +34,10 @@ function main() {
     })
 
     eventEmitter.on("paste", () => {
+        
       if (copyObject != null) {
         // Paste the copied object
+        console.log(copyObject);
         objects.push(copyObject);
         objectIds.push(copyObject.id);
         workspaceObject.addBox(copyObject);
