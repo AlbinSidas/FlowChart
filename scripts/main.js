@@ -1,6 +1,7 @@
 import FlowchartNode from "./flowchart-node";
 const EventEmitter = require("events");
 import Container from "./container";
+import SizeButton from "./size-button"
 const uuidv1 = require('uuid/v1');
 //let nodes = [];
 
@@ -13,6 +14,8 @@ function main() {
     let markedObject = null;
     let objectClick = {};
 
+    const v = new SizeButton()
+
 
     eventEmitter.on("clickedWorkspace", (e) => {
         // Remove marked object
@@ -22,8 +25,8 @@ function main() {
     })
 
     eventEmitter.on("clicked", function(id, e) {
-        /* 
-            Set the mouseevent to objectClick to compare the 
+        /*
+            Set the mouseevent to objectClick to compare the
             event on workspace to determine if it's a "mark off" or click on object.
         */
 
@@ -67,15 +70,15 @@ function main() {
         document.getElementById(markedObject.id).style.cssText = css;
         markedObject = null;
     }
-    
+
     function addContentToModal(title, content, footer, obj) {
         title.textContent = "ID: " + obj.id.toString();
         setConent(content, obj);
         footer.textContent = "Close";
 
         function setConent(content, obj){
-            content.innerHTML = `<div> 
-                                    Input: ${obj.input} </br> 
+            content.innerHTML = `<div>
+                                    Input: ${obj.input} </br>
                                     Output: ${obj.output} </br>
                                     Description: ${obj.functionDescription}
                                  </div>`;
@@ -85,8 +88,9 @@ function main() {
 
     //const workspaceRoot = ;
     const workspaceObject = new Container(document.querySelector('#workspace-root'), eventEmitter);
-    workspaceObject.rerender()
-    
+
+    workspaceObject.render()
+
     function createNewObject(){
         // Funktion som kallas då knappen "skapa nytt objekt trycks"
 
@@ -110,6 +114,7 @@ function main() {
         //const flowObj = new FlowchartNode(id);
         //const container_root = document.querySelector('#container-root')
         workspaceObject.addBox(flowObj);
+
         //workspaceRoot.appendChild(flowObj.render());
         flowObj.print();
     }
@@ -124,7 +129,7 @@ function main() {
     function connectNodes(){
 
         outputNode = document.getElementById("box1"); // hitta "parent box"
-        
+
     }
 
     document.querySelector("#newObject").addEventListener("click", createNewObject)
