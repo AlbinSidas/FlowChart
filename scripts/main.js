@@ -117,45 +117,68 @@ function main() {
             
             markedOutput = "";
 
-            // let lineContainer = document.getElementById("connector-canvas");
-            // let newLine = document.createElement("line");
-            // newLine.classList.add("connector-line");
-                    
-            // newLine.setAttribute("x1", prevNode.posX);
-            // newLine.setAttribute("y1", prevNode.posY);
-            // newLine.setAttribute("x2", currNode.posX);
-            // newLine.setAttribute("y2", currNode.posY);
+            let outX = prevNode.posX + 125;
+            let outY = prevNode.posY + 50;
+            let inX  = currNode.posX - 25;
+            let inY  = currNode.posY + 50;
 
-            // lineContainer.appendChild(newLine);
+            //let diagLine = calculateDiagonal(outX, outY, inX, inY);
+            let diagLine = calculateDiagonal(300, 300, 500, 500);
 
+            
+            console.log(diagLine);
 
-            // let prevNodeElement = document.getElementById(prevNode.id);
-
-            let prevNodeElement = document.getElementById("workspace-root");
-
+            let hypothenuse = diagLine[0];
+            let centerX = diagLine[1];
+            let centerY = diagLine[2];
+            let angle = diagLine[3];
 
             let testDiv = document.createElement("div");
             testDiv.classList.add("connector");
+            testDiv.setAttribute("style", `width:${hypothenuse}px; left:${centerX}px; top:${centerY}px; transform:rotate(${angle}deg);`);
             
+
+            let workspace = document.getElementById("workspace-root");
+            workspace.appendChild(testDiv);
+
+
             
-            testDiv.setAttribute("height", (currNode.posY - prevNode.posY).toString() );
-            testDiv.setAttribute("width", (currNode.posX - prevNode.posX).toString() );
+    // var htmlLine = "<div style= height:" + thickness + "px; background-color:" + color 
+    // + "; line-height:1px; " + centerX 
+    // + "px; top:" + centerY + "px; width:" + length + "px; -moz-transform:rotate(" + angle 
+    // + "deg); -webkit-transform:rotate(" + angle + "deg); -o-transform:rotate(" + angle 
+    // + "deg); -ms-transform:rotate(" + angle + "deg); transform:rotate(" + angle + "deg);' />";
 
-
-            prevNodeElement.appendChild(testDiv);
-
-
-            // for (id in node.output.connections) {
-            //     console.log(node.output.connections[id]);
-            //     console.log("skriv ut detta^^^")
-            // }
-
-            // Rita pil??????????????????????????????????
-
-
+        
         } 
     })
 
+    function calculateDiagonal(outX,outY,inX,inY){
+        //Calculaties the line between one nodes output and another nodes input.
+        
+        let preAbsLenX = outX - inX;
+        let preAbsLenY = outY - inY;
+
+        let lenX = Math.abs(preAbsLenX);
+        let lenY = Math.abs(preAbsLenY);
+        console.log("LenX after abs = " + lenX)
+        console.log("LenY after abs = " + lenY)
+        
+        let hypothenuse = Math.sqrt((Math.pow(lenX, 2) + Math.pow(lenY, 2)));
+        console.log("Hypothenuse length = " + hypothenuse);
+
+        let hypCenterPosX = (outX + inX)/2;
+        let hypCenterPosY = (outY + inY)/2;  
+
+        
+        // FUNKAR EJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ FIXAS DIR GER RADIANER? badbadbad needs degrees
+        let angle = Math.acos(hypothenuse/lenX);
+       
+
+        console.log("Angle: " + angle);
+
+        return [hypothenuse, hypCenterPosX, hypCenterPosY, angle];
+    }
 
     //const workspaceRoot = ;
     const workspaceObject = new Container(document.querySelector('#workspace-root'), eventEmitter);

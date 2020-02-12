@@ -73,12 +73,6 @@ body{
  cursor: pointer;
 }
 
-#connector-canvas {
-    width: 100vw;
-    height: 100vh;
-    left: 0;
-    top: 0;
-}
 
 .connector-line {
     stroke-width: 10;
@@ -92,6 +86,11 @@ body{
     /* background: transparent; */
     background-color: blue;
     pointer-events: none;
+    position:fixed;
+    padding:0px; 
+    margin:0px;
+    height:10px;
+    line-height:1px; 
 }
 
 /*Output circle*/
