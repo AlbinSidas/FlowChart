@@ -1,22 +1,28 @@
 import SizeButton from './size-button'
-import View from './view.js'
+import View from 'Base/view.js'
+import elementString from 'Views/container.html'
 
 class Container extends View {
-    constructor(htmlElement, ee) {
-        super(htmlElement)
+    constructor(ee) {
+        super(elementString)
         this.eventEmitter = ee;
         this.onClick = this.onClick.bind(this);
-
+        console.log("!C",elementString)
         this.height = 3000;//window.innerHeight;
-        this.htmlElement = htmlElement;
+        //this.htmlElement = htmlElement;
         this.childScrolled = this.childScrolled.bind(this)
-        this.htmlElement.onclick = this.onClick;
+        //this.htmlElement.onclick = this.onClick;
         
-        const apa = new SizeButton();
-        console.log("APA", apa)
-        this.addChildView(apa);
+       
+        //console.log("APA", apa)
+        
     }
 
+    didAttach(parent) {
+        const apa = new SizeButton();
+        this.attach(apa) // addChildView istället
+        //this.addChildView(apa);
+    }
 
     onClick(e) {
         //console.log("Klick på container med print i containerobjekt")
@@ -26,7 +32,7 @@ class Container extends View {
     render() {
         this.child_views.forEach(c => c.render());
         this.setHeight(this.height)
-        return this.htmlElement;
+        return this.element;
     }
 
     increaseSize() {
@@ -36,11 +42,11 @@ class Container extends View {
 
     setHeight(height) {
         this.height = height;
-        this.htmlElement.style.height = `${height}px`
+        //this.htmlElement.style.height = `${height}px`
     }
 
     addBox(box) {
-        this.htmlElement.appendChild(box.render());
+        //this.htmlElement.appendChild(box.render());
         box.onScrolled(this.childScrolled)
     }
 

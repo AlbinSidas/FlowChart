@@ -1,5 +1,4 @@
 import data from './test.js';
-const uuidv1 = require('uuid/v1');
 
 class FlowchartNode {
     constructor(id, eventEmitter){
