@@ -22,13 +22,14 @@ class View {
   }
 
   attach(child) {
+    this.child_views.push(child)
     this.element.appendChild(child.render());
     child.didAttach(this)
   }
 
-  addChildView(view) {
-      this.child_views.push(view)
-      this.element.appendChild(view.element)
+  addChildView(child) {
+      this.child_views.push(child)
+      this.element.appendChild(child.render())
   }
 
 

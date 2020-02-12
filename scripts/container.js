@@ -51,6 +51,7 @@ class Container extends View {
     }
 
     addBox(box) {
+        this.attach(box)
         //this.htmlElement.appendChild(box.render());
         box.onScrolled(this.childScrolled)
     }
