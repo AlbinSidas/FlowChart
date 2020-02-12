@@ -20,11 +20,9 @@ class Container extends View {
         this.htmlElement.onclick = this.onClick;
         
         const apa = new SizeButton();
-        console.log("APA", apa)
         this.addChildView(apa);
 
         const modal = new Modal();
-        console.log("Modal", modal)
         this.addChildView(modal)
 
         this.objects = [];
@@ -32,7 +30,7 @@ class Container extends View {
         this.objectClick = {};
         this.copyObject = {};
 
-        // Lägg dessa lyssnare i ett objekt eller i en egen funktion
+        // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         this.eventEmitter.on("clicked", function(id, e) {
             /*
                 Set the mouseevent to objectClick to compare the
@@ -46,30 +44,15 @@ class Container extends View {
                 return obj.id == id;
             });
 
-
             // If the click is on the marked object it's a doubleclick and will open the modal.
             if (obj == this.container.markedObject) {
-                console.log("Open modal", modal);
                 // Prevents further draging after doubleclick.
                 obj.closeDragElement();
-                console.log(this.container)
                 modal.show(obj);
-                //let modal = document.getElementById("modal");
-                //modal.style.display = "block";
-                //console.log(this.container.modal)
-                //render().style.display = "block";
 
-                /*let children = modal.childNodes;
-                let modalTitle = children[1];
-                let modalContent = children[3];
-                let modalFooter = children[5];
-                */
-                //addContentToModal(modalTitle, modalContent, modalFooter, obj);
-                console.log(window)
                 window.onclick = function(event) {
                     if (event.target == modal.element) {
                         modal.element.style.display = "none";
-                        //this.container.modal.close();
                     }
                 }
             } else {
@@ -83,9 +66,6 @@ class Container extends View {
 
 
     onClick(e) {
-        console.log("Klick på container med print i containerobjekt")
-        //this.eventEmitter.emit("clickedWorkspace", e);
-        //console.log("");
         if ((e.clientX != this.objectClick.clientX || e.clientY != this.objectClick.clientY) && this.markedObject != null) {
             this.removeMarked();
         }
@@ -104,7 +84,6 @@ class Container extends View {
       if(e.ctrlKey){
 
         if(e.keyCode == 67){
-          //this.eventEmitter.emit("copy");
           if (this.markedObject != null) {
             // Create a copy without a reference to the original object.
             this.copyObject = new FlowchartNode(uuidv1(), this.eventEmitter);
@@ -112,14 +91,7 @@ class Container extends View {
           }
         }
         else if(e.which == 86){
-          //this.eventEmitter.emit("paste");
           if (this.copyObject != null) {
-            // Paste the copied object
-            console.log(this.copyObject);
-            console.log(this)
-
-            //this.objects.push(this.copyObject);
-            //this.objectIds.push(this.copyObject.id);
             this.addBox(this.copyObject);
           }
         }
