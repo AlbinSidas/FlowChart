@@ -92,7 +92,13 @@ class Container extends View {
         }
         else if(e.which == 86){
           if (this.copyObject != null) {
-            this.addBox(this.copyObject);
+            
+            let pasteObject = new FlowchartNode(uuidv1(), this.eventEmitter);
+            pasteObject.copyOther(this.copyObject);
+            this.objects.push(pasteObject);
+            //workspaceObject.addBox(pasteObject);
+
+            this.addBox(pasteObject);
           }
         }
 
