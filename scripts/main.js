@@ -1,6 +1,7 @@
 import FlowchartNode from "./flowchart-node";
 const EventEmitter = require("events");
 import Container from "./container";
+import SizeButton from "./size-button"
 const uuidv1 = require('uuid/v1');
 //let nodes = [];
 
@@ -13,6 +14,8 @@ function main() {
     let markedObject = null;
     let objectClick = {};
     let copyObject = {};
+
+    const v = new SizeButton()
 
 
     eventEmitter.on("clickedWorkspace", (e) => {
@@ -103,7 +106,8 @@ function main() {
 
     //const workspaceRoot = ;
     const workspaceObject = new Container(document.querySelector('#workspace-root'), eventEmitter);
-    workspaceObject.rerender()
+
+    workspaceObject.render()
 
     function createNewObject(){
         // Funktion som kallas då knappen "skapa nytt objekt trycks"
@@ -122,6 +126,8 @@ function main() {
         const flowObj = new FlowchartNode(id, eventEmitter);
         objects.push(flowObj);
         workspaceObject.addBox(flowObj);
+
+        //workspaceRoot.appendChild(flowObj.render());
         flowObj.print();
     }
 
