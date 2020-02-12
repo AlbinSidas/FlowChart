@@ -9,22 +9,21 @@ const uuidv1 = require('uuid/v1');
 function main() {
     let eventEmitter = new EventEmitter();
     let selected_output = "";
-    let objectIds = [];
-    let objects = [];
+    //let objectIds = [];
+   /* let objects = [];
     let markedObject = null;
     let objectClick = {};
     let copyObject = {};
-
+*/
     const v = new SizeButton();
-
-
+/*
     eventEmitter.on("clickedWorkspace", (e) => {
         // Remove marked object
         if ((e.clientX != objectClick.clientX || e.clientY != objectClick.clientY) && markedObject != null) {
             removeMarked();
         }
     })
-
+/*
     eventEmitter.on("copy", () => {
       if (markedObject != null) {
         // Create a copy without a reference to the original object.
@@ -43,14 +42,14 @@ function main() {
         workspaceObject.addBox(copyObject);
       }
     })
-
-    eventEmitter.on("clicked", function(id, e) {
+  */  
+    //eventEmitter.on("clicked", function(id, e) {
         /*
             Set the mouseevent to objectClick to compare the
             event on workspace to determine if it's a "mark off" or click on object.
         */
 
-        objectClick = e;
+        /*objectClick = e;
         // Finds the correct node in the created nodes.
         let obj = objects.find((obj) => {
             return obj.id == id;
@@ -82,14 +81,15 @@ function main() {
             }
             markedObject = obj;
         }
-    })
-
+    })*/
+    /*
     function removeMarked() {
         let css = document.getElementById(markedObject.id).style.cssText;
         css = css.split(" box-shadow")[0];
         document.getElementById(markedObject.id).style.cssText = css;
         markedObject = null;
     }
+    */
 
     function addContentToModal(title, content, footer, obj) {
         title.textContent = "ID: " + obj.id.toString();
@@ -122,11 +122,11 @@ function main() {
             document.getElementById("element-picker").style.visibility = "hidden";
         }
         const id = uuidv1();
-        objectIds.push(id);
+        //objectIds.push(id);
 
 
         const flowObj = new FlowchartNode(id, eventEmitter);
-        objects.push(flowObj);
+        //objects.push(flowObj);
         workspaceObject.addBox(flowObj);
 
         //workspaceRoot.appendChild(flowObj.render());

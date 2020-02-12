@@ -7,7 +7,7 @@ class Modal extends View
 
     super(elementString);
     console.log("Element",this.element)
-    console.log(elementStyle)
+    //console.log(elementStyle)
     this.render = this.render.bind(this);
   }
 
