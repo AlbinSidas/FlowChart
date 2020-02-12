@@ -89,7 +89,7 @@ function main() {
     //const workspaceRoot = ;
     const workspaceObject = new Container(document.querySelector('#workspace-root'), eventEmitter);
 
-    workspaceObject.rerender()
+    workspaceObject.render()
 
     function createNewObject(){
         // Funktion som kallas då knappen "skapa nytt objekt trycks"

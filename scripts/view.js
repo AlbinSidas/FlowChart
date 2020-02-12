@@ -8,10 +8,16 @@ class View {
     range.selectNode(document.getElementById("context"));
     var documentFragment = range.createContextualFragment(tagString);
     this.element = documentFragment.childNodes[0];
+    this.child_views = []
   }
 
   render() {
+    return this.element;
+  }
 
+  addChildView(view) {
+      this.child_views.push(view)
+      this.htmlElement.appendChild(view.element)
   }
 
 

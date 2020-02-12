@@ -8,12 +8,14 @@ class SizeButton extends View
 
     super(elementString);
     console.log("Element",this.element)
+    elementStyle.use();
     console.log(elementStyle)
-        this.render = this.render.bind(this)
+    this.render = this.render.bind(this)
   }
 
 
   render() {
+    this.child_views.forEach(c => c.render());
     this.element.setAttribute('style', `position: fixed; width:100px; height: 100px;`);
     return this.element;
   }
