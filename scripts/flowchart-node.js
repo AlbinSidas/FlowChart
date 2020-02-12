@@ -55,6 +55,8 @@ class FlowchartNode {
       this.output = other.output;
     }
 
+
+
     render() {
         this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
         return this.element;
