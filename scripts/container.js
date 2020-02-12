@@ -30,7 +30,6 @@ class Container extends View {
     onKeyPress(e){
 
       if(e.ctrlKey){
-
         if(e.keyCode == 67){
           this.eventEmitter.emit("copy");
         }

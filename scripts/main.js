@@ -15,6 +15,8 @@ function main() {
     let objectClick = {};
     let copyObject = {};
     let pasteObject = {};
+    let mouseX = 0;
+    let mouseY = 0;
 
     const v = new SizeButton();
 
@@ -27,20 +29,23 @@ function main() {
     })
 
     eventEmitter.on("copy", () => {
-      if (markedObject != null) {
+        document.onmousemove = (e) => { mouseX = e.clientX; mouseY = e.clientY; console.log(mouseX); console.log(mouseY) };
+        if (markedObject != null) {
         // save a copy without a reference to the original object.
-        copyObject = new FlowchartNode(uuidv1(), eventEmitter);
-        copyObject.copyOther(markedObject);
+        
+            copyObject = new FlowchartNode(uuidv1(), eventEmitter);
+            copyObject.copyOther(markedObject, mouseX, mouseY);
+
       }
     })
 
     eventEmitter.on("paste", () => {
         
       if (copyObject != null) {
+
         // Create and paste a new object based on the copied object
         pasteObject = new FlowchartNode(uuidv1(), eventEmitter);
-        pasteObject.copyOther(copyObject);
-        console.log(pasteObject);
+        pasteObject.copyOther(copyObject, mouseX, mouseY);
         objects.push(pasteObject);
         objectIds.push(pasteObject.id);
         workspaceObject.addBox(pasteObject);

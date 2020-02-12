@@ -40,19 +40,19 @@ class FlowchartNode {
         this.onScrolledCallbacks = []
     }
 
-    copyOther(other) {
-      this.posX = other.posX;
-      this.posY = other.posY;
-      this.oldX = this.posX;
-      this.oldY = this.posY;
-      this.offsetX = other.offsetX;
-      this.offsetY = other.offsetY;
-      this.height = other.height;
-      //flow
-      //this.id = id;
-      this.functionDescription = other.functionDescription;
-      this.input = other.input;
-      this.output = other.output;
+    copyOther(other, mposX = other.posX, mposY = other.posY) {
+        this.posX = mposX + event.view.scrollX -50;
+        this.posY = mposY + event.view.scrollY -50;
+        this.oldX = this.posX;
+        this.oldY = this.posY;
+        this.offsetX = other.offsetX;
+        this.offsetY = other.offsetY;
+        this.height = other.height;
+        //flow
+        //this.id = id;
+        this.functionDescription = other.functionDescription;
+        this.input = other.input;
+        this.output = other.output;
     }
 
 
