@@ -1,21 +1,30 @@
-class Container {
+import SizeButton from './size-button'
+import View from './view.js'
+
+class Container extends View {
     constructor(htmlElement, ee) {
+        super(htmlElement)
         this.eventEmitter = ee;
         this.onClick = this.onClick.bind(this);
-        
-        this.height = window.innerHeight;
+
+        this.height = 3000;//window.innerHeight;
         this.htmlElement = htmlElement;
         this.childScrolled = this.childScrolled.bind(this)
-
         this.htmlElement.onclick = this.onClick;
+        
+        const apa = new SizeButton();
+        console.log("APA", apa)
+        this.addChildView(apa);
     }
+
 
     onClick(e) {
         //console.log("Klick på container med print i containerobjekt")
         this.eventEmitter.emit("clickedWorkspace", e);
     }
 
-    rerender() {
+    render() {
+        this.child_views.forEach(c => c.render());
         this.setHeight(this.height)
         return this.htmlElement;
     }
