@@ -90,7 +90,7 @@ function main() {
         markedObject = null;
     }
     */
-
+    /*
     function addContentToModal(title, content, footer, obj) {
         title.textContent = "ID: " + obj.id.toString();
         setConent(content, obj);
@@ -103,7 +103,8 @@ function main() {
                                     Description: ${obj.functionDescription}
                                  </div>`;
         }
-    }
+        
+    }*/
 
 
     //const workspaceRoot = ;

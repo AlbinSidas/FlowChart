@@ -1,4 +1,6 @@
 import SizeButton from './size-button.js'
+import FlowchartNode from "./flowchart-node";
+const uuidv1 = require('uuid/v1');
 import Modal from './modal.js'
 import View from './view.js'
 
@@ -23,7 +25,7 @@ class Container extends View {
 
         const modal = new Modal();
         console.log("Modal", modal)
-        //this.addChildView("Modal", modal)
+        this.addChildView(modal)
 
         this.objects = [];
         this.markedObject = null;
@@ -47,22 +49,27 @@ class Container extends View {
 
             // If the click is on the marked object it's a doubleclick and will open the modal.
             if (obj == this.container.markedObject) {
-                console.log("Open modal", obj);
+                console.log("Open modal", modal);
                 // Prevents further draging after doubleclick.
                 obj.closeDragElement();
-
+                console.log(this.container)
+                modal.show(obj);
                 //let modal = document.getElementById("modal");
-                modal.style.display = "block";
+                //modal.style.display = "block";
+                //console.log(this.container.modal)
+                //render().style.display = "block";
 
-                let children = modal.childNodes;
+                /*let children = modal.childNodes;
                 let modalTitle = children[1];
                 let modalContent = children[3];
                 let modalFooter = children[5];
+                */
                 //addContentToModal(modalTitle, modalContent, modalFooter, obj);
                 console.log(window)
                 window.onclick = function(event) {
-                    if (event.target == modal) {
-                        modal.style.display = "none";
+                    if (event.target == modal.element) {
+                        modal.element.style.display = "none";
+                        //this.container.modal.close();
                     }
                 }
             } else {
@@ -100,18 +107,20 @@ class Container extends View {
           //this.eventEmitter.emit("copy");
           if (this.markedObject != null) {
             // Create a copy without a reference to the original object.
-            this.copyObject = new FlowchartNode(uuidv1(), eventEmitter);
-            this.copyObject.copyOther(markedObject);
+            this.copyObject = new FlowchartNode(uuidv1(), this.eventEmitter);
+            this.copyObject.copyOther(this.markedObject);
           }
         }
         else if(e.which == 86){
           //this.eventEmitter.emit("paste");
-          if (copyObject != null) {
+          if (this.copyObject != null) {
             // Paste the copied object
-            console.log(copyObject);
-            objects.push(copyObject);
-            objectIds.push(copyObject.id);
-            workspaceObject.addBox(copyObject);
+            console.log(this.copyObject);
+            console.log(this)
+
+            //this.objects.push(this.copyObject);
+            //this.objectIds.push(this.copyObject.id);
+            this.addBox(this.copyObject);
           }
         }
 
