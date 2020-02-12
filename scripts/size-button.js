@@ -8,7 +8,6 @@ class SizeButton extends View
 
     super(elementString);
     console.log("Element",this.element)
-    elementStyle.use();
     console.log(elementStyle)
     this.render = this.render.bind(this)
   }
