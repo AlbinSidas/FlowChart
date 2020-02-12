@@ -8,19 +8,26 @@ module.exports = {
     },
     resolve: {
         alias: {
-          Base:  path.resolve(__dirname, 'scripts/base'),
-          Views: path.resolve(__dirname, 'static/views')
+          Base:       path.resolve(__dirname, 'scripts/base'),
+          Views:      path.resolve(__dirname, 'static/views'),
+          Singletons: path.resolve(__dirname, 'scripts/singletons'),
+          Styles:     path.resolve(__dirname, 'static/styling')
         }
     },
     module: {
       rules: [
         {
           test: /\.html$/i,
-          loader: 'raw-loader',
+          loader: 'raw-loader', //html loader, url false
         },
         {
           test: /\.css$/i,
-          use: ['style-loader', 'css-loader'],
+          use: ['style-loader', {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+            },
+          }],
         },
         {
          test: /\.(png|svg|jpg|gif)$/,

@@ -1,7 +1,7 @@
 import SizeButton from './size-button'
 import View from 'Base/view.js'
 import elementString from 'Views/container.html'
-
+import eventEmitter from 'Singletons/event-emitter.js'
 class Container extends View {
     constructor(ee) {
         super(elementString)
@@ -21,6 +21,10 @@ class Container extends View {
     didAttach(parent) {
         const apa = new SizeButton();
         this.attach(apa) // addChildView istället
+        eventEmitter.on('increase_size', () =>  {
+            console.log("APAAAAAA")
+            this.increaseSize()
+        })
         //this.addChildView(apa);
     }
 
@@ -42,6 +46,7 @@ class Container extends View {
 
     setHeight(height) {
         this.height = height;
+        this.element.style.height = `${height}px`
         //this.htmlElement.style.height = `${height}px`
     }
 

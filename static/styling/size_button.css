@@ -1,3 +1,7 @@
-.increase {
-  background-color: blue;
+.size_button {
+  position: fixed;
+  width: 100px;
+  bottom: 0px;
+  padding: 5px;
+  left: 0px;
 }
