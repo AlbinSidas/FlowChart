@@ -1,6 +1,6 @@
 import elementString from '../static/views/modal.html';
 //import elementStyle from '../static/styling/size_button.css'
-import View from './view.js';
+import View from 'Base/view.js';
 class Modal extends View
 {
   constructor() {

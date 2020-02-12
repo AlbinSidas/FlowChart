@@ -98,7 +98,7 @@ body{
     padding: 0px;
 }
 
-.flowchart-square {
+.flowchart_square {
     width: 100px;
     height: 100px;
     cursor: move;

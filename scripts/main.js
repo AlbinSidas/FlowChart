@@ -4,14 +4,22 @@ import Container from "./container";
 import SizeButton from "./size-button"
 const uuidv1 = require('uuid/v1');
 //let nodes = [];
+import Root from 'Base/root.js'
 
 
 function main() {
     let eventEmitter = new EventEmitter();
     let selected_output = "";
+    /*
     const v = new SizeButton();
     const workspaceObject = new Container(document.querySelector('#workspace-root'), eventEmitter);
     workspaceObject.render()
+*/
+
+    const workspaceObject = new Container(eventEmitter);
+    const root_container  = new Root(workspaceObject)
+
+
 
     function createNewObject(){
         // Funktion som kallas då knappen "skapa nytt objekt trycks"

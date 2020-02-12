@@ -1,8 +1,11 @@
 import data from './test.js';
-const uuidv1 = require('uuid/v1');
+import View from 'Base/view.js'
+import style from 'Styles/style.css'
 
-class FlowchartNode {
+class FlowchartNode extends View {
     constructor(id, eventEmitter){
+        super('<div></div>')
+
         //functions
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
@@ -30,11 +33,14 @@ class FlowchartNode {
 
         this.eventEmitter = eventEmitter;
 
-        this.element = document.createElement("div");
+        //this.element = document.createElement("div");
 
-        this.element.classList.add("flowchart-square");
+        this.element.classList.add(style.flowchart_square);
         this.element.id = id;
 
+    }
+
+    didAttach(parent) {
         this.element.onclick     = this.onClick;
         this.element.onmousedown = this.mouseDown;
         this.onScrolledCallbacks = []
