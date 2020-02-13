@@ -6,12 +6,18 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js'
     },
+    devServer: {
+      contentBase: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 9000
+    },
     resolve: {
         alias: {
-          Base:       path.resolve(__dirname, 'scripts/base'),
-          Views:      path.resolve(__dirname, 'static/views'),
-          Singletons: path.resolve(__dirname, 'scripts/singletons'),
-          Styles:     path.resolve(__dirname, 'static/styling')
+          Base:       path.resolve(__dirname,  'scripts/base'),
+          Views:      path.resolve(__dirname,  'static/views'),
+          Singletons: path.resolve(__dirname,  'scripts/singletons'),
+          Styles:     path.resolve(__dirname,  'static/styling'),
+          Scripts:    path.resolve(__dirname, 'scripts/')
         }
     },
     module: {
@@ -19,7 +25,10 @@ module.exports = {
       rules: [
         {
           test: /\.html$/i,
-          loader: 'raw-loader', //html loader, url false
+          loader: 'html-loader', //html loader, url false
+          options: {
+           interpolate: true,
+          },
         },
         {
           test: /\.css$/i,
@@ -33,7 +42,7 @@ module.exports = {
         {
          test: /\.(png|svg|jpg|gif)$/,
          use: [
-           'file-loader',
+           'file-loader', //resolve-url-loader
          ],
        },
         
