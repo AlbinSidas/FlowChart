@@ -29,7 +29,6 @@ class SizeButton extends Button
   }
 
   onClick(e) {
-    console.log("I AM CLICKED" + this.name)
     eventEmitter.emit("increase_size")
   }
 

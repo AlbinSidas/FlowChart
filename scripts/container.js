@@ -34,7 +34,6 @@ class Container extends View {
                 event on workspace to determine if it's a "mark off" or click on object.
             */
            
-            console.log("KLICK")
             this.objectClick = e;
             // Finds the correct node in the created nodes.
             let obj = this.objects.find((obj) => {
@@ -90,12 +89,11 @@ class Container extends View {
 
 
     onKeyPress(e){
-        console.log("I ONKEYPRESS");
         if(e.ctrlKey){
             if(e.keyCode == 67){
                 // 67 = C
                 if (this.markedObject != null) {
-                    // Create a copy without a reference to the original object.
+                    // Save a copy without a reference to the original object.
                     document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
                     this.copyObject = new FlowchartNode(uuidv1());
                     this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
@@ -105,6 +103,7 @@ class Container extends View {
             else if(e.which == 86){
                 // 86 = V
                 if (this.copyObject != null) {
+                    //Create a new object based on the copy and add it to the workspace
                     let pasteObject = new FlowchartNode(uuidv1());
                     pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
                     this.objects.push(pasteObject);
