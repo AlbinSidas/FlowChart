@@ -4,7 +4,7 @@ body{
     border:0;
 }
 
-#container-root {
+:global #container-root {
     margin: 0;
     width: 100%;
     height: 100%;
@@ -13,7 +13,7 @@ body{
     padding: 0px;
 }
 
-.menu {
+:global .menu {
     text-align: center;
     flex-grow: 1;
     /*background-color: blue;*/
@@ -25,12 +25,12 @@ body{
     border-color: black;
 }
 
-.filemenu {
+:global .filemenu {
     margin-top: 20vh;
     /*background-color: mediumturquoise;*/
 }
 
-#workspace-root {
+:global #workspace-root {
     flex-grow: 8;
     position: relative;   
     background-color: mediumseagreen;
@@ -39,7 +39,7 @@ body{
     margin: 0;
 }
 
-#newObject {
+:global #newObject {
     height: 50px;
     width: 50px;
     border-radius: 50%;
@@ -48,11 +48,12 @@ body{
     bottom: 3%;
     background-color: orangered;
 }
-#newObject img {
+
+:global #newObject img {
     width: 100%;
 }
 
-#element-picker {
+:global #element-picker {
     background-color: orange;
     visibility: hidden;
     position: fixed;
@@ -62,7 +63,7 @@ body{
     width: 15vw;
 }
 
-#box1 {
+:global #box1 {
     background-color: mediumaquamarine;
     height: 100px;
     width: 100px;
@@ -72,7 +73,7 @@ body{
     padding: 0px;
 }
 
-.box-input {
+:global .box-input {
  border-radius: 50%;
  height: 50px;
  width: 50px;
@@ -81,7 +82,7 @@ body{
  background-color: salmon;
 }
 
-.box-output {
+:global .box-output {
     border-radius: 50%;
     height: 50px;
     width: 50px;
@@ -90,7 +91,7 @@ body{
     background-color: orange;
 }
 
-#box2 {
+:global #box2 {
     background-color: gold;
     height: 100px;
     width: 100px;
@@ -107,7 +108,7 @@ body{
 }
 
 /* The Modal (background) */
-.modal {
+:global .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -121,27 +122,24 @@ body{
 }
 
 /* Modal Header */
-.modal-header {
+:global .modal-header {
   margin: 15% auto 0;
   width: 80%;
   background-color: #BEBEBE;
-
-  
 }
 
 /* Modal Footer */
-.modal-footer {
+:global .modal-footer {
   margin: 0 auto;
   width: 80%;
   background-color: #BEBEBE;
 }
 
 /* Modal Content/Box */
-.modal-content {
+:global .modal-content {
   margin: 0 auto;
   background-color: #fefefe;
   padding: 20px;
   border: 1px solid #888;
   width: 77%; 
 }
-
