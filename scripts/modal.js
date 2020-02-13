@@ -1,12 +1,9 @@
 import elementString from '../static/views/modal.html';
-//import elementStyle from '../static/styling/size_button.css'
 import View from 'Base/view.js';
 class Modal extends View
 {
   constructor() {
     super(elementString);
-    console.log("Element",this.element)
-    //console.log(elementStyle)
     this.render = this.render.bind(this);
   }
 
@@ -33,6 +30,11 @@ class Modal extends View
     let modalFooter = children[5];
     addContentToModal(modalTitle, modalContent, modalFooter, obj);
 
+  }
+
+  close() {
+    console.log("ele", this.element)
+    this.element.style.display = "none";
   }
 
 

@@ -8,19 +8,17 @@ import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 
 class Container extends View {
-    constructor(ee) {
+    constructor() {
         super(elementString)
-        this.onClick = this.onClick.bind(this);
 
+        this.onClick = this.onClick.bind(this);
         this.onKeyPress = this.onKeyPress.bind(this);
+
         this.height = 3000;//window.innerHeight;
         //this.htmlElement = htmlElement;
         this.childScrolled = this.childScrolled.bind(this)
 
- 
-        
-        this.modal = new Modal();
-      
+        this.modal = new Modal();      
 
         this.objects = [];
         this.markedObject = null;
@@ -30,7 +28,7 @@ class Container extends View {
         this.mouseY = 0;
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
-        ee.on("clicked", (id, e) => {
+        eventEmitter.on("clicked", (id, e) => {
             /*
                 Set the mouseevent to objectClick to compare the
                 event on workspace to determine if it's a "mark off" or click on object.
@@ -49,11 +47,11 @@ class Container extends View {
                 obj.closeDragElement();
                 this.modal.show(obj);
 
-                window.onclick = function(event) {
+                window.onclick = function (event) {
                     if (event.target == this.modal.element) {
-                        this.modal.element.style.display = "none";
+                        this.modal.close();  
                     }
-                }
+                }.bind(this)
             } else {
                 if (this.markedObject != null) {
                     this.removeMarked();
@@ -61,24 +59,23 @@ class Container extends View {
                 this.markedObject = obj;
             }
         })
-        this.element.onkeydown = this.onKeyPress;
     }
 
     didAttach(parent) {
         const apa = new SizeButton();
-        this.attach(apa) // addChildView istället
-
-        this.addChildView(this.modal)
+        this.attach(apa)
+ 
+        this.attach(this.modal)
         eventEmitter.on('increase_size', () =>  {
             console.log("APAAAAAA")
             this.increaseSize()
         })
+
+        this.element.onkeydown = this.onKeyPress;
         this.element.onclick = this.onClick;
-        //this.addChildView(apa);
     }
 
     onClick(e) {
-        console.log("_ONKEYDOWN",this.element.onkeydown);
         if ((e.clientX != this.objectClick.clientX || e.clientY != this.objectClick.clientY) && this.markedObject != null) {
             this.removeMarked();
         }
@@ -93,26 +90,27 @@ class Container extends View {
 
 
     onKeyPress(e){
-        console.log("haha");
+        console.log("I ONKEYPRESS");
         if(e.ctrlKey){
             if(e.keyCode == 67){
-            if (this.markedObject != null) {
-                // Create a copy without a reference to the original object.
-                document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
-                this.copyObject = new FlowchartNode(uuidv1(), this.eventEmitter);
-                this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
+                // 67 = C
+                if (this.markedObject != null) {
+                    // Create a copy without a reference to the original object.
+                    document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
+                    this.copyObject = new FlowchartNode(uuidv1());
+                    this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
+                }
             }
-            }
-            else if(e.which == 86){
-            if (this.copyObject != null) {
-                
-                let pasteObject = new FlowchartNode(uuidv1(), this.eventEmitter);
-                pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-                this.objects.push(pasteObject);
-                //workspaceObject.addBox(pasteObject);
 
-                this.addBox(pasteObject);
-            }
+            else if(e.which == 86){
+                // 86 = V
+                if (this.copyObject != null) {
+                    let pasteObject = new FlowchartNode(uuidv1());
+                    pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
+                    this.objects.push(pasteObject);
+
+                    this.addBox(pasteObject);
+                }
             }
 
         }
@@ -120,6 +118,7 @@ class Container extends View {
 
 
     render() {
+
         this.child_views.forEach(c => c.render());
         this.setHeight(this.height)
         return this.element;
@@ -138,10 +137,7 @@ class Container extends View {
 
     addBox(box) {
         this.objects.push(box);
-        //console.log("added")
-        //this.htmlElement.appendChild(box.render());
         this.attach(box)
-        //this.htmlElement.appendChild(box.render());
         box.onScrolled(this.childScrolled)
     }
 

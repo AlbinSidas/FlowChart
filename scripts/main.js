@@ -1,23 +1,16 @@
 import FlowchartNode from "./flowchart-node";
-const EventEmitter = require("events");
 import Container from "./container";
 import SizeButton from "./size-button"
 const uuidv1 = require('uuid/v1');
-//let nodes = [];
 import Root from 'Base/root.js'
 
 
 function main() {
-    let eventEmitter = new EventEmitter();
     let selected_output = "";
-    /*
-    const v = new SizeButton();
-    const workspaceObject = new Container(document.querySelector('#workspace-root'), eventEmitter);
-    workspaceObject.render()
-*/
 
-    const workspaceObject = new Container(eventEmitter);
-    const root_container  = new Root(workspaceObject)
+
+    const workspaceObject = new Container();
+    const root_container  = new Root(workspaceObject);
 
 
 
@@ -32,7 +25,7 @@ function main() {
             document.getElementById("element-picker").style.visibility = "hidden";
         }
 
-        const flowObj = new FlowchartNode(uuidv1(), eventEmitter);
+        const flowObj = new FlowchartNode(uuidv1());
         workspaceObject.addBox(flowObj);
         flowObj.print();
     }
