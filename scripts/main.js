@@ -89,7 +89,6 @@ function main() {
     
     eventEmitter.on("outputClicked", function(id) {   
         markedOutput = id;
-
     })
 
     eventEmitter.on("inputClicked", function(id) {
@@ -117,65 +116,92 @@ function main() {
             
             markedOutput = "";
 
-            let outX = prevNode.posX + 125;
-            let outY = prevNode.posY + 50;
-            let inX  = currNode.posX - 25;
-            let inY  = currNode.posY + 50;
-
-            //let diagLine = calculateDiagonal(outX, outY, inX, inY);
-            let diagLine = calculateDiagonal(300, 300, 500, 500);
-
+            let newconnector = document.createElement("div");
+            newconnector.id = currNode.id + "connector";
+            console.log("Connection start id: "+ newconnector.id);
+            newconnector.classList.add("connector");
+            //newconnector.setAttribute("style", `width:${hypothenuse}px; left:${centerX}px; top:${centerY}px; transform:rotate(${angle}deg);`);
             
-            console.log(diagLine);
-
-            let hypothenuse = diagLine[0];
-            let centerX = diagLine[1];
-            let centerY = diagLine[2];
-            let angle = diagLine[3];
-
-            let testDiv = document.createElement("div");
-            testDiv.classList.add("connector");
-            testDiv.setAttribute("style", `width:${hypothenuse}px; left:${centerX}px; top:${centerY}px; transform:rotate(${angle}deg);`);
-            
-
             let workspace = document.getElementById("workspace-root");
-            workspace.appendChild(testDiv);
-
-
-            
-    // var htmlLine = "<div style= height:" + thickness + "px; background-color:" + color 
-    // + "; line-height:1px; " + centerX 
-    // + "px; top:" + centerY + "px; width:" + length + "px; -moz-transform:rotate(" + angle 
-    // + "deg); -webkit-transform:rotate(" + angle + "deg); -o-transform:rotate(" + angle 
-    // + "deg); -ms-transform:rotate(" + angle + "deg); transform:rotate(" + angle + "deg);' />";
-
-        
+            workspace.appendChild(newconnector);
+            console.log("HALLOOOOOOJ");
+            updateConnections(prevNode, currNode);
         } 
     })
 
-    function calculateDiagonal(outX,outY,inX,inY){
-        //Calculaties the line between one nodes output and another nodes input.
+
+    eventEmitter.on("updateConnectors", function(id){
         
+        let currNode = objects.find((temp) => {
+            return temp.id == id;
+        })
+
+        
+        let prevNode = objects.find((temp) => {
+            return temp.id == id.input.connections[0];
+        })
+
+        updateConnections(prevNode, currNode);
+    })
+
+
+    function updateConnections(prevNode, currNode){
+
+        let updatedConnector = document.getElementById(currNode.id +"connector");
+        console.log(updatedConnector.id);
+        
+        let outX = prevNode.posX + 50;
+        let outY = prevNode.posY + 125;
+        let inX  = currNode.posX + 50;
+        let inY  = currNode.posY - 25;
+
+        let diagLine = calculateDiagonal(outX, outY, inX, inY);
+
+        console.log(diagLine);
+
+        let hypothenuse = diagLine[0];
+        let centerX = diagLine[1];
+        let centerY = diagLine[2];
+        let angle = diagLine[3];
+      
+        updatedConnector.setAttribute("style", `width:${hypothenuse}px; left:${centerX}px; top:${centerY}px; transform:rotate(${angle}deg);`);
+        
+        let workspace = document.getElementById("workspace-root");
+        workspace.appendChild(updatedConnector);
+    }
+
+
+
+    function calculateDiagonal(outX,outY,inX,inY){
+        //Calculaties the line between one nodes output(red) and another nodes input(green).
         let preAbsLenX = outX - inX;
         let preAbsLenY = outY - inY;
 
         let lenX = Math.abs(preAbsLenX);
         let lenY = Math.abs(preAbsLenY);
-        console.log("LenX after abs = " + lenX)
-        console.log("LenY after abs = " + lenY)
+        //console.log("LenX after abs = " + lenX)
+        //console.log("LenY after abs = " + lenY)
         
         let hypothenuse = Math.sqrt((Math.pow(lenX, 2) + Math.pow(lenY, 2)));
-        console.log("Hypothenuse length = " + hypothenuse);
+        //console.log("Hypothenuse length = " + hypothenuse);
 
-        let hypCenterPosX = (outX + inX)/2;
-        let hypCenterPosY = (outY + inY)/2;  
+        let angle = Math.atan2(lenY,lenX)*180/Math.PI;
 
+        let hypCenterPosX = outX;
+        if(preAbsLenX > 0){
+            hypCenterPosX = (outX - (lenX/2));
+            angle = 180 - angle;    
+        }
+        else if (preAbsLenX < 0){
+            hypCenterPosX = (outX + (lenX/2));
+        }
+
+        hypCenterPosX = hypCenterPosX - hypothenuse/2;
+        let hypCenterPosY = (outY + (lenY/2)) - 5;
+
+        //console.log("HypCenterPosX: " +hypCenterPosX)
+        //console.log("HypCenterPosY: " +hypCenterPosY)
         
-        // FUNKAR EJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ FIXAS DIR GER RADIANER? badbadbad needs degrees
-        let angle = Math.acos(hypothenuse/lenX);
-       
-
-        console.log("Angle: " + angle);
 
         return [hypothenuse, hypCenterPosX, hypCenterPosY, angle];
     }
