@@ -82,7 +82,7 @@ body{
 }
 
 .connector {
-    z-index: 100;
+    z-index: 1;
     /* background: transparent; */
     background-color: blue;
     pointer-events: none;
@@ -112,6 +112,8 @@ body{
     cursor: move;
     position: absolute;
     background-color: cornflowerblue;
+    z-index: 2;
+    z-index: 2;
 }
 
 /* The Modal (background) */

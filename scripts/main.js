@@ -92,14 +92,10 @@ function main() {
     })
 
     eventEmitter.on("inputClicked", function(id) {
-        
         if (id == markedOutput) {
-            //modal should not pop up
-            //removeMarked()
+            return;
         } 
         else if (markedOutput != ""){
-            //console.log("NEW INPUT!!!!!!!!!!!!!!!!!!!1");
-
             let currNode = objects.find((temp) => {
                 return temp.id == id;
             })
@@ -111,16 +107,18 @@ function main() {
             console.log("prev node: "+ prevNode.id);
             console.log("curr node: "+ currNode.id);
 
+            // Checka om en connection redan finns och ta bort i noder
+            //                     |||||||||||||
+            // i samband med detta VVVVVVVVVVVVV            
             currNode.input.connections.push(markedOutput);
             prevNode.output.connections.push(currNode.id);
-            
+
             markedOutput = "";
 
             let newconnector = document.createElement("div");
             newconnector.id = currNode.id + "connector";
             console.log("Connection start id: "+ newconnector.id);
             newconnector.classList.add("connector");
-            //newconnector.setAttribute("style", `width:${hypothenuse}px; left:${centerX}px; top:${centerY}px; transform:rotate(${angle}deg);`);
             
             let workspace = document.getElementById("workspace-root");
             workspace.appendChild(newconnector);
@@ -129,19 +127,17 @@ function main() {
     })
 
 
+    // SKa eventuellt tas bort?????????????
     eventEmitter.on("updateConnectors", function(node){
-        //Wait until 
         let currNode = objects.find((temp) => {
             return temp.id == node.id;
         })
-
         console.log("update emit: CurrNode: "+node.id);
         console.log("update emit: PrevNode: "+node.input.connections[0]);
 
         let prevNode = objects.find((temp) => {
             return temp.id == node.input.connections[0];
         })
-
         updateConnections(prevNode, currNode);
     })
 
@@ -151,21 +147,21 @@ function main() {
         let updatedConnector = document.getElementById(currNode.id +"connector");
         console.log(updatedConnector.id);
         
+        // Aligning the connector with the input/output of a node
         let outX = prevNode.posX + 50;
-        let outY = prevNode.posY + 125;
+        let outY = prevNode.posY + 115;
         let inX  = currNode.posX + 50;
-        let inY  = currNode.posY - 25;
+        let inY  = currNode.posY - 15;
 
-        let diagLine = calculateDiagonal(outX, outY, inX, inY);
+        // line contains the length, position x and y, and the angle
+        let line = calculateLine(outX, outY, inX, inY);
 
-        console.log(diagLine);
-
-        let hypothenuse = diagLine[0];
-        let centerX = diagLine[1];
-        let centerY = diagLine[2];
-        let angle = diagLine[3];
+        // hypothenuse = line[0];
+        // centerX = line[1];
+        // centerY = line[2];
+        // angle = line[3];
       
-        updatedConnector.setAttribute("style", `width:${hypothenuse}px; left:${centerX}px; top:${centerY}px; transform:rotate(${angle}deg);`);
+        updatedConnector.setAttribute("style", `width:${line[0]}px; left:${line[1]}px; top:${line[2]}px; transform:rotate(${line[3]}deg);`);
         
         //let workspace = document.getElementById("workspace-root");
         //workspace.appendChild(updatedConnector);
@@ -173,18 +169,15 @@ function main() {
 
 
 
-    function calculateDiagonal(outX,outY,inX,inY){
+    function calculateLine(outX,outY,inX,inY){
         //Calculaties the line between one nodes output(red) and another nodes input(green).
         let preAbsLenX = outX - inX;
         let preAbsLenY = outY - inY;
 
         let lenX = Math.abs(preAbsLenX);
         let lenY = Math.abs(preAbsLenY);
-        //console.log("LenX after abs = " + lenX)
-        //console.log("LenY after abs = " + lenY)
         
         let hypothenuse = Math.sqrt((Math.pow(lenX, 2) + Math.pow(lenY, 2)));
-        //console.log("Hypothenuse length = " + hypothenuse);
 
         let angle = Math.atan2(lenY,lenX)*180/Math.PI;
 
@@ -197,13 +190,16 @@ function main() {
             hypCenterPosX = (outX + (lenX/2));
         }
 
+        let hypCenterPosY = outY;
+        if(preAbsLenY > 0){
+            hypCenterPosY = (outY - (lenY/2));
+            angle = 180 - angle;    
+        }
+        else if (preAbsLenY < 0){
+            hypCenterPosY = (outY + (lenY/2));
+        }
+       
         hypCenterPosX = hypCenterPosX - hypothenuse/2;
-        let hypCenterPosY = (outY + (lenY/2)) - 5;
-
-        //console.log("HypCenterPosX: " +hypCenterPosX)
-        //console.log("HypCenterPosY: " +hypCenterPosY)
-        
-
         return [hypothenuse, hypCenterPosX, hypCenterPosY, angle];
     }
 
