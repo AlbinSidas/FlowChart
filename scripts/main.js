@@ -124,20 +124,22 @@ function main() {
             
             let workspace = document.getElementById("workspace-root");
             workspace.appendChild(newconnector);
-            console.log("HALLOOOOOOJ");
             updateConnections(prevNode, currNode);
         } 
     })
 
 
-    eventEmitter.on("updateConnectors", function(id){
-        
+    eventEmitter.on("updateConnectors", function(node){
+        //Wait until 
         let currNode = objects.find((temp) => {
-            return temp.id == id;
+            return temp.id == node.id;
         })
 
+        console.log("update emit: CurrNode: "+node.id);
+        console.log("update emit: PrevNode: "+node.input.connections[0]);
+
         let prevNode = objects.find((temp) => {
-            return temp.id == id.input.connections[0];
+            return temp.id == node.input.connections[0];
         })
 
         updateConnections(prevNode, currNode);

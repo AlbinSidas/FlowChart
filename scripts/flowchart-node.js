@@ -69,7 +69,6 @@ class FlowchartNode {
         this.element.style.left = `${nextX}px`
         this.posX = nextX;
         this.posY = nextY;
-        this.eventEmitter.emit("updateConnectors");
     }
 
     closeDragElement(e) {
