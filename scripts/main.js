@@ -136,7 +136,6 @@ function main() {
             return temp.id == id;
         })
 
-        
         let prevNode = objects.find((temp) => {
             return temp.id == id.input.connections[0];
         })
@@ -166,8 +165,8 @@ function main() {
       
         updatedConnector.setAttribute("style", `width:${hypothenuse}px; left:${centerX}px; top:${centerY}px; transform:rotate(${angle}deg);`);
         
-        let workspace = document.getElementById("workspace-root");
-        workspace.appendChild(updatedConnector);
+        //let workspace = document.getElementById("workspace-root");
+        //workspace.appendChild(updatedConnector);
     }
 
 
