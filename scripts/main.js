@@ -140,21 +140,18 @@ function main() {
         else {
             document.getElementById("element-picker").style.visibility = "hidden";
         }
-<<<<<<< HEAD
         
         
         
-        const id = uuidv1();
-        objectIds.push(id);
+        // const id = uuidv1();
+        // objectIds.push(id);
 
 
-        const flowObj = new FlowchartNode(id, eventEmitter);
-        objects.push(flowObj);
+        // const flowObj = new FlowchartNode(id, eventEmitter);
+        // objects.push(flowObj);
   //      const workspaceRoot = document.querySelector('#workspace-root');
 //        workspaceRoot.appendChild(flowObj.render());
 
-=======
->>>>>>> master
 
         const flowObj = new FlowchartNode(uuidv1());
         workspaceObject.addBox(flowObj);
@@ -164,7 +161,6 @@ function main() {
     }
 
 
-<<<<<<< HEAD
     //function selectOutput(e){
         // let output =  document.getElementById(e).parentElement.nodeName();
     //    console.log("hejsan");
@@ -173,16 +169,6 @@ function main() {
     // function connectNodes(){
     //    console.log("jag är clickad!!!!!1!!")
     // }
-=======
-    function selectOutput(e){
-        console.log("hejsan");
-    }
-
-    function connectNodes(){
-        outputNode = document.getElementById("box1"); // hitta "parent box"
-
-    }
->>>>>>> master
 
     document.querySelector("#newObject").addEventListener("click", createNewObject)
     //document.querySelector("#box-output").addEventListener("click", connectNodes)
