@@ -1,9 +1,10 @@
 import data from './test.js';
 import View from 'Base/view.js'
 import style from 'Styles/style.css'
+import eventEmitter from 'Singletons/event-emitter.js'
 
 class FlowchartNode extends View {
-    constructor(id, eventEmitter){
+    constructor(id){
         super('<div></div>')
 
         //functions
@@ -31,10 +32,6 @@ class FlowchartNode extends View {
         this.input  = ""
         this.output = ""
 
-        this.eventEmitter = eventEmitter;
-
-        //this.element = document.createElement("div");
-
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
 
@@ -45,6 +42,22 @@ class FlowchartNode extends View {
         this.element.onmousedown = this.mouseDown;
         this.onScrolledCallbacks = []
     }
+
+    copyOther(other, mposX = other.posX, mposY = other.posY) {
+        this.posX = mposX + event.view.scrollX -50;
+        this.posY = mposY + event.view.scrollY -50;
+        this.oldX = this.posX;
+        this.oldY = this.posY;
+        this.offsetX = other.offsetX;
+        this.offsetY = other.offsetY;
+        this.height = other.height;
+        //flow
+        //this.id = id;
+        this.functionDescription = other.functionDescription;
+        this.input = other.input;
+        this.output = other.output;
+    }
+
 
 
     render() {
@@ -107,7 +120,7 @@ class FlowchartNode extends View {
      }
 
     onClick(e) {
-        this.eventEmitter.emit("clicked", this.id, e);
+        eventEmitter.emit("clicked", this.id, e);
     }
 }
 
