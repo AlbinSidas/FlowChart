@@ -1,8 +1,12 @@
 import data from './test.js';
-const uuidv1 = require('uuid/v1');
+import View from 'Base/view.js'
+import style from 'Styles/style.css'
+import eventEmitter from 'Singletons/event-emitter.js'
 
-class FlowchartNode {
-    constructor(id, eventEmitter){
+class FlowchartNode extends View {
+    constructor(id){
+        super('<div></div>')
+
         //functions
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
@@ -32,18 +36,38 @@ class FlowchartNode {
 
         this.element = document.createElement("div");
 
-        this.element.classList.add("flowchart-square");
-        
+        this.element.classList.add(style.flowchart_square);
+
         this.element.appendChild(this.input.element);
         this.element.appendChild(this.output.element);
     
         
         this.element.id = id;
 
+    }
+
+    didAttach(parent) {
         this.element.onclick     = this.onClick;
         this.element.onmousedown = this.mouseDown;
         this.onScrolledCallbacks = []
     }
+
+    copyOther(other, mposX = other.posX, mposY = other.posY) {
+        this.posX = mposX + event.view.scrollX -50;
+        this.posY = mposY + event.view.scrollY -50;
+        this.oldX = this.posX;
+        this.oldY = this.posY;
+        this.offsetX = other.offsetX;
+        this.offsetY = other.offsetY;
+        this.height = other.height;
+        //flow
+        //this.id = id;
+        this.functionDescription = other.functionDescription;
+        this.input = other.input;
+        this.output = other.output;
+    }
+
+
 
     render() {
         this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
@@ -105,7 +129,7 @@ class FlowchartNode {
      }
 
     onClick(e) {
-        this.eventEmitter.emit("clicked", this.id, e);
+        eventEmitter.emit("clicked", this.id, e);
     }
 
    

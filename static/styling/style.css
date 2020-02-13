@@ -106,7 +106,7 @@ body{
 
 
 .flowchart-square {
-    flex-direction: row;
+    /* flex-direction: row; */
     width: 100px;
     height: 100px;
     cursor: move;
