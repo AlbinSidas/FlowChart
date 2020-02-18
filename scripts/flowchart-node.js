@@ -30,8 +30,8 @@ class FlowchartNode extends View {
         this.id = id;
         this.functionDescription = "No function yet"
 
-        this.input = new NodeIO(this, "box-input", eventEmitter);
-        this.output = new NodeIO(this, "box-output", eventEmitter); 
+        this.input = new NodeIO(this, "box-input");
+        this.output = new NodeIO(this, "box-output"); 
         
         this.eventEmitter = eventEmitter;
 

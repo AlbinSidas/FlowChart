@@ -62,12 +62,14 @@ class Container extends View {
 
         eventEmitter.on("outputClicked", (id) => {   
             this.markedOutput = id;
+            console.log("KLICKAD")
         })
         
         eventEmitter.on("inputClicked", (id) => {
             if (id == this.markedOutput) {
                 return;
-            } 
+            }
+            
             else if (this.markedOutput != ""){
                 let currNode = this.objects.find((temp) => {
                     return temp.id == id;
@@ -93,6 +95,8 @@ class Container extends View {
                 newConnector.element.classList.add("connector");
                 
                 //let workspace = document.getElementById("workspace-root");
+
+                console.log("new connector", newConnector)
                 this.attach(newConnector);
                 newConnector.updateConnections(prevNode, currNode);
             } 
