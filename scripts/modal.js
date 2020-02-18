@@ -33,7 +33,6 @@ class Modal extends View
   }
 
   close() {
-    console.log("ele", this.element)
     this.element.style.display = "none";
   }
 

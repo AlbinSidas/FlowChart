@@ -1,12 +1,13 @@
 import data from './test.js';
-import View from 'Base/view.js'
-import style from 'Styles/style.css'
-import eventEmitter from 'Singletons/event-emitter.js'
+import View from 'Base/view.js';
+import style from 'Styles/style.css';
+import eventEmitter from 'Singletons/event-emitter.js';
+import NodeIO from './nodeIO.js';
 
 class FlowchartNode extends View {
     constructor(id){
         super('<div></div>')
-
+    
         //functions
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
@@ -29,15 +30,16 @@ class FlowchartNode extends View {
         this.id = id;
         this.functionDescription = "No function yet"
 
-        this.input  = ""
-        this.output = ""
-
+        this.input = new NodeIO(this, "box-input");
+        this.output = new NodeIO(this, "box-output"); 
+        
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
-
     }
 
     didAttach(parent) {
+        this.attach(this.input);
+        this.attach(this.output);
         this.element.onclick     = this.onClick;
         this.element.onmousedown = this.mouseDown;
         this.onScrolledCallbacks = []
@@ -52,12 +54,10 @@ class FlowchartNode extends View {
         this.offsetY = other.offsetY;
         this.height = other.height;
         //flow
-        //this.id = id;
         this.functionDescription = other.functionDescription;
         this.input = other.input;
         this.output = other.output;
     }
-
 
 
     render() {
@@ -83,7 +83,7 @@ class FlowchartNode extends View {
         this.element.style.top  = `${this.posY}px`
         this.element.style.left = `${nextX}px`
         this.posX = nextX;
-        this.posY = nextY
+        this.posY = nextY;
     }
 
     closeDragElement(e) {
@@ -122,7 +122,6 @@ class FlowchartNode extends View {
     onClick(e) {
         eventEmitter.emit("clicked", this.id, e);
     }
+    
 }
-
-
 export default FlowchartNode;
