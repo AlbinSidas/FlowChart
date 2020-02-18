@@ -2,6 +2,7 @@ import FlowchartNode from "./flowchart-node";
 import Container from "./container";
 const uuidv1 = require('uuid/v1');
 import Root from 'Base/root.js';
+import 'Styles/style.css';
 
 function main() {
 
