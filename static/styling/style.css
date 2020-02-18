@@ -8,7 +8,6 @@ body{
     margin: 0;
     width: 100%;
     height: 100%;
-    display: flex;
     flex-direction: row;
     padding: 0px;
 }
@@ -32,7 +31,7 @@ body{
 
 :global #workspace-root {
     flex-grow: 8;
-    position: relative;   
+    position: relative;
     background-color: mediumseagreen;
     height: 1500px;
     padding: 0;

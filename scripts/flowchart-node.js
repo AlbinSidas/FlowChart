@@ -11,7 +11,6 @@ class FlowchartNode extends View {
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
         this.mouseDown        = this.mouseDown.bind(this);
-        this.setPosY          = this.setPosY.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
 
         //ui
@@ -90,10 +89,6 @@ class FlowchartNode extends View {
         document.onmouseup   = null;
         document.onmousemove = null;
         document.onwheel     = null;
-    }
-
-    setPosY(y) {
-        this.posY = y;
     }
 
     onScrolled(callback) {

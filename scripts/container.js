@@ -15,6 +15,7 @@ class Container extends View {
         this.onKeyPress = this.onKeyPress.bind(this);
 
         this.height = 3000;//window.innerHeight;
+        this.width = window.innerWidth;
         //this.htmlElement = htmlElement;
         this.childScrolled = this.childScrolled.bind(this)
 
@@ -63,14 +64,19 @@ class Container extends View {
     didAttach(parent) {
         const apa = new SizeButton();
         this.attach(apa)
- 
         this.attach(this.modal)
+        
         eventEmitter.on('increase_size', () =>  {
             this.increaseSize()
         })
-        
         eventEmitter.on('decrease_size', () =>  {
             this.decreaseSize()
+        })
+        eventEmitter.on('increase_size_horizontal', () =>  {
+            this.increaseSizeHorizontal()
+        })
+        eventEmitter.on('decrease_size_horizonal', () =>  {
+            this.decreaseSizeHorizontal()
         })
 
         this.element.onkeydown = this.onKeyPress;
@@ -122,6 +128,7 @@ class Container extends View {
 
         this.child_views.forEach(c => c.render());
         this.setHeight(this.height)
+        this.setWidth(this.width)
         return this.element;
     }
 
@@ -141,9 +148,31 @@ class Container extends View {
         }
     }
 
+    increaseSizeHorizontal() {
+        this.setWidth(this.width + this.sizeDelta);
+    }
+
+    decreaseSizeHorizontal() {
+        if(window.innerWidth < this.width - this.sizeDelta) {
+            for(let i = 0; i < this.objects.length; i++) {
+                const flowchartNode = this.objects[i];
+                if(flowchartNode.getPosX() + flowchartNode.getWidth() > this.width - this.sizeDelta) {
+                    return;
+                }
+            }
+            this.setWidth(this.width - this.sizeDelta)
+        }
+    }
+
     setHeight(height) {
         this.height = height;
         this.element.style.height = `${height}px`
+    }
+
+    setWidth(width) {
+        console.log("KOMMMER JHIT")
+        this.width = width;
+        this.element.style.width = `${width}px`
     }
 
     addBox(box) {

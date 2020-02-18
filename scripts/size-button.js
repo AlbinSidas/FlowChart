@@ -13,10 +13,17 @@ class SizeButtons extends View
 
   didAttach(parent) {
     super.didAttach(parent);
+    //Vertical
     this.increase_size_btn = new IncreaseSizeButton();
     this.attach(this.increase_size_btn);
     this.decrease_size_btn = new DecreaseSizeButton();
     this.attach(this.decrease_size_btn);
+    //Horizontal
+    this.increase_horizontal_size_btn = new IncreaseHorizontalSizeButton();
+    this.attach(this.increase_horizontal_size_btn);
+    this.decrease_horizontal_size_btn = new DecreaseHorizontalSizeButton();
+    this.attach(this.decrease_horizontal_size_btn);
+
   }
 
   render() {
@@ -38,7 +45,7 @@ class IncreaseSizeButton extends Button{
 
 
   onClick(e) {
-    eventEmitter.emit("increase_size")
+    eventEmitter.emit('increase_size')
   }
 }
 
@@ -52,7 +59,36 @@ class DecreaseSizeButton extends Button{
   }
 
   onClick(e) {
-    eventEmitter.emit("decrease_size")
+    eventEmitter.emit('decrease_size')
+  }
+}
+
+class IncreaseHorizontalSizeButton extends Button{
+  constructor() {
+      super('<button type="button" name="button_horizontal">Increase Width</button>');
+
+      this.render = this.render.bind(this)
+      this.name = "JI"
+      this.onClick = this.onClick.bind(this);
+    }
+
+
+  onClick(e) {
+    eventEmitter.emit('increase_size_horizontal')
+  }
+}
+
+class DecreaseHorizontalSizeButton extends Button{
+  constructor() {
+    super('<button type="button" name="decrease_button_horizontal">Decrease Width</button>');
+
+    this.render = this.render.bind(this)
+    this.name = "JI"
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick(e) {
+    eventEmitter.emit('decrease_size_horizonal')
   }
 }
 
