@@ -23,15 +23,18 @@ class View {
 
   attach(child) {
     this.child_views.push(child)
+    //console.log("Innan append child i View")
     this.element.appendChild(child.render());
+
+    //console.log("efter append child i View")
     child.didAttach(this)
   }
-
+  /*
   addChildView(child) {
       this.child_views.push(child)
       this.element.appendChild(child.render())
   }
-
+  */
 
 }
 export default View;

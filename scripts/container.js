@@ -2,10 +2,11 @@
 import SizeButton from './size-button.js'
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
-import Modal from './modal.js'
-import View from 'Base/view.js'
-import elementString from 'Views/container.html'
-import eventEmitter from 'Singletons/event-emitter.js'
+import Modal from './modal.js';
+import View from 'Base/view.js';
+import elementString from 'Views/container.html';
+import eventEmitter from 'Singletons/event-emitter.js';
+import Connector from "./connectors.js";
 
 class Container extends View {
     constructor() {
@@ -15,13 +16,13 @@ class Container extends View {
         this.onKeyPress = this.onKeyPress.bind(this);
 
         this.height = 3000;//window.innerHeight;
-        //this.htmlElement = htmlElement;
         this.childScrolled = this.childScrolled.bind(this)
 
         this.modal = new Modal();      
 
         this.objects = [];
         this.markedObject = null;
+        this.markedOutput = "";
         this.objectClick = {};
         this.copyObject = {};
         this.mouseX = 0;
@@ -34,7 +35,6 @@ class Container extends View {
                 event on workspace to determine if it's a "mark off" or click on object.
             */
            
-            console.log("KLICK")
             this.objectClick = e;
             // Finds the correct node in the created nodes.
             let obj = this.objects.find((obj) => {
@@ -59,6 +59,44 @@ class Container extends View {
                 this.markedObject = obj;
             }
         })
+
+        eventEmitter.on("outputClicked", (id) => {   
+            this.markedOutput = id;
+        })
+        
+        eventEmitter.on("inputClicked", (id) => {
+            if (id == this.markedOutput) {
+                return;
+            } 
+            else if (this.markedOutput != ""){
+                let currNode = this.objects.find((temp) => {
+                    return temp.id == id;
+                })
+        
+                let prevNode = this.objects.find((temp) => {
+                    return temp.id == this.markedOutput;
+                })
+        
+                console.log("prev node: "+ prevNode.id);
+                console.log("curr node: "+ currNode.id);
+        
+                // Checka om en connection redan finns och ta bort i noder
+                //                     |||||||||||||
+                // i samband med detta VVVVVVVVVVVVV            
+                currNode.input.connections.push(this.markedOutput);
+                prevNode.output.connections.push(currNode.id);
+        
+                this.markedOutput = "";
+                
+                let newConnector = new Connector();
+
+                newConnector.element.classList.add("connector");
+                
+                //let workspace = document.getElementById("workspace-root");
+                this.attach(newConnector);
+                newConnector.updateConnections(prevNode, currNode);
+            } 
+        })
     }
 
     didAttach(parent) {
@@ -67,7 +105,6 @@ class Container extends View {
  
         this.attach(this.modal)
         eventEmitter.on('increase_size', () =>  {
-            console.log("APAAAAAA")
             this.increaseSize()
         })
 
@@ -136,9 +173,10 @@ class Container extends View {
     }
 
     addBox(box) {
+        console.log("I add box", this, box)
         this.objects.push(box);
-        this.attach(box)
-        box.onScrolled(this.childScrolled)
+        this.attach(box);
+        box.onScrolled(this.childScrolled);
     }
 
     childScrolled(posY, height) {

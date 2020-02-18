@@ -1,3 +1,4 @@
+/* 
 body{
     margin:0;
     padding:0;
@@ -16,7 +17,6 @@ body{
 .menu {
     text-align: center;
     flex-grow: 1;
-    /*background-color: blue;*/
     max-width: 20%;
     height: 100vh;
     padding: 0;
@@ -27,7 +27,6 @@ body{
 
 .filemenu {
     margin-top: 20vh;
-    /*background-color: mediumturquoise;*/
 }
 
 #workspace-root {
@@ -61,9 +60,10 @@ body{
     height: 15vh;
     width: 15vw;
 }
+*/
 
 /*Input circle*/
-.box-input {
+ .boxInput {
  border-radius: 27.5px 27.5px 0px 0px;
  height: 25px;
  width: 50px;
@@ -74,14 +74,14 @@ body{
 }
 
 
-.connector-line {
+:global .connector-line {
     stroke-width: 10;
     stroke: black;
     fill: yellowgreen;
     /*stroke:rgb(255,255,0);*/
 }
 
-.connector {
+:global .connector {
     z-index: 1;
     /* background: transparent; */
     background-color: blue;
@@ -94,7 +94,7 @@ body{
 }
 
 /*Output circle*/
-.box-output {
+ .boxOutput {
     border-radius: 0px 0px 27.5px 27.5px;
     height: 25px;
     width: 50px;
@@ -103,10 +103,9 @@ body{
     background-color: red;
     cursor: pointer;
 }
-
+/*
 
 .flowchart-square {
-    /* flex-direction: row; */
     width: 100px;
     height: 100px;
     cursor: move;
@@ -115,9 +114,120 @@ body{
     z-index: 2;
     z-index: 2;
 }
+*/
+/* The Modal (background) */
+
+body{
+    margin:0;
+    padding:0;
+    border:0;
+}
+
+:global #container-root {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 0px;
+}
+
+:global .menu {
+    text-align: center;
+    flex-grow: 1;
+    /*background-color: blue;*/
+    max-width: 20%;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    border-right: solid;
+    border-color: black;
+}
+
+:global .filemenu {
+    margin-top: 20vh;
+    /*background-color: mediumturquoise;*/
+}
+
+:global #workspace-root {
+    flex-grow: 8;
+    position: relative;   
+    background-color: mediumseagreen;
+    height: 1500px;
+    padding: 0;
+    margin: 0;
+}
+
+:global #newObject {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    position: fixed;
+    right: 3%;
+    bottom: 3%;
+    background-color: orangered;
+}
+
+:global #newObject img {
+    width: 100%;
+}
+
+:global #element-picker {
+    background-color: orange;
+    visibility: hidden;
+    position: fixed;
+    right: 6%;
+    bottom: 6%;
+    height: 15vh;
+    width: 15vw;
+}
+
+:global #box1 {
+    background-color: mediumaquamarine;
+    height: 100px;
+    width: 100px;
+    margin-right: 400px;
+    margin-bottom: 200px;
+    margin-left: 40px;
+    padding: 0px;
+}
+
+:global .box-input {
+ border-radius: 50%;
+ height: 50px;
+ width: 50px;
+ margin-top: 25px;
+ margin-left: -25px;
+ background-color: salmon;
+}
+
+:global .box-output {
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    margin-top: -25px;
+    margin-left: 75px;
+    background-color: orange;
+}
+
+:global #box2 {
+    background-color: gold;
+    height: 100px;
+    width: 100px;
+    margin-left: 100px;
+    padding: 0px;
+}
+
+.flowchart_square {
+    width: 100px;
+    height: 100px;
+    cursor: move;
+    position: absolute;
+    background-color: cornflowerblue;
+}
 
 /* The Modal (background) */
-.modal {
+:global .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -131,29 +241,24 @@ body{
 }
 
 /* Modal Header */
-.modal-header {
+:global .modal-header {
   margin: 15% auto 0;
   width: 80%;
   background-color: #BEBEBE;
-
-  
 }
 
 /* Modal Footer */
-.modal-footer {
+:global .modal-footer {
   margin: 0 auto;
   width: 80%;
   background-color: #BEBEBE;
 }
 
 /* Modal Content/Box */
-.modal-content {
+:global .modal-content {
   margin: 0 auto;
   background-color: #fefefe;
   padding: 20px;
   border: 1px solid #888;
   width: 77%; 
 }
-
-
-

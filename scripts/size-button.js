@@ -24,12 +24,10 @@ class SizeButton extends Button
   render() {
     this.child_views.forEach(c => c.render());
     this.element.classList.add(styleClasses.size_button)  
-    //this.element.setAttribute('style', `position: fixed; width:100px; height: 100px;`);
     return this.element;
   }
 
   onClick(e) {
-    console.log("I AM CLICKED" + this.name)
     eventEmitter.emit("increase_size")
   }
 

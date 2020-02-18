@@ -1,12 +1,13 @@
 import data from './test.js';
-import View from 'Base/view.js'
-import style from 'Styles/style.css'
-import eventEmitter from 'Singletons/event-emitter.js'
+import View from 'Base/view.js';
+import style from 'Styles/style.css';
+import eventEmitter from 'Singletons/event-emitter.js';
+import NodeIO from './nodeIO.js';
 
 class FlowchartNode extends View {
     constructor(id){
         super('<div></div>')
-
+    
         //functions
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
@@ -28,25 +29,21 @@ class FlowchartNode extends View {
         //flow
         this.id = id;
         this.functionDescription = "No function yet"
+
         this.input = new NodeIO(this, "box-input", eventEmitter);
-        //Multiple outputs should be able to be created
         this.output = new NodeIO(this, "box-output", eventEmitter); 
         
         this.eventEmitter = eventEmitter;
 
-        this.element = document.createElement("div");
+        //this.element = document.createElement("div");
 
         this.element.classList.add(style.flowchart_square);
-
-        this.element.appendChild(this.input.element);
-        this.element.appendChild(this.output.element);
-    
-        
         this.element.id = id;
-
     }
 
     didAttach(parent) {
+        this.attach(this.input);
+        this.attach(this.output);
         this.element.onclick     = this.onClick;
         this.element.onmousedown = this.mouseDown;
         this.onScrolledCallbacks = []
@@ -66,7 +63,6 @@ class FlowchartNode extends View {
         this.input = other.input;
         this.output = other.output;
     }
-
 
 
     render() {
@@ -131,56 +127,6 @@ class FlowchartNode extends View {
     onClick(e) {
         eventEmitter.emit("clicked", this.id, e);
     }
-
-   
     
-
-
 }
-
-
-
-//class for the input and output nodes
-class NodeIO {
-    constructor(parent, inputOutput, eventEmitter) {
-
-        this.type = inputOutput;
-        this.parent = parent;
-        this.eventEmitter = eventEmitter;
-        this.onClick = this.onClick.bind(this);
-        this.id = parent.id;
-        this.element = document.createElement("div");
-        this.element.classList.add(inputOutput);
-        // Temporary id????
-        this.element.setAttribute("id", parent.id+inputOutput);
-        this.connections = [];
-        this.element.onclick = this.onClick;
-        //.appendChild(this.element)
-
-
-        //OnClick NodeIO -> 
-        /*En funktion i outputen/flowchartnoden som tar klickade (this) flowchart id/objektet + efterklickade inputen/flowchartnoden 
-        och sparar det i outputens connections lista. Informationen skickas vidare till den inputklickade nodens NodeIO input connections
-        lista*/
-        //TODO: Fixa så att klick på noder inte kan flytta hela flowchartobjektet.
-    }
-    
-    onClick(e) { 
-        //this.testFunc(e); 
-        if (this.type == "box-output") {
-            this.eventEmitter.emit("outputClicked", this.id); 
-        }
-        else if (this.type == "box-input") {
-            this.eventEmitter.emit("inputClicked", this.id);
-        }
-
-        //this.eventEmitter.emit("inputClicked", this.id);
-    }
-
-    // testFunc(e){
-    //     console.log(this.id);
-    //     console.log("^^^^^^^");
-    // }
-}
-
 export default FlowchartNode;
