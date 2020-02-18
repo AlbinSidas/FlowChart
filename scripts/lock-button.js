@@ -11,10 +11,8 @@ class LockButton extends Button
     super(elementString);
     this.render = this.render.bind(this)
     this.name = "Lock"
-    this.locked = true;
     this.onClick = this.onClick.bind(this);
   }
-
 
   didAttach(parent) {
     super.didAttach(parent);
@@ -24,26 +22,11 @@ class LockButton extends Button
     this.child_views.forEach(c => c.render());
     return this.element;
   }
-
-
+    
   onClick(e) {
     console.log("I AM CLICKED" + this.name)
-    if(this.locked == true){
-        this.locked = false;
-        eventEmitter.emit("unlock")
-    }
-    else if(this.locked == false){
-        this.locked = true;
-        eventEmitter.emit("lock")
-    }
-    else{
-        console.log("error");
-    }
-    
+      eventEmitter.emit("lock")  
   }
-
-
-
 }
 
 export default LockButton;
