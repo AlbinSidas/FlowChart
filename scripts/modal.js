@@ -13,11 +13,6 @@ class Modal extends View
 
     show(obje) {
 	this.obj = obje;
-	eventEmitter.on('lock', () =>  {
-	    this.obj.input = document.getElementById("inputBox").value;
-	    this.obj.output = document.getElementById("outputBox").value;
-	    this.obj.functionDescription = document.getElementById("fundescBox").value;      
-	})
 	function addContentToModal(title, content, footer, obj) {
 	    title.textContent = "ID: " + obj.id.toString();
 	    setConent(content, obj);
@@ -32,14 +27,15 @@ class Modal extends View
                                </div>`;
 	    }
 	}
-
-    this.modal = document.getElementById("modal");
-    this.modal.style.display = "block";
-    let children = modal.childNodes;
-    let modalTitle = children[1];
+    //this.modal = document.getElementById("modal");
+    this.element.style.display = "block";
+    let children = this.element.childNodes;
+    let modalTitle   = children[1];
     let modalContent = children[3];
-    let modalFooter = children[5];
+
+    let modalFooter  = children[5];
     addContentToModal(modalTitle, modalContent, modalFooter, this.obj);
+
 
   }
 

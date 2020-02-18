@@ -32,6 +32,21 @@ class View {
       this.element.appendChild(child.render())
   }
 
+  addStyle(className) {
+    this.element.classList.append(className)
+  }
 
+  getPosY() {
+    return parseInt(window.getComputedStyle(this.element).getPropertyValue('top'))
+  }
+  getPosYFromBottom() {
+    return parseInt(window.getComputedStyle(this.element).getPropertyValue('bottom'))
+  }
+
+  getHeight() {
+
+    console.log("LALALAL", this.element.offsetHeight)
+    return this.element.offsetHeight
+  }
 }
 export default View;

@@ -26,6 +26,7 @@ class Container extends View {
         this.copyObject = {};
         this.mouseX = 0;
         this.mouseY = 0;
+        this.sizeDelta = 200
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", (id, e) => {
@@ -45,7 +46,6 @@ class Container extends View {
                 // Prevents further draging after doubleclick.
                 obj.closeDragElement();
                 this.modal.show(obj);
-
                 window.onclick = function (event) {
                     if (event.target == this.modal.element) {
                         this.modal.close();  
@@ -66,8 +66,11 @@ class Container extends View {
  
         this.attach(this.modal)
         eventEmitter.on('increase_size', () =>  {
-            console.log("APAAAAAA")
             this.increaseSize()
+        })
+        
+        eventEmitter.on('decrease_size', () =>  {
+            this.decreaseSize()
         })
 
         this.element.onkeydown = this.onKeyPress;
@@ -124,14 +127,24 @@ class Container extends View {
     }
 
     increaseSize() {
-        console.log("INCREASING SIZE")
-        this.setHeight(this.height + 200)
+        this.setHeight(this.height + this.sizeDelta)
+    }
+
+    decreaseSize(){
+        if(window.innerHeight < this.height - this.sizeDelta){
+            for(let i = 0; i < this.objects.length; i++) {
+                const flowchartNode = this.objects[i];
+                if(flowchartNode.getPosY() + flowchartNode.getHeight() > this.height - this.sizeDelta) {
+                    return;
+                }
+            }
+            this.setHeight(this.height - this.sizeDelta)
+        }
     }
 
     setHeight(height) {
         this.height = height;
         this.element.style.height = `${height}px`
-        //this.htmlElement.style.height = `${height}px`
     }
 
     addBox(box) {
