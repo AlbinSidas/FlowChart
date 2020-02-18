@@ -33,10 +33,6 @@ class FlowchartNode extends View {
         this.input = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output"); 
         
-        this.eventEmitter = eventEmitter;
-
-        //this.element = document.createElement("div");
-
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
     }
@@ -58,7 +54,6 @@ class FlowchartNode extends View {
         this.offsetY = other.offsetY;
         this.height = other.height;
         //flow
-        //this.id = id;
         this.functionDescription = other.functionDescription;
         this.input = other.input;
         this.output = other.output;

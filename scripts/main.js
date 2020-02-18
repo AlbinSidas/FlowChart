@@ -1,12 +1,7 @@
 import FlowchartNode from "./flowchart-node";
 import Container from "./container";
-import SizeButton from "./size-button"
 const uuidv1 = require('uuid/v1');
 import Root from 'Base/root.js';
-import eventEmitter from 'Singletons/event-emitter.js'
-import style from 'Styles/style.css'
-
-
 
 function main() {
 

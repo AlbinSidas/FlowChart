@@ -9,10 +9,8 @@ class SizeButton extends Button
 {
   constructor() {
     super(elementString);
-    console.log("Element",this.element)
-    console.log(styleClasses)
     this.render = this.render.bind(this)
-    this.name = "JI"
+    this.name = "JI";
     this.onClick = this.onClick.bind(this);
   }
 

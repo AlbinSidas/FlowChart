@@ -23,10 +23,12 @@ class Container extends View {
         this.objects = [];
         this.markedObject = null;
         this.markedOutput = "";
+        this.connectorList = [];
         this.objectClick = {};
         this.copyObject = {};
         this.mouseX = 0;
         this.mouseY = 0;
+        
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", (id, e) => {
@@ -62,14 +64,13 @@ class Container extends View {
 
         eventEmitter.on("outputClicked", (id) => {   
             this.markedOutput = id;
-            console.log("KLICKAD")
         })
         
         eventEmitter.on("inputClicked", (id) => {
             if (id == this.markedOutput) {
                 return;
             }
-            
+
             else if (this.markedOutput != ""){
                 let currNode = this.objects.find((temp) => {
                     return temp.id == id;
@@ -79,26 +80,29 @@ class Container extends View {
                     return temp.id == this.markedOutput;
                 })
         
-                console.log("prev node: "+ prevNode.id);
-                console.log("curr node: "+ currNode.id);
-        
                 // Checka om en connection redan finns och ta bort i noder
                 //                     |||||||||||||
-                // i samband med detta VVVVVVVVVVVVV            
-                currNode.input.connections.push(this.markedOutput);
-                prevNode.output.connections.push(currNode.id);
+                // i samband med detta VVVVVVVVVVVVV
+                let connector = {};
+
+                if (!currNode.input.connections.includes(this.markedOutput)) {
+                    currNode.input.connections.push(this.markedOutput);
+                    prevNode.output.connections.push(currNode.id);
+
+                    connector = new Connector();
+                    connector.id = currNode.id + prevNode.id;
+                    connector.element.classList.add("connector");
+                    this.attach(connector);
+                    this.connectorList.push(connector);
+                }
+                else {
+                    connector = this.connectorList.find((c) => {
+                        return c.id == currNode.id + prevNode.id; 
+                    });
+                }
         
                 this.markedOutput = "";
-                
-                let newConnector = new Connector();
-
-                newConnector.element.classList.add("connector");
-                
-                //let workspace = document.getElementById("workspace-root");
-
-                console.log("new connector", newConnector)
-                this.attach(newConnector);
-                newConnector.updateConnections(prevNode, currNode);
+                connector.updateConnections(prevNode, currNode);
             } 
         })
     }
@@ -166,18 +170,15 @@ class Container extends View {
     }
 
     increaseSize() {
-        console.log("INCREASING SIZE")
-        this.setHeight(this.height + 200)
+        this.setHeight(this.height + 200);
     }
 
     setHeight(height) {
         this.height = height;
-        this.element.style.height = `${height}px`
-        //this.htmlElement.style.height = `${height}px`
+        this.element.style.height = `${height}px`;
     }
 
     addBox(box) {
-        console.log("I add box", this, box)
         this.objects.push(box);
         this.attach(box);
         box.onScrolled(this.childScrolled);
