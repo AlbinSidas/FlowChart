@@ -10,19 +10,24 @@ class Save
     }
 
     saveFlow(obj){
-	console.log(JSON.stringify(obj));
+	console.log(obj.length, JSON.stringify(obj));
     }
     loadFlow(obj, that){
-	let loadtxt = require('./mocksave.json');
+	let loadtxt = require('../save-files/mocksave.json');
 	let object = loadtxt;
 	let i = 0;
+	console.log(loadtxt)
 	for (i=0; i < object.length; i++){
-	    let loadnode = new FlowchartNode(uuidv1());
-	    loadnode.copyOther(object[i], object[i].posX, object[i].posY)
-	    obj.push(loadnode);
-	    that.attach(loadnode);
+
+		if(document.getElementById(object[i].id) == null){
+			console.log("yyet");
+			let loadnode = new FlowchartNode(object[i].id);
+			loadnode.copyOther(object[i], object[i].posX, object[i].posY)
+			obj.push(loadnode);
+			that.attach(loadnode);
+		}
 	}
-	console.log(obj);
+	console.log(i);
     }
 
 }
