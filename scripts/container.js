@@ -108,7 +108,6 @@ class Container extends View {
     didAttach(parent) {
         const apa = new SizeButton();
         this.attach(apa)
-<<<<<<< HEAD
 	const save = new SaveButton();
         this.attach(save)
 
@@ -124,10 +123,6 @@ class Container extends View {
         })
  
         this.attach(this.modal)
-=======
-        this.attach(this.modal);
-        
->>>>>>> master
         eventEmitter.on('increase_size', () =>  {
             this.increaseSize();
         })
@@ -177,7 +172,6 @@ class Container extends View {
                     //Create a new object based on the copy and add it to the workspace
                     let pasteObject = new FlowchartNode(uuidv1());
                     pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-                    this.objects.push(pasteObject);
                     this.addBox(pasteObject);
                 }
             }
