@@ -86,7 +86,7 @@ body{
     /* background: transparent; */
     background-color: blue;
     pointer-events: none;
-    position:fixed;
+    position: absolute;
     padding:0px; 
     margin:0px;
     height:10px;
@@ -105,6 +105,7 @@ body{
 }
 
 .flowchart_square {
+    z-index: 10;
     width: 100px;
     height: 100px;
     cursor: move;
