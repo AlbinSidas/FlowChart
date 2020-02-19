@@ -10,6 +10,7 @@ class NodeIO extends View {
         this.parent = parent;
         this.onClick = this.onClick.bind(this);
         this.id = parent.id;
+        this._value = "";
 
         switch (inputOutput) {
             case 'box-input':
@@ -25,8 +26,16 @@ class NodeIO extends View {
         this.element.setAttribute("id", parent.id+inputOutput);
         this.connections = [];
         this.element.onclick = this.onClick;
-    
     }
+
+    setValue(value) {
+        this._value = value;
+    }
+
+    getValue() {
+        return this._value;
+    }
+
     onClick(e) {
         if (this.type == "box-output") {
             eventEmitter.emit("outputClicked", this.id);

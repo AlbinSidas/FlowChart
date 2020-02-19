@@ -12,7 +12,6 @@ class FlowchartNode extends View {
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
         this.mouseDown        = this.mouseDown.bind(this);
-        this.setPosY          = this.setPosY.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
 
         //ui
@@ -28,9 +27,9 @@ class FlowchartNode extends View {
 
         //flow
         this.id = id;
-        this.functionDescription = "No function yet"
+        this.functionDescription = "No function yet";
 
-        this.input = new NodeIO(this, "box-input");
+        this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output"); 
         
         this.element.classList.add(style.flowchart_square);
@@ -55,8 +54,6 @@ class FlowchartNode extends View {
         this.height = other.height;
         //flow
         this.functionDescription = other.functionDescription;
-        this.input = other.input;
-        this.output = other.output;
     }
 
 
@@ -90,10 +87,6 @@ class FlowchartNode extends View {
         document.onmouseup   = null;
         document.onmousemove = null;
         document.onwheel     = null;
-    }
-
-    setPosY(y) {
-        this.posY = y;
     }
 
     onScrolled(callback) {
