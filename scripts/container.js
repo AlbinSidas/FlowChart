@@ -15,7 +15,8 @@ class Container extends View {
         this.onClick = this.onClick.bind(this);
         this.onKeyPress = this.onKeyPress.bind(this);
 
-        this.height = 3000;//window.innerHeight;
+        this.height = 3000;
+        this.width = window.innerWidth;
         this.childScrolled = this.childScrolled.bind(this)
 
         this.modal = new Modal();      
@@ -78,17 +79,15 @@ class Container extends View {
                 let prevNode = this.objects.find((temp) => {
                     return temp.id == this.markedOutput;
                 })
-        
-                // Checka om en connection redan finns och ta bort i noder
-                //                     |||||||||||||
-                // i samband med detta VVVVVVVVVVVVV
-                let connector = {};
 
+                let connector = {};
                 if (!currNode.input.connections.includes(this.markedOutput)) {
                     currNode.input.connections.push(this.markedOutput);
                     prevNode.output.connections.push(currNode.id);
 
-                    connector = new Connector();
+                    connector = new Connector(prevNode, currNode);
+                    prevNode.registerConnectorUpdater("", connector.updateConnections);
+                    currNode.registerConnectorUpdater("", connector.updateConnections);
                     connector.id = currNode.id + prevNode.id;
                     connector.element.classList.add("connector");
                     this.attach(connector);
@@ -99,9 +98,8 @@ class Container extends View {
                         return c.id == currNode.id + prevNode.id; 
                     });
                 }
-        
                 this.markedOutput = "";
-                connector.updateConnections(prevNode, currNode);
+                connector.updateConnections();
             } 
         })
     }
@@ -109,14 +107,19 @@ class Container extends View {
     didAttach(parent) {
         const apa = new SizeButton();
         this.attach(apa)
- 
-        this.attach(this.modal)
-        eventEmitter.on('increase_size', () =>  {
-            this.increaseSize()
-        })
+        this.attach(this.modal);
         
+        eventEmitter.on('increase_size', () =>  {
+            this.increaseSize();
+        })
         eventEmitter.on('decrease_size', () =>  {
-            this.decreaseSize()
+            this.decreaseSize();
+        })
+        eventEmitter.on('increase_size_horizontal', () =>  {
+            this.increaseSizeHorizontal();
+        })
+        eventEmitter.on('decrease_size_horizonal', () =>  {
+            this.decreaseSizeHorizontal();
         })
 
         this.element.onkeydown = this.onKeyPress;
@@ -142,7 +145,7 @@ class Container extends View {
             if(e.keyCode == 67){
                 // 67 = C
                 if (this.markedObject != null) {
-                    // Create a copy without a reference to the original object.
+                    // Save a copy without a reference to the original object.
                     document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
                     this.copyObject = new FlowchartNode(uuidv1());
                     this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
@@ -152,22 +155,20 @@ class Container extends View {
             else if(e.which == 86){
                 // 86 = V
                 if (this.copyObject != null) {
+                    //Create a new object based on the copy and add it to the workspace
                     let pasteObject = new FlowchartNode(uuidv1());
                     pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
                     this.objects.push(pasteObject);
-
                     this.addBox(pasteObject);
                 }
             }
-
         }
     }
 
-
     render() {
-
         this.child_views.forEach(c => c.render());
         this.setHeight(this.height)
+        this.setWidth(this.width)
         return this.element;
     }
 
@@ -183,7 +184,23 @@ class Container extends View {
                     return;
                 }
             }
-            this.setHeight(this.height - this.sizeDelta)
+            this.setHeight(this.height - this.sizeDelta);
+        }
+    }
+
+    increaseSizeHorizontal() {
+        this.setWidth(this.width + this.sizeDelta);
+    }
+
+    decreaseSizeHorizontal() {
+        if(window.innerWidth < this.width - this.sizeDelta) {
+            for(let i = 0; i < this.objects.length; i++) {
+                const flowchartNode = this.objects[i];
+                if(flowchartNode.getPosX() + flowchartNode.getWidth() > this.width - this.sizeDelta) {
+                    return;
+                }
+            }
+            this.setWidth(this.width - this.sizeDelta);
         }
     }
 
@@ -192,7 +209,13 @@ class Container extends View {
         this.element.style.height = `${height}px`;
     }
 
+    setWidth(width) {
+        this.width = width;
+        this.element.style.width = `${width}px`
+    }
+
     addBox(box) {
+
         this.objects.push(box);
         this.attach(box);
         box.onScrolled(this.childScrolled);

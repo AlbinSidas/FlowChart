@@ -1,48 +1,50 @@
 import elementString from '../static/views/modal.html';
 import View from 'Base/view.js';
+
 class Modal extends View
 {
   constructor() {
     super(elementString);
+    this.obj = {};
     this.render = this.render.bind(this);
   }
 
-  show(obj) {
+  show(obje) {
+    this.obj = obje;
     function addContentToModal(title, content, footer, obj) {
-      function setConent(content, obj){
-          content.innerHTML = `<div>
-                                  Input: ${obj.input} </br>
-                                  Output: ${obj.output} </br>
-                                  Description: ${obj.functionDescription}
-                               </div>`;
-      }
-      title.textContent = "ID: " + obj.id.toString();
-      setConent(content, obj);
-      footer.textContent = "Close";
-
-    }
-
-    //this.modal = document.getElementById("modal");
+	    title.textContent = "ID: " + obj.id.toString();
+	    setConent(content, obj);
+	    footer.textContent = "Close";
+	    
+	    function setConent(content, obj){
+		  content.innerHTML = `
+                            <div id="boxtime">                       
+                              Input: <input type="text" id="inputBox" value="${obj.input.getValue()}"> </br>
+                              Output: <input type="text" id="outputBox" value="${obj.output.getValue()}"> </br>
+                              Description: <input type="text" id="fundescBox" value="${obj.functionDescription}">
+                            </div>`;
+	    }
+	  }
     this.element.style.display = "block";
     let children = this.element.childNodes;
     let modalTitle   = children[1];
     let modalContent = children[3];
     let modalFooter  = children[5];
-    addContentToModal(modalTitle, modalContent, modalFooter, obj);
-
+    addContentToModal(modalTitle, modalContent, modalFooter, this.obj);
   }
 
   close() {
+    this.obj.input.setValue(document.getElementById("inputBox").value);
+    this.obj.output.setValue(document.getElementById("outputBox").value);
+    this.obj.functionDescription = document.getElementById("fundescBox").value;
     this.element.style.display = "none";
   }
 
 
   render() {
     this.child_views.forEach(c => c.render());
-    //this.element.setAttribute('style', `position: fixed; width:100px; height: 100px;`);
     return this.element;
   }
-
 }
 
 export default Modal;
