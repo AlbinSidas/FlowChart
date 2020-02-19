@@ -54,9 +54,6 @@ class Container extends View {
                         this.modal.close();  
                     }
                 }.bind(this)
-                //Try getting movement here.
-            } else if (obj.moving == true) {
-               // this.moveArrow()
             } else {
                 if (this.markedObject != null) {
                     this.removeMarked();
@@ -106,47 +103,6 @@ class Container extends View {
             } 
         })
     }
-/*
-    moveArrow(markedObject){
-        if (markedObject != null && markedObject.moving == true){
-            if (markedObject.input.connections.length > 0){
-                let connectorId = "";
-                let conn = {};
-                for (item in markedObject.input.connections) {
-                    connectorId = markedObject.id + item.id;
-                    conn = this.connectorList.find(connectorId);
-                    conn.updateConnections(markedObject.id, item.id);
-                }
-            }
-            else if (markedObject.output.connections.length > 0){
-                let connectorId = "";
-                let conn = {};
-                for (item in markedObject.output.connections) {
-                    connectorId = item.id + markedObject.id;
-                    conn = this.connectorList.find(connectorId);
-                    conn.updateConnections(item.id, markedObject.id);
-                }
-            }
-            else if (markedObject.output.connections.length > 0 && markedObject.input.connections.length > 0){
-                let connectorIdOut = "";
-                let connectorIdIn = "";
-                let connOut = {};
-                let connIn = {};
-                for (item in markedObject.output.connections) {
-                    connectorIdOut = item.id + markedObject.id;
-                    connOut = this.connectorList.find(connectorIdOut);
-                    connOut.updateConnections(item.id, markedObject.id);
-                }
-                for (item in markedObject.input.connections) {
-                    connectorIdIn = markedObject.id + item.id;
-                    connIn = this.connectorList.find(connectorIdIn);
-                    connIn.updateConnections(markedObject.id, item.id);
-                }
-            }
-        }
-    }
-    */
-    
 
     didAttach(parent) {
         const apa = new SizeButton();
