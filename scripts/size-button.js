@@ -28,67 +28,63 @@ class SizeButtons extends View
 
   render() {
     this.child_views.forEach(c => c.render());
-    this.element.classList.add(styleClasses.size_button)  
+    this.element.classList.add(styleClasses.size_button);
     return this.element;
   }
 
 }
 
-class IncreaseSizeButton extends Button{
+class IncreaseSizeButton extends Button {
   constructor() {
       super('<button type="button" name="button">Increase</button>');
 
-      this.render = this.render.bind(this)
-      this.name = "JI"
+      this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
     }
 
 
   onClick(e) {
-    eventEmitter.emit('increase_size')
+    eventEmitter.emit('increase_size');
   }
 }
 
-class DecreaseSizeButton extends Button{
+class DecreaseSizeButton extends Button {
   constructor() {
     super('<button type="button" name="decrease_button">Decrease</button>');
 
-    this.render = this.render.bind(this)
-    this.name = "JI"
+    this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
   }
 
   onClick(e) {
-    eventEmitter.emit('decrease_size')
+    eventEmitter.emit('decrease_size');
   }
 }
 
-class IncreaseHorizontalSizeButton extends Button{
+class IncreaseHorizontalSizeButton extends Button {
   constructor() {
       super('<button type="button" name="button_horizontal">Increase Width</button>');
 
-      this.render = this.render.bind(this)
-      this.name = "JI"
+      this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
     }
 
 
   onClick(e) {
-    eventEmitter.emit('increase_size_horizontal')
+    eventEmitter.emit('increase_size_horizontal');
   }
 }
 
-class DecreaseHorizontalSizeButton extends Button{
+class DecreaseHorizontalSizeButton extends Button {
   constructor() {
     super('<button type="button" name="decrease_button_horizontal">Decrease Width</button>');
 
-    this.render = this.render.bind(this)
-    this.name = "JI"
+    this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
   }
 
   onClick(e) {
-    eventEmitter.emit('decrease_size_horizonal')
+    eventEmitter.emit('decrease_size_horizonal');
   }
 }
 
