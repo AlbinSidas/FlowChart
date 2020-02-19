@@ -19,25 +19,23 @@ class Modal extends View
 	    function setConent(content, obj){
 		  content.innerHTML = `
                             <div id="boxtime">                       
-                              Input: <input type="text" id="inputBox" value="${obj.input}"> </br>
-                              Output: <input type="text" id="outputBox" value="${obj.output}"> </br>
+                              Input: <input type="text" id="inputBox" value="${obj.input.getValue()}"> </br>
+                              Output: <input type="text" id="outputBox" value="${obj.output.getValue()}"> </br>
                               Description: <input type="text" id="fundescBox" value="${obj.functionDescription}">
                             </div>`;
 	    }
-	}
+	  }
     this.element.style.display = "block";
     let children = this.element.childNodes;
     let modalTitle   = children[1];
     let modalContent = children[3];
     let modalFooter  = children[5];
     addContentToModal(modalTitle, modalContent, modalFooter, this.obj);
-
-
   }
 
-  close(e) {
-    this.obj.input = document.getElementById("inputBox").value;
-    this.obj.output = document.getElementById("outputBox").value;
+  close() {
+    this.obj.input.setValue(document.getElementById("inputBox").value);
+    this.obj.output.setValue(document.getElementById("outputBox").value);
     this.obj.functionDescription = document.getElementById("fundescBox").value;
     this.element.style.display = "none";
   }
@@ -47,7 +45,6 @@ class Modal extends View
     this.child_views.forEach(c => c.render());
     return this.element;
   }
-
 }
 
 export default Modal;
