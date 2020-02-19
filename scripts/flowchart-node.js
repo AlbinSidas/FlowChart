@@ -12,7 +12,6 @@ class FlowchartNode extends View {
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
         this.mouseDown        = this.mouseDown.bind(this);
-        this.setPosY          = this.setPosY.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
 
         //ui
@@ -26,17 +25,16 @@ class FlowchartNode extends View {
         this.offsetX = 0;
         this.offsetY = 0;
 
+        this._connectorUpdaters = [];
         //flow
         this.id = id;
-        this.functionDescription = "No function yet"
+        this.functionDescription = "No function yet";
 
-        this.input = new NodeIO(this, "box-input");
+        this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output"); 
         
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
-        //
-        this.moving = false;
     }
 
     didAttach(parent) {
@@ -57,11 +55,16 @@ class FlowchartNode extends View {
         this.height = other.height;
         //flow
         this.functionDescription = other.functionDescription;
-        this.input = other.input;
-        this.output = other.output;
     }
 
 
+    registerConnectorUpdater(id, func) {
+        this._connectorUpdaters.push(func)
+    }
+
+    unregisterConnectorUpdater(id) {
+
+    }
     render() {
         this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
         return this.element;
@@ -86,20 +89,16 @@ class FlowchartNode extends View {
         this.element.style.left = `${nextX}px`
         this.posX = nextX;
         this.posY = nextY;
-        //
-        this.moving = true;
+
+        this._connectorUpdaters.forEach(callback => {
+            callback();
+        });
     }
 
     closeDragElement(e) {
         document.onmouseup   = null;
         document.onmousemove = null;
         document.onwheel     = null;
-        //
-        this.moving = false;
-    }
-
-    setPosY(y) {
-        this.posY = y;
     }
 
     onScrolled(callback) {

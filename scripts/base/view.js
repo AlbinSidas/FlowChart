@@ -42,6 +42,14 @@ class View {
     return parseInt(window.getComputedStyle(this.element).getPropertyValue('bottom'))
   }
 
+  getPosX(){
+    return parseInt(window.getComputedStyle(this.element).getPropertyValue('left'))
+  }
+
+  getWidth() {
+    return this.element.offsetWidth
+  }
+
   getHeight() {
 
     console.log("LALALAL", this.element.offsetHeight)
