@@ -1,6 +1,5 @@
 import elementString from '../static/views/modal.html';
 import View from 'Base/view.js';
-import eventEmitter from 'Singletons/event-emitter.js';
 
 class Modal extends View
 {
@@ -30,7 +29,6 @@ class Modal extends View
     let children = this.element.childNodes;
     let modalTitle   = children[1];
     let modalContent = children[3];
-
     let modalFooter  = children[5];
     addContentToModal(modalTitle, modalContent, modalFooter, this.obj);
 
