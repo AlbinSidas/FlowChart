@@ -25,6 +25,7 @@ class FlowchartNode extends View {
         this.offsetX = 0;
         this.offsetY = 0;
 
+        this._connectorUpdaters = [];
         //flow
         this.id = id;
         this.functionDescription = "No function yet";
@@ -57,6 +58,13 @@ class FlowchartNode extends View {
     }
 
 
+    registerConnectorUpdater(id, func) {
+        this._connectorUpdaters.push(func)
+    }
+
+    unregisterConnectorUpdater(id) {
+
+    }
     render() {
         this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
         return this.element;
@@ -81,6 +89,10 @@ class FlowchartNode extends View {
         this.element.style.left = `${nextX}px`
         this.posX = nextX;
         this.posY = nextY;
+
+        this._connectorUpdaters.forEach(callback => {
+            callback();
+        });
     }
 
     closeDragElement(e) {

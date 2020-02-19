@@ -85,7 +85,9 @@ class Container extends View {
                     currNode.input.connections.push(this.markedOutput);
                     prevNode.output.connections.push(currNode.id);
 
-                    connector = new Connector();
+                    connector = new Connector(prevNode, currNode);
+                    prevNode.registerConnectorUpdater("", connector.updateConnections);
+                    currNode.registerConnectorUpdater("", connector.updateConnections);
                     connector.id = currNode.id + prevNode.id;
                     connector.element.classList.add("connector");
                     this.attach(connector);
@@ -97,7 +99,7 @@ class Container extends View {
                     });
                 }
                 this.markedOutput = "";
-                connector.updateConnections(prevNode, currNode);
+                connector.updateConnections();
             } 
         })
     }
@@ -213,6 +215,7 @@ class Container extends View {
     }
 
     addBox(box) {
+
         this.objects.push(box);
         this.attach(box);
         box.onScrolled(this.childScrolled);
