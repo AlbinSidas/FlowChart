@@ -96,7 +96,6 @@ class Container extends View {
                         return c.id == currNode.id + prevNode.id; 
                     });
                 }
-                prevNode.output
                 this.markedOutput = "";
                 connector.updateConnections(prevNode, currNode);
             } 

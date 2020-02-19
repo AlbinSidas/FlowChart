@@ -54,8 +54,6 @@ class FlowchartNode extends View {
         this.height = other.height;
         //flow
         this.functionDescription = other.functionDescription;
-        //this.input = other.input;
-        //this.output = other.output;
     }
 
 
