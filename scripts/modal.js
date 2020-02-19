@@ -1,13 +1,12 @@
 import elementString from '../static/views/modal.html';
 import View from 'Base/view.js';
-import LockButton from './lock-button.js'
-import eventEmitter from 'Singletons/event-emitter.js'
+import eventEmitter from 'Singletons/event-emitter.js';
 
 class Modal extends View
 {
   constructor() {
-      super(elementString);
-      this.obj = {};
+    super(elementString);
+    this.obj = {};
     this.render = this.render.bind(this);
   }
 

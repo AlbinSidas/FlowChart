@@ -1,4 +1,4 @@
-
+/*
 import elementString from '../static/views/lock-button.html'
 import styleClasses from 'Styles/size_button.css'
 import Button from 'Base/button.js'
@@ -30,3 +30,4 @@ class LockButton extends Button
 }
 
 export default LockButton;
+*/
