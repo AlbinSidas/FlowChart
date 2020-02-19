@@ -2,10 +2,13 @@ import View from 'Base/view.js';
 
 class Connector extends View
 {
-  constructor() {
+  constructor(prevNodeId, currNodeId) {
     super("<div></div>");
     this.render = this.render.bind(this);
-
+    let prevId = prevNodeId;
+    let currId = currNodeId;
+    console.log("Previous flowchartnode ID:L " + prevId);
+    console.log("Current flowchartnode ID: " + currId);
   }
 
   updateConnections(prevNode, currNode){

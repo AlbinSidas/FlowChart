@@ -35,6 +35,8 @@ class FlowchartNode extends View {
         
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
+        //
+        this.moving = false;
     }
 
     didAttach(parent) {
@@ -84,12 +86,16 @@ class FlowchartNode extends View {
         this.element.style.left = `${nextX}px`
         this.posX = nextX;
         this.posY = nextY;
+        //
+        this.moving = true;
     }
 
     closeDragElement(e) {
         document.onmouseup   = null;
         document.onmousemove = null;
         document.onwheel     = null;
+        //
+        this.moving = false;
     }
 
     setPosY(y) {
