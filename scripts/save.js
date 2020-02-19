@@ -10,7 +10,7 @@ class Save
     }
 
     saveFlow(obj){
-	console.log(obj.length, JSON.stringify(obj));
+	console.log(obj[0]);
     }
     loadFlow(obj, that){
 	let loadtxt = require('../save-files/mocksave.json');
