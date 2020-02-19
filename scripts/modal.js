@@ -11,23 +11,22 @@ class Modal extends View
     this.render = this.render.bind(this);
   }
 
-    show(obje) {
-	this.obj = obje;
-	function addContentToModal(title, content, footer, obj) {
+  show(obje) {
+    this.obj = obje;
+    function addContentToModal(title, content, footer, obj) {
 	    title.textContent = "ID: " + obj.id.toString();
 	    setConent(content, obj);
 	    footer.textContent = "Close";
 	    
 	    function setConent(content, obj){
-		content.innerHTML = `
-                               <div id="boxtime">                       
-                                  Input: <input type="text" id="inputBox" value="${obj.input}"> </br>
-                                  Output: <input type="text" id="outputBox" value="${obj.output}"> </br>
-                                  Description: <input type="text" id="fundescBox" value="${obj.functionDescription}">
-                               </div>`;
+		  content.innerHTML = `
+                            <div id="boxtime">                       
+                              Input: <input type="text" id="inputBox" value="${obj.input}"> </br>
+                              Output: <input type="text" id="outputBox" value="${obj.output}"> </br>
+                              Description: <input type="text" id="fundescBox" value="${obj.functionDescription}">
+                            </div>`;
 	    }
 	}
-    //this.modal = document.getElementById("modal");
     this.element.style.display = "block";
     let children = this.element.childNodes;
     let modalTitle   = children[1];
@@ -39,18 +38,16 @@ class Modal extends View
 
   }
 
-    close(e) {
-	this.obj.input = document.getElementById("inputBox").value;
-	this.obj.output = document.getElementById("outputBox").value;
-	this.obj.functionDescription = document.getElementById("fundescBox").value;
-	this.element.style.display = "none";
-	
+  close(e) {
+    this.obj.input = document.getElementById("inputBox").value;
+    this.obj.output = document.getElementById("outputBox").value;
+    this.obj.functionDescription = document.getElementById("fundescBox").value;
+    this.element.style.display = "none";
   }
 
 
   render() {
     this.child_views.forEach(c => c.render());
-    //this.element.setAttribute('style', `position: fixed; width:100px; height: 100px;`);
     return this.element;
   }
 

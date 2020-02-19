@@ -2,10 +2,11 @@
 import SizeButton from './size-button.js'
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
-import Modal from './modal.js'
-import View from 'Base/view.js'
-import elementString from 'Views/container.html'
-import eventEmitter from 'Singletons/event-emitter.js'
+import Modal from './modal.js';
+import View from 'Base/view.js';
+import elementString from 'Views/container.html';
+import eventEmitter from 'Singletons/event-emitter.js';
+import Connector from "./connectors.js";
 
 class Container extends View {
     constructor() {
@@ -15,13 +16,14 @@ class Container extends View {
         this.onKeyPress = this.onKeyPress.bind(this);
 
         this.height = 3000;//window.innerHeight;
-        //this.htmlElement = htmlElement;
         this.childScrolled = this.childScrolled.bind(this)
 
         this.modal = new Modal();      
 
         this.objects = [];
         this.markedObject = null;
+        this.markedOutput = "";
+        this.connectorList = [];
         this.objectClick = {};
         this.copyObject = {};
         this.mouseX = 0;
@@ -57,6 +59,50 @@ class Container extends View {
                 }
                 this.markedObject = obj;
             }
+        })
+
+        eventEmitter.on("outputClicked", (id) => {   
+            this.markedOutput = id;
+        })
+        
+        eventEmitter.on("inputClicked", (id) => {
+            if (id == this.markedOutput) {
+                return;
+            }
+
+            else if (this.markedOutput != ""){
+                let currNode = this.objects.find((temp) => {
+                    return temp.id == id;
+                })
+        
+                let prevNode = this.objects.find((temp) => {
+                    return temp.id == this.markedOutput;
+                })
+        
+                // Checka om en connection redan finns och ta bort i noder
+                //                     |||||||||||||
+                // i samband med detta VVVVVVVVVVVVV
+                let connector = {};
+
+                if (!currNode.input.connections.includes(this.markedOutput)) {
+                    currNode.input.connections.push(this.markedOutput);
+                    prevNode.output.connections.push(currNode.id);
+
+                    connector = new Connector();
+                    connector.id = currNode.id + prevNode.id;
+                    connector.element.classList.add("connector");
+                    this.attach(connector);
+                    this.connectorList.push(connector);
+                }
+                else {
+                    connector = this.connectorList.find((c) => {
+                        return c.id == currNode.id + prevNode.id; 
+                    });
+                }
+        
+                this.markedOutput = "";
+                connector.updateConnections(prevNode, currNode);
+            } 
         })
     }
 
@@ -144,13 +190,13 @@ class Container extends View {
 
     setHeight(height) {
         this.height = height;
-        this.element.style.height = `${height}px`
+        this.element.style.height = `${height}px`;
     }
 
     addBox(box) {
         this.objects.push(box);
-        this.attach(box)
-        box.onScrolled(this.childScrolled)
+        this.attach(box);
+        box.onScrolled(this.childScrolled);
     }
 
     childScrolled(posY, height) {
