@@ -2,10 +2,11 @@ import View from 'Base/view.js';
 
 class Connector extends View
 {
-  constructor() {
+  constructor(id) {
     super("<div></div>");
     this.render = this.render.bind(this);
-
+    this.id = id;
+    this.element.id = id;
   }
 
   updateConnections(prevNode, currNode){

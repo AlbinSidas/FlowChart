@@ -20,7 +20,6 @@ class Container extends View {
         this.childScrolled = this.childScrolled.bind(this)
 
         this.modal = new Modal();      
-
         this.objects = [];
         this.markedObject = null;
         this.markedOutput = "";
@@ -85,8 +84,7 @@ class Container extends View {
                     currNode.input.connections.push(this.markedOutput);
                     prevNode.output.connections.push(currNode.id);
 
-                    connector = new Connector();
-                    connector.id = currNode.id + prevNode.id;
+                    connector = new Connector(currNode.id + prevNode.id);
                     connector.element.classList.add("connector");
                     this.attach(connector);
                     this.connectorList.push(connector);
@@ -139,26 +137,52 @@ class Container extends View {
 
 
     onKeyPress(e){
-        if(e.ctrlKey){
-            if(e.keyCode == 67){
-                // 67 = C
-                if (this.markedObject != null) {
-                    // Save a copy without a reference to the original object.
-                    document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
-                    this.copyObject = new FlowchartNode(uuidv1());
-                    this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
-                }
-            }
 
-            else if(e.which == 86){
-                // 86 = V
-                if (this.copyObject != null) {
-                    //Create a new object based on the copy and add it to the workspace
-                    let pasteObject = new FlowchartNode(uuidv1());
-                    pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-                    this.objects.push(pasteObject);
-                    this.addBox(pasteObject);
-                }
+        if(e.ctrlKey){
+            switch(e.keyCode) {
+                case 67: 
+                    // 67 = C Copy
+                    if (this.markedObject != null) {
+                        // Save a copy without a reference to the original object.
+                        document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
+                        this.copyObject = new FlowchartNode(uuidv1());
+                        this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
+                    }
+                    break;
+
+                case 86:
+                    // 86 = V Paste
+                    if (this.copyObject != null) {
+                        //Create a new object based on the copy and add it to the workspace
+                        let pasteObject = new FlowchartNode(uuidv1());
+                        pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
+                        this.objects.push(pasteObject);
+                        this.addBox(pasteObject);
+                    }
+                    break;
+
+                case 68:
+                    // 68 = D Remove
+                    e.preventDefault();
+                    if (this.markedObject != null) {
+                        this.objects.splice( this.objects.indexOf(this.markedObject), 1 );
+                        for( let i = 0 ; i < this.connectorList.length ; i++ ) {
+                            if (this.connectorList[i].id.includes(this.markedObject.id) ) {
+                                let connector = this.connectorList[i];
+                                this.connectorList.splice(i, 1);
+                                --i;
+                                let connectorElement = document.getElementById(connector.id);
+                                connectorElement.parentElement.removeChild(connectorElement);
+                            }
+                        }
+                        let nodeElement = document.getElementById(this.markedObject.id);
+                        nodeElement.parentElement.removeChild(nodeElement);
+                        this.markedObject = null;
+                    }
+                    e.preventDefault();
+                    console.log("Obj:", this.objects)
+                    console.log("Links:", this.connectorList)
+                    break;
             }
         }
     }
