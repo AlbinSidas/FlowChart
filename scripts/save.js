@@ -47,13 +47,4 @@ class Save
     }
 
 }
-/*
-onClick(e) {
-	if (this.type == "box-output") {
-		eventEmitter.emit("outputClicked", this.id);
-	}
-	else if (this.type == "box-input") {
-		eventEmitter.emit("inputClicked", this.id);
-	}
-}*/
 export default Save;
