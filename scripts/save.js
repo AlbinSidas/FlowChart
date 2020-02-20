@@ -18,13 +18,25 @@ class Save
 			let saveObj = new SaveObj(obj[i].functionDescription, obj[i].posX, obj[i].posY, obj[i].id, obj[i].input.connections, obj[i].output.connections);
 			saveObjectList.push(saveObj);
 		}
-		console.log(JSON.stringify(saveObjectList));
+		const data = "{ data: "+JSON.stringify(saveObjectList)+", filename: "+ filename+",}";
+		console.log(data);
+		fetch('http://localhost:3000/save', 
+		{
+			method: 'PUT',
+			headers: {
+			  'Content-Type': 'application/json',
+			},
+			body: data,
+		  })
 	}
 	
-    loadFlow(obj, that){
-	let loadtxt = require('../save-files/mocksave.json');
-	let object = loadtxt;
-	let i = 0;
+    loadFlow(obj, that){	
+		let fileNameList = {};
+		fetch('http://localhost:3000/loadFileNames').then((Response)=> {fileNameList = Response.json})
+		console.log(fileNameList);
+		let loadtxt = require('../save-files/mocksave.json');
+		let object = loadtxt;
+		let i = 0;
 		for (i=0; i < object.length; i++){
 
 			if(document.getElementById(object[i].id) == null){
@@ -37,8 +49,6 @@ class Save
 		for (i=0; i < object.length; i++){
 			let j = 0;
 			for (j=0; j < object[i].oCon.length; j++){
-				console.log(object[i].id)
-				console.log(object[i].oCon[j])
 				eventEmitter.emit("outputClicked", object[i].id);
 				eventEmitter.emit("inputClicked", object[i].oCon[j]);
 				

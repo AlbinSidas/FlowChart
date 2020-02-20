@@ -3,7 +3,7 @@ class View {
 
   constructor(tagString) {
     var range = document.createRange();
-    console.log(tagString)
+    //console.log(tagString)
     
     // Make the parent of the first div in the document becomes the context node
     range.selectNode(document.getElementById("context"));
