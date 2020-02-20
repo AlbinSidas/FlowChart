@@ -18,30 +18,39 @@ class Save
 			let saveObj = new SaveObj(obj[i].functionDescription, obj[i].posX, obj[i].posY, obj[i].id, obj[i].input.connections, obj[i].output.connections);
 			saveObjectList.push(saveObj);
 		}
-		const data = "{ data: "+JSON.stringify(saveObjectList)+", filename: "+ filename+",}";
-		console.log(data);
+		const data = {
+			"data": saveObjectList,
+			"filename": filename
+		};
 		fetch('http://localhost:3000/save', 
 		{
 			method: 'PUT',
 			headers: {
 			  'Content-Type': 'application/json',
 			},
-			body: data,
+			body: JSON.stringify(data),
 		  })
 	}
 	
-    loadFlow(obj, that){	
+    async loadFlow(obj, that){	
 		let fileNameList = {};
-		fetch('http://localhost:3000/loadFileNames').then((Response)=> {fileNameList = Response.json})
-		console.log(fileNameList);
-		let loadtxt = require('../save-files/mocksave.json');
+		const resp = await fetch('http://localhost:3000/loadfilenames');
+		const jsonData = await resp.json();
+		let a = 0;
+		let trash ="";
+		for (a = 0; a < jsonData.length; a++){
+			trash += jsonData[a] + "\n"
+		}
+		let filename = prompt("skriv in namnet på filen du vill ladda\n" +trash)
+		const respun = await fetch('http://localhost:3000/loadfile/'+filename);
+		const loadtxt = await respun.json()
 		let object = loadtxt;
 		let i = 0;
 		for (i=0; i < object.length; i++){
 
 			if(document.getElementById(object[i].id) == null){
 				let loadnode = new FlowchartNode(object[i].id);
-				loadnode.copyOther(object[i], object[i].pX, object[i].pY)
+				loadnode.fillNode(object[i], object[i].pX, object[i].pY)
 				obj.push(loadnode);
 				that.attach(loadnode);
 			}
@@ -54,7 +63,7 @@ class Save
 				
 			}
 		}
-
+		
     }
 
 }
