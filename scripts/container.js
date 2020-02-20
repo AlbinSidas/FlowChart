@@ -158,7 +158,6 @@ class Container extends View {
                         //Create a new object based on the copy and add it to the workspace
                         let pasteObject = new FlowchartNode(uuidv1());
                         pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-                        this.objects.push(pasteObject);
                         this.addBox(pasteObject);
                     }
                     break;
@@ -182,8 +181,6 @@ class Container extends View {
                         this.markedObject = null;
                     }
                     e.preventDefault();
-                    console.log("Obj:", this.objects)
-                    console.log("Links:", this.connectorList)
                     break;
             }
         }
