@@ -13,6 +13,9 @@ async function main() {
     await mongo.setup(url, dbName) //när du awaitar så kallar du på din promies then med resten av koden, kolla <Generators>
     console.log("Back to main generated function")
     app.get('/', (req, res) => res.json({'apa':'Hello World!'}))
+    app.get('/save/:filename/:content', function (req, res){
+        
+    })
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))
 }
 
