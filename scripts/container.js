@@ -23,10 +23,7 @@ class Container extends View {
         this.childScrolled = this.childScrolled.bind(this)
 
         this.modal = new Modal();      
-<<<<<<< HEAD
-	this.saveClass = new Saving();
-=======
->>>>>>> master
+	    this.saveClass = new Saving();
         this.objects = [];
         this.markedObject = null;
         this.markedOutput = "";
@@ -160,16 +157,6 @@ class Container extends View {
 
     onKeyPress(e){
 
-<<<<<<< HEAD
-            else if(e.which == 86){
-                // 86 = V
-                if (this.copyObject != null) {
-                    //Create a new object based on the copy and add it to the workspace
-                    let pasteObject = new FlowchartNode(uuidv1());
-                    pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-                    this.addBox(pasteObject);
-                }
-=======
         if(e.ctrlKey){
             switch(e.keyCode) {
                 case 67: 
@@ -211,7 +198,6 @@ class Container extends View {
                     }
                     e.preventDefault();
                     break;
->>>>>>> master
             }
         }
     }
