@@ -114,10 +114,10 @@ body{
 }
 
 /* The Modal (background) */
-:global .modal {
+:global .modalFrame {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 20; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -128,24 +128,25 @@ body{
 }
 
 /* Modal Header */
-:global .modal-header {
+:global .modalHeader {
   margin: 15% auto 0;
   width: 80%;
   background-color: #BEBEBE;
 }
 
 /* Modal Footer */
-:global .modal-footer {
+:global .modalFooter {
   margin: 0 auto;
   width: 80%;
   background-color: #BEBEBE;
 }
 
 /* Modal Content/Box */
-:global .modal-content {
+:global .modalContent {
   margin: 0 auto;
   background-color: #fefefe;
   padding: 20px;
   border: 1px solid #888;
-  width: 77%; 
+  width: 77%;
+  /* align-content: right; */
 }

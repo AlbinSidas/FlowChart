@@ -3,7 +3,6 @@ class View {
 
   constructor(tagString) {
     var range = document.createRange();
-    console.log(tagString)
     
     // Make the parent of the first div in the document becomes the context node
     range.selectNode(document.getElementById("context"));
@@ -25,6 +24,7 @@ class View {
     this.element.appendChild(child.render());
     child.didAttach(this)
   }
+  
   // Används denna funktionen någonstans?
   addChildView(child) {
       this.child_views.push(child)
@@ -51,8 +51,6 @@ class View {
   }
 
   getHeight() {
-
-    console.log("LALALAL", this.element.offsetHeight)
     return this.element.offsetHeight
   }
 }

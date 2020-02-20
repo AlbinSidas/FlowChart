@@ -28,7 +28,7 @@ class Container extends View {
         this.copyObject = {};
         this.mouseX = 0;
         this.mouseY = 0;
-        this.sizeDelta = 200
+        this.sizeDelta = 200;
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", (id, e) => {
@@ -103,8 +103,8 @@ class Container extends View {
     }
 
     didAttach(parent) {
-        const apa = new SizeButton();
-        this.attach(apa)
+        const sizeButton = new SizeButton();
+        this.attach(sizeButton)
         this.attach(this.modal);
         
         eventEmitter.on('increase_size', () =>  {
@@ -169,10 +169,9 @@ class Container extends View {
                         this.objects.splice( this.objects.indexOf(this.markedObject), 1 );
                         for( let i = this.connectorList.length - 1 ; i >= 0 ; i-- ) {
                             if (this.connectorList[i].id.includes(this.markedObject.id) ) {
-                                let connector = this.connectorList[i];
-                                this.connectorList.splice(i, 1);
-                                let connectorElement = document.getElementById(connector.id);
+                                let connectorElement = document.getElementById(this.connectorList[i].id);
                                 connectorElement.parentElement.removeChild(connectorElement);
+                                this.connectorList.splice(i, 1);
                             }
                         }
                         let nodeElement = document.getElementById(this.markedObject.id);

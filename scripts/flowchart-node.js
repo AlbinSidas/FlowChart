@@ -27,7 +27,8 @@ class FlowchartNode extends View {
 
         this._connectorUpdaters = [];
         //flow
-        this.id = id;
+        this.id    = id;
+        this._name = "";
         this.functionDescription = "No function yet";
 
         this.input  = new NodeIO(this, "box-input");
@@ -54,17 +55,26 @@ class FlowchartNode extends View {
         this.offsetY = other.offsetY;
         this.height = other.height;
         //flow
+        this._name = other.getName();
         this.functionDescription = other.functionDescription;
     }
-
 
     registerConnectorUpdater(id, func) {
         this._connectorUpdaters.push(func)
     }
 
+    getName() {
+        return this._name;
+    }
+
+    setName(name) {
+        this._name = name;
+    }
+
     unregisterConnectorUpdater(id) {
 
     }
+
     render() {
         this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
         return this.element;

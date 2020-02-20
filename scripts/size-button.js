@@ -31,7 +31,6 @@ class SizeButtons extends View
     this.element.classList.add(styleClasses.size_button);
     return this.element;
   }
-
 }
 
 class IncreaseSizeButton extends Button {
