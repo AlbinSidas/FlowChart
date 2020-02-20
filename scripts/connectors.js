@@ -2,17 +2,17 @@ import View from 'Base/view.js';
 
 class Connector extends View
 {
-  constructor(prevNode, currNode) {
+  constructor(id, prevNode, currNode) {
     super("<div></div>");
     this.render = this.render.bind(this);
+    this.id = id;
+    this.element.id = id;
     this.currNode = currNode;
     this.prevNode = prevNode;
     this.updateConnections = this.updateConnections.bind(this)
   }
 
   updateConnections(){//prevNode, currNode){
-
-    
     // Aligning the connector with the input/output of a node
     let outX = this.prevNode.posX + 50;
     let outY = this.prevNode.posY + 115;
