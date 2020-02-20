@@ -18,6 +18,7 @@ class FlowchartNode extends View {
         this.posX    = 100;
         this.posY    = 100;
         this.height  = 100;
+        this.width   = 100;
         this.oldPosY = this.posY;
         this.oldPosX = this.posX;
         this.oldX    = this.posX;
@@ -81,6 +82,8 @@ class FlowchartNode extends View {
         let nextY = e.clientY-this.offsetY
         nextX = nextX < 0 ? 0 : nextX
         nextY = nextY < 0 ? 0 : nextY
+        nextX = nextX > document.getElementById("workspace-root").offsetWidth - this.width ? document.getElementById("workspace-root").offsetWidth - this.width : nextX;
+        nextY = nextY > document.getElementById("workspace-root").offsetHeight - this.height ? document.getElementById("workspace-root").offsetHeight - this.height : nextY;
         const max_height_relative_to_window      = window.innerHeight - this.height
         const box_position_relative_to_container = max_height_relative_to_window + window.scrollY
         const box_position_relative_to_window    = nextY - window.scrollY
