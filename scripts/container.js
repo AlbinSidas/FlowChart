@@ -167,11 +167,10 @@ class Container extends View {
                     e.preventDefault();
                     if (this.markedObject != null) {
                         this.objects.splice( this.objects.indexOf(this.markedObject), 1 );
-                        for( let i = 0 ; i < this.connectorList.length ; i++ ) {
+                        for( let i = this.connectorList.length - 1 ; i >= 0 ; i-- ) {
                             if (this.connectorList[i].id.includes(this.markedObject.id) ) {
                                 let connector = this.connectorList[i];
                                 this.connectorList.splice(i, 1);
-                                --i;
                                 let connectorElement = document.getElementById(connector.id);
                                 connectorElement.parentElement.removeChild(connectorElement);
                             }
