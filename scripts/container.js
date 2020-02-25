@@ -40,7 +40,8 @@ class Container extends View {
                 Set the mouseevent to objectClick to compare the
                 event on workspace to determine if it's a "mark off" or click on object.
             */
-           
+        //    console.log("klickat på lila!!!");
+
             this.objectClick = e;
             // Finds the correct node in the created nodes.
             let obj = this.objects.find((obj) => {
