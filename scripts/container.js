@@ -1,11 +1,14 @@
 
 import SizeButton from './size-button.js'
+import SaveButton from './save-button.js'
+import LoadButton from './load-button.js'
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
-import Modal from './modal.js';
-import View from 'Base/view.js';
-import elementString from 'Views/container.html';
-import eventEmitter from 'Singletons/event-emitter.js';
+import Modal from './modal.js'
+import Saving from './save.js'
+import View from 'Base/view.js'
+import elementString from 'Views/container.html'
+import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
 
 class Container extends View {
@@ -20,6 +23,7 @@ class Container extends View {
         this.childScrolled = this.childScrolled.bind(this)
 
         this.modal = new Modal();      
+	    this.saveClass = new Saving();
         this.objects = [];
         this.markedObject = null;
         this.markedOutput = "";
@@ -105,8 +109,21 @@ class Container extends View {
     didAttach(parent) {
         const apa = new SizeButton();
         this.attach(apa)
-        this.attach(this.modal);
-        
+	const save = new SaveButton();
+        this.attach(save)
+
+	eventEmitter.on('save', () =>  {
+            this.saveClass.saveFlow(this.objects)
+        })
+
+	const load = new LoadButton();
+        this.attach(load)
+
+	eventEmitter.on('load', () =>  {
+            this.saveClass.loadFlow(this.objects, this)
+        })
+ 
+        this.attach(this.modal)
         eventEmitter.on('increase_size', () =>  {
             this.increaseSize();
         })
