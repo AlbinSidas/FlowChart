@@ -106,26 +106,26 @@ class Container extends View {
     }
 
     didAttach(parent) {
-    const sizeButton = new SizeButton();
-    this.attach(sizeButton)
+        const sizeButton = new SizeButton();
+        this.attach(sizeButton)
 
-    this.modal = new Modal();
-    this.attach(this.modal);
-    
-    const save = new SaveButton();
-    this.attach(save)
+        this.modal = new Modal();
+        this.attach(this.modal);
+        
+        const save = new SaveButton();
+        this.attach(save)
 
-	eventEmitter.on('save', () =>  {
+        const load = new LoadButton();
+        this.attach(load)
+
+        eventEmitter.on('save', () =>  {
             this.saveClass.saveFlow(this.objects)
         })
 
-	const load = new LoadButton();
-        this.attach(load)
-
-	eventEmitter.on('load', () =>  {
+        eventEmitter.on('load', () =>  {
             this.saveClass.loadFlow(this.objects, this)
         })
- 
+
         eventEmitter.on('increase_size', () =>  {
             this.increaseSize();
         })

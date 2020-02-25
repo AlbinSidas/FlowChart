@@ -1,6 +1,8 @@
 import elementString from '../static/views/modal.html';
 import Button from 'Base/button.js';
 import View from 'Base/view.js';
+import styleClasses from 'Styles/modal-buttons.css';
+
 import eventEmitter from 'Singletons/event-emitter.js';
 
 class Modal extends View
@@ -9,20 +11,15 @@ class Modal extends View
     super(elementString);
     this.obj = {};
     this.render = this.render.bind(this);
-
-    // Skapa tre knappar: Stäng, Spara, Ladda ( Ladda kommer vara en dropdown )
   }
 
   show(obje) {
     this.obj = obje;
     function addContentToModal(title, content, footer, obj) {
-      //title.innerHTML = "<p>ID: " + obj.id.toString() + "</p>" + title.textContent;
-      //title.childNodes.splice(1, 0, "ID: " + obj.id.toString())
-      //let textnode = document.createTextNode("ID: " + obj.id.toString());
-      //title.insertBefore(textnode, title)
-      document.getElementById("nodeid").textContent = "ID: " + obj.id.toString()
+      let idField = document.getElementById("nodeid");
+      idField.classList.add(styleClasses.idText);
+      idField.textContent = "ID: " + obj.id.toString();
       setConent(content, obj);
-      //footer.textContent = "Close";
 	    
 	    function setConent(content, obj) {
 		  content.innerHTML = `
@@ -80,6 +77,7 @@ class CloseButton extends Button {
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.buttonFooter);
   }
 
   onClick() {
@@ -94,6 +92,8 @@ class SaveButton extends Button {
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.buttonFooter);
+      console.log(this.element)
     }
 
   onClick() {
@@ -108,6 +108,7 @@ class LoadButton extends Button {
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.buttonLoad);
     }
 
   onClick() {

@@ -72,8 +72,7 @@ body{
     background-color: green;
     cursor: pointer;
 }
-   
-   
+
 :global .connector-line {
     stroke-width: 10;
     stroke: black;
@@ -131,6 +130,9 @@ body{
 :global .modalHeader {
   margin: 15% auto 0;
   width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
   background-color: #BEBEBE;
 }
 
@@ -138,6 +140,9 @@ body{
 :global .modalFooter {
   margin: 0 auto;
   width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
   background-color: #BEBEBE;
 }
 
