@@ -1,6 +1,7 @@
 import elementString from '../static/views/modal.html';
 import Button from 'Base/button.js';
 import View from 'Base/view.js';
+import SaveObject from './saveObject.js';
 import styleClasses from 'Styles/modal-buttons.css';
 
 import eventEmitter from 'Singletons/event-emitter.js';
@@ -60,19 +61,37 @@ class Modal extends View
     eventEmitter.on('close-modal', () => {
       this.close();
     })
+
     eventEmitter.on('save-modal', () => {
       console.log("Spara ner all data på ett snyggt sätt och skicka till databasen");
+      this._save();
+      let saveObject = new SaveObject( obj.name, 
+                                       this.obj.functionDescription, 
+                                       /* Vet ej hur vi vill göra vid denna delen av spara nod, kanske ha en spara funktionsdefinition som ärver från saveObject? eller bara annan funktion?*/
+                                       100, 
+                                       100, 
+                                       
+                                       this.obj.id, 
+                                       this.obj.input.connections, 
+                                       this.obj.output.connections )
+      
+
     })
+
     eventEmitter.on('load-modal', () => {
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
     })
   }
 
-  close() {
+  _save() {
     this.obj.setName(document.getElementById("name").value);
     this.obj.input.setValue(document.getElementById("inputBox").value);
     this.obj.output.setValue(document.getElementById("outputBox").value);
     this.obj.functionDescription = document.getElementById("fundescBox").value;
+  }
+
+  close() {
+    this._save();
     this.element.style.display = "none";
   }
 
