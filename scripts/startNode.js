@@ -20,14 +20,23 @@ class StartNode extends View {
         this.id = id;
         this.element.id = id;
 
+        this.inputValue = "hej";
+        this.functionDescription = "STARTNODE FTW"
+
         this.output = new NodeIO(this, "box-start");
+        this.input  = new NodeIO(this, "box-dummy");
+        
+
         this.onScrolledCallbacks = [];
         this._connectorUpdaters = [];
         
         this.attach(this.output);
+        this.element.onclick = this.onClick;
 
     
     }   
+
+    
 
     onScrolled(callback) {
         this.onScrolledCallbacks.push(callback);
@@ -40,10 +49,16 @@ class StartNode extends View {
     unregisterConnectorUpdater(id) {
 
     }
-
+    closeDragElement(e) {
+        document.onmouseup   = null;
+        document.onmousemove = null;
+        document.onwheel     = null;
+    }
 
     onClick(e) {
+        console.log("Click before emit");
         eventEmitter.emit("clicked", this.id, e);
+        console.log("Click and emit works");
     }
 
 }

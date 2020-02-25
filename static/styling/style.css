@@ -84,6 +84,16 @@ body{
     background-color: black;
     cursor: pointer;
 }
+
+.boxStartDummy {
+    visibility: hidden;
+    width: 0px;
+    height: 0px;
+    z-index: -3;
+}
+
+
+boxStartDummy
 /*Input circle*/
 .boxInput {
     border-radius: 27.5px 27.5px 0px 0px;

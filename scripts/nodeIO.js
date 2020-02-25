@@ -22,6 +22,9 @@ class NodeIO extends View {
             case 'box-start':
                 this.element.classList.add(style.boxStart);
                 break;
+            case 'box-dummy':
+                this.element.classList.add(style.boxStartDummy);
+                break;
             default:
                 break;
         }
@@ -48,6 +51,9 @@ class NodeIO extends View {
         }
         else if (this.type == "box-start") {
             eventEmitter.emit("outputClicked", this.id);
+        }
+        else if (this.type == "box-dummy") {
+            return;
         }
     }
 }

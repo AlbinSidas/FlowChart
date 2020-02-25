@@ -22,7 +22,7 @@ class Container extends View {
         this.width = window.innerWidth;
         this.childScrolled = this.childScrolled.bind(this)
 
-        this.modal = new Modal();      
+        this.modal = new Modal();
 	    this.saveClass = new Saving();
         this.objects = [];
         this.markedObject = null;
