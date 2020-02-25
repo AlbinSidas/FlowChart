@@ -11,6 +11,18 @@ class Modal extends View
     super(elementString);
     this.obj = {};
     this.render = this.render.bind(this);
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.dropdown-trigger');
+      var options = {
+        'alginment': 'right', 
+        'autotrigger': true,
+        'coverTrigger': false,
+        'closeOnClick': true,
+        'hover':false
+      }
+      M.Dropdown.init(elems, options);
+    });
   }
 
   show(obje) {
@@ -93,7 +105,6 @@ class SaveButton extends Button {
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
       this.element.classList.add(styleClasses.buttonFooter);
-      console.log(this.element)
     }
 
   onClick() {
