@@ -1,8 +1,89 @@
 import data from './test.js';
-import View from 'Base/view.js';
+import {coordinated, hierarchical, clickable, html, ViewState} from 'Base/view.js';
 import style from 'Styles/style.css';
 import eventEmitter from 'Singletons/event-emitter.js';
 import NodeIO from './nodeIO.js';
+
+
+
+const FlowchartNode = (id) => {
+    let viewState = ViewState('<div></div>', 0, 50)
+    let input     = new NodeIO(this, "box-input")
+    let output    = new NodeIO(this, "box-output")
+    
+    let flowState = {
+        id: id,
+        functionDescription: "No function yet",
+        input:   input,
+        output:  output,
+        posX:    100,
+        posY:    100,
+        offsetX: 0;
+        offsetY: 0;
+    }
+
+    const dom                 = domHandler(viewState)
+    const coordinationHandler = coordinated(viewState)
+    
+    dom.attach(input, output)
+    
+    //del-assign först, sen skicka det till container handler, istället för att paramatisers
+    const handler             = flowHandler(flowState, viewState, dom, coordinationHandler)
+
+    const extEventHandler     = externEventHandler(viewState)
+    extEventHandler.setOnClick(handler.onClick)
+    extEventHandler.setOnMouseDown(handler.on)
+    
+    coordinationHandler.setHeight(viewState.height)
+    //coordinationHandler.setWidth(viewState.height) // View state?
+    dom.style(`position:absolut; left: ${flowState.posX}px; top:${flowState.posY}px;`)
+
+    return Object.assign(
+        {},
+        handler,
+        coordinationHandler,
+        dom,
+        extEventHandler
+    )
+
+}
+
+
+
+const flowHandler = (flowState, viewState) => ({
+                          
+    onClick: (e) => {
+        eventEmitter.emit("clicked", this.id, e);
+    },
+    copyOther: (other, mposX = other.posX, mposY = other.posY) =>  {
+        flowState.posX    = mposX + event.view.scrollX -50;
+        flowState.posY    = mposY + event.view.scrollY -50;
+        flowState.offsetX = other.offsetX;
+        flowState.offsetY = other.offsetY;
+        viewState.height  = other.height;
+        //flow
+        flowState.functionDescription = other.functionDescription;
+    },
+    mouseDown: (e) =>  { // CHECKPOINT
+        e = e || window.event;
+        e.preventDefault();
+
+        this.lastScrollPosition = window.scrollY;
+        this.offsetX = e.clientX - this.posX;
+        this.offsetY = e.clientY - this.posY;
+
+        document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})
+        document.onmousemove = (e) => { this.elementDrag(e)   };
+
+        let x = 0
+        let y = 0
+        let shadow = ` box-shadow: ${x}px ${y}px 40px 20px #0ff;`;
+        let elementStyle = document.getElementById(this.id).style.cssText;
+        document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
+     }
+
+})
+
 
 class FlowchartNode extends View {
     constructor(id){
@@ -17,11 +98,6 @@ class FlowchartNode extends View {
         //ui
         this.posX    = 100;
         this.posY    = 100;
-        this.height  = 100;
-        this.oldPosY = this.posY;
-        this.oldPosX = this.posX;
-        this.oldX    = this.posX;
-        this.oldY    = this.posY;
         this.offsetX = 0;
         this.offsetY = 0;
 
@@ -45,17 +121,6 @@ class FlowchartNode extends View {
         this.onScrolledCallbacks = []
     }
 
-    copyOther(other, mposX = other.posX, mposY = other.posY) {
-        this.posX = mposX + event.view.scrollX -50;
-        this.posY = mposY + event.view.scrollY -50;
-        this.oldX = this.posX;
-        this.oldY = this.posY;
-        this.offsetX = other.offsetX;
-        this.offsetY = other.offsetY;
-        this.height = other.height;
-        //flow
-        this.functionDescription = other.functionDescription;
-    }
 
 
     registerConnectorUpdater(id, func) {
@@ -124,9 +189,7 @@ class FlowchartNode extends View {
         document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
      }
 
-    onClick(e) {
-        eventEmitter.emit("clicked", this.id, e);
-    }
+
     
 }
 export default FlowchartNode;

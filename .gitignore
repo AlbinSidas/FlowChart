@@ -1,3 +1,4 @@
 /node_modules
 .gitignore
 /dist/bundle*
+/server/node_modules
