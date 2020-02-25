@@ -6,7 +6,9 @@ import NodeIO from './nodeIO.js';
 
 class FlowchartNode extends View {
     constructor(id){
-        super('<div></div>')
+        super()
+
+        this.setHtml('<div></div>')
     
         //functions
         this.onClick          = this.onClick.bind(this);
@@ -56,6 +58,7 @@ class FlowchartNode extends View {
         //flow
         this.functionDescription = other.functionDescription;
     }
+    
     fillNode(other, mposX = other.posX, mposY = other.posY) {
         this.posX = mposX;
         this.posY = mposY;
@@ -76,6 +79,7 @@ class FlowchartNode extends View {
     unregisterConnectorUpdater(id) {
 
     }
+
     render() {
         this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
         return this.element;

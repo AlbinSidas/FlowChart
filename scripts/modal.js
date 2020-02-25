@@ -1,36 +1,37 @@
 import elementString from '../static/views/modal.html';
-import View from 'Base/view.js';
+import View, {InlineView} from 'Base/view.js';
 
 class Modal extends View
 {
   constructor() {
-    super(elementString);
+    super();
+    this.setHtml(elementString)
     this.obj = {};
     this.render = this.render.bind(this);
+    this.modalTitle   = InlineView`<div class="modal-header"></div>`
+    this.modalContent = InlineView`<div class="modal-content"></div>`
+    this.modalFooter  = InlineView`<div class="modal-footer"></div>`
   }
 
-  show(obje) {
-    this.obj = obje;
-    function addContentToModal(title, content, footer, obj) {
-	    title.textContent = "ID: " + obj.id.toString();
-	    setConent(content, obj);
-	    footer.textContent = "Close";
-	    
-	    function setConent(content, obj){
-		  content.innerHTML = `
+  didAttach(parent) {
+    this.attach(this.modalTitle)
+    this.attach(this.modalContent)
+    this.attach(this.modalFooter)
+  }
+
+  show(object) {
+      this.obj = object;
+      this.element.style.display = "block";
+	    this.modalTitle.element.textContent = "ID: " + this.obj.id.toString();
+	    this.modalContent.changeHtml(`
                             <div id="boxtime">                       
-                              Input: <input type="text" id="inputBox" value="${obj.input.getValue()}"> </br>
-                              Output: <input type="text" id="outputBox" value="${obj.output.getValue()}"> </br>
-                              Description: <input type="text" id="fundescBox" value="${obj.functionDescription}">
-                            </div>`;
-	    }
-	  }
-    this.element.style.display = "block";
-    let children = this.element.childNodes;
-    let modalTitle   = children[1];
-    let modalContent = children[3];
-    let modalFooter  = children[5];
-    addContentToModal(modalTitle, modalContent, modalFooter, this.obj);
+                              Input: <input type="text" id="inputBox" value="${this.obj.input.getValue()}"> </br>
+                              Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
+                              Description: <input type="text" id="fundescBox" value="${this.obj.functionDescription}">
+                            </div>`)
+      
+      this.modalFooter.element.textContent = "Close";
+      
   }
 
   close() {
@@ -42,7 +43,6 @@ class Modal extends View
 
 
   render() {
-    this.child_views.forEach(c => c.render());
     return this.element;
   }
 }
