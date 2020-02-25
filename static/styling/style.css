@@ -117,11 +117,7 @@ body{
 :global .modalFrame {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-<<<<<<< HEAD
-  z-index: 20; /* Sit on top */
-=======
   z-index: 15; /* Sit on top */
->>>>>>> master
   left: 0;
   top: 0;
   width: 100%; /* Full width */

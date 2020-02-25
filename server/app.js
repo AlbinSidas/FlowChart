@@ -1,11 +1,4 @@
 const assert       = require('assert');
-<<<<<<< HEAD
-const config       = require('./config.js');
-const express      = require('express');
-const mongo        = require('./mongo.js');
-const serverConfig = config.server;
-const dbConfig     = config.db;
-=======
 const config       = require('./config.js')
 const express      = require('express')
 const mongo        = require('./mongo.js')
@@ -14,7 +7,6 @@ const bodyParser   = require('body-parser')
 const fs           = require('fs');
 const serverConfig = config.server
 const dbConfig     = config.db 
->>>>>>> master
 
 async function main() {
 
@@ -22,9 +14,6 @@ async function main() {
     const url      = `mongodb://${dbConfig.ip_addr}:${dbConfig.port}`;
     const dbName   = dbConfig.db_name;
     await mongo.setup(url, dbName) //när du awaitar så kallar du på din promies then med resten av koden, kolla <Generators>
-<<<<<<< HEAD
-    app.get('/', (req, res) => res.json({'apa':'Hello World!'}));
-=======
     app.use(bodyParser.json())
     app.use(cors({
         "credentials": true,
@@ -58,7 +47,6 @@ async function main() {
           }); 
     })
 
->>>>>>> master
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))
 }
 
