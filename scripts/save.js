@@ -15,7 +15,7 @@ class Save
 		let saveObjectList = [];
 		let i = 0;
 		for (i = 0; i < obj.length; i++){
-			let saveObj = new SaveObj(obj[i].functionDescription, obj[i].posX, obj[i].posY, obj[i].id, obj[i].input.connections, obj[i].output.connections);
+			let saveObj = new SaveObj(obj[i].functionDescription, obj[i].posX, obj[i].posY, obj[i].id, obj[i].input.connections, obj[i].output.connections, obj[i].userMadeVariables);
 			saveObjectList.push(saveObj);
 		}
 		const data = {
@@ -33,7 +33,6 @@ class Save
 	}
 	
     async loadFlow(obj, that){	
-		let fileNameList = {};
 		const resp = await fetch('http://localhost:3000/loadfilenames');
 		const jsonData = await resp.json();
 		let a = 0;

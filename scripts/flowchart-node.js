@@ -29,6 +29,7 @@ class FlowchartNode extends View {
         //flow
         this.id = id;
         this.functionDescription = "No function yet";
+        this.userMadeVariables = {};
 
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output"); 
@@ -55,6 +56,7 @@ class FlowchartNode extends View {
         this.height = other.height;
         //flow
         this.functionDescription = other.functionDescription;
+        this.userMadeVariables = other.userMadeVariables;
     }
     fillNode(other, mposX = other.posX, mposY = other.posY) {
         this.posX = mposX;
@@ -66,6 +68,7 @@ class FlowchartNode extends View {
         this.height = other.height;
         //flow
         this.functionDescription = other.functionDescription;
+        this.userMadeVariables = other.extra;
     }
 
 
