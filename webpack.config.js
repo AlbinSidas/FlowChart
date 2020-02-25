@@ -21,32 +21,44 @@ module.exports = {
         }
     },
     module: {
-      
       rules: [
         {
-          test: /\.html$/i,
-          loader: 'html-loader', //html loader, url false
-          options: {
-           interpolate: true,
-          },
-        },
-        {
-          test: /\.css$/i,
-          use: ['style-loader', {
-            loader: 'css-loader',
+          test: /\.m?js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
             options: {
-              modules: true,
-            },
-          }],
-        },
-        {
-         test: /\.(png|svg|jpg|gif)$/,
-         use: [
-           'file-loader', //resolve-url-loader
-         ],
-       },
-        
+              presets: ['@babel/preset-env'],
+              plugins: ["@babel/plugin-proposal-class-properties", {"loose": true}]
+            }
+          }
+        }
       ],
+      rules: [
+          {
+            test: /\.html$/i,
+            loader: 'html-loader', //html loader, url false
+            options: {
+            interpolate: true,
+            },
+          },
+          {
+            test: /\.css$/i,
+            use: ['style-loader', {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+              },
+            }],
+          },
+          {
+          test: /\.(png|svg|jpg|gif)$/,
+          use: [
+            'file-loader', //resolve-url-loader
+          ],
+        },
+          
+        ],
     }
 
 }
