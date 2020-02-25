@@ -3,6 +3,10 @@ class View {
 
   constructor(tagString) {
     var range = document.createRange();
+<<<<<<< HEAD
+=======
+    //console.log(tagString)
+>>>>>>> master
     
     // Make the parent of the first div in the document becomes the context node
     range.selectNode(document.getElementById("context"));

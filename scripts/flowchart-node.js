@@ -58,6 +58,17 @@ class FlowchartNode extends View {
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
     }
+    fillNode(other, mposX = other.posX, mposY = other.posY) {
+        this.posX = mposX;
+        this.posY = mposY;
+        this.oldX = this.posX;
+        this.oldY = this.posY;
+        this.offsetX = other.offsetX;
+        this.offsetY = other.offsetY;
+        this.height = other.height;
+        //flow
+        this.functionDescription = other.functionDescription;
+    }
 
     registerConnectorUpdater(id, func) {
         this._connectorUpdaters.push(func)
