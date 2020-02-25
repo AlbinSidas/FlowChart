@@ -13,97 +13,108 @@ import Connector from "./connectors.js";
 
 class Container extends View {
     constructor() {
-        super(elementString)
+        super()
 
-        this.onClick = this.onClick.bind(this);
+        this.setHtml(elementString)
+        this.onClick    = this.onClick.bind(this);
         this.onKeyPress = this.onKeyPress.bind(this);
 
         this.height = 3000;
         this.width = window.innerWidth;
         this.childScrolled = this.childScrolled.bind(this)
 
-	    this.saveClass = new Saving();
-        this.objects = [];
-        this.markedObject = null;
-        this.markedOutput = "";
+	    this.saveClass     = new Saving();
+        this.objects       = [];
+        this.markedObject  = null;
+        this.markedOutput  = "";
         this.connectorList = [];
-        this.objectClick = {};
-        this.copyObject = {};
-        this.mouseX = 0;
-        this.mouseY = 0;
-        this.sizeDelta = 200;
+        this.objectClick   = {};
+        this.copyObject    = {};
+        
+        this.mouseX     = 0;
+        this.mouseY     = 0;
+        this.sizeDelta  = 200
+
+        this.copyNode      = this.copyNode.bind(this)
+        this.pasteNode     = this.pasteNode.bind(this)
+        this.removeNode    = this.removeNode.bind(this)
+        this.objectClicked = this.objectClicked.bind(this)
+        this.inputClicked  = this.inputClicked.bind(this)
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
-        eventEmitter.on("clicked", (id, e) => {
-            /*
-                Set the mouseevent to objectClick to compare the
-                event on workspace to determine if it's a "mark off" or click on object.
-            */
-           
-            this.objectClick = e;
-            // Finds the correct node in the created nodes.
-            let obj = this.objects.find((obj) => {
-                return obj.id == id;
-            });
-
-            // If the click is on the marked object it's a doubleclick and will open the modal.
-            if (obj == this.markedObject) {
-                // Prevents further draging after doubleclick.
-                obj.closeDragElement();
-                this.modal.show(obj);
-                window.onclick = function (event) {
-                    if (event.target == this.modal.element) {
-                        this.modal.close();  
-                    }
-                }.bind(this)
-            } else {
-                if (this.markedObject != null) {
-                    this.removeMarked();
-                }
-                this.markedObject = obj;
-            }
-        })
-
-        eventEmitter.on("outputClicked", (id) => {   
-            this.markedOutput = id;
-        })
-        
-        eventEmitter.on("inputClicked", (id) => {
-            if (id == this.markedOutput) {
-                return;
-            }
-
-            else if (this.markedOutput != ""){
-                let currNode = this.objects.find((temp) => {
-                    return temp.id == id;
-                })
-        
-                let prevNode = this.objects.find((temp) => {
-                    return temp.id == this.markedOutput;
-                })
-
-                let connector = {};
-                if (!currNode.input.connections.includes(this.markedOutput)) {
-                    currNode.input.connections.push(this.markedOutput);
-                    prevNode.output.connections.push(currNode.id);
-
-                    connector = new Connector(currNode.id + prevNode.id, prevNode, currNode);
-                    prevNode.registerConnectorUpdater("", connector.updateConnections);
-                    currNode.registerConnectorUpdater("", connector.updateConnections);
-                    connector.element.classList.add("connector");
-                    this.attach(connector);
-                    this.connectorList.push(connector);
-                }
-                else {
-                    connector = this.connectorList.find((c) => {
-                        return c.id == currNode.id + prevNode.id; 
-                    });
-                }
-                this.markedOutput = "";
-                connector.updateConnections();
-            } 
-        })
+        eventEmitter.on("clicked", this.objectClicked);
+        eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
+        eventEmitter.on("inputClicked", this.inputClicked);
     }
+
+    objectClicked(id, e) {
+        /*
+            Set the mouseevent to objectClick to compare the
+            event on workspace to determine if it's a "mark off" or click on object.
+        */
+        
+        this.objectClick = e;
+        // Finds the correct node in the created nodes.
+        let obj = this.objects.find((obj) => {
+            return obj.id == id;
+        });
+
+        // If the click is on the marked object it's a doubleclick and will open the modal.
+        if (obj == this.markedObject) {
+            // Prevents further draging after doubleclick.
+            obj.closeDragElement();
+            this.modal.show(obj);
+            window.onclick = function (event) {
+                if (event.target == this.modal.element) {
+                    this.modal.close();  
+                }
+            }.bind(this)
+        } else {
+            if (this.markedObject != null) {
+                this.removeMarked();
+            }
+            this.markedObject = obj;
+        }
+    }
+
+    inputClicked(id) {
+
+        if (id == this.markedOutput) {
+            return;
+        }
+
+        else if (this.markedOutput != ""){
+            let currNode = this.objects.find((temp) => {
+                return temp.id == id;
+            })
+    
+            let prevNode = this.objects.find((temp) => {
+                return temp.id == this.markedOutput;
+            })
+
+            let connector = {};
+            if (!currNode.input.connections.includes(this.markedOutput)) {
+                currNode.input.connections.push(this.markedOutput);
+                prevNode.output.connections.push(currNode.id);
+
+                connector = new Connector(currNode.id + prevNode.id, prevNode, currNode);
+                prevNode.registerConnectorUpdater("", connector.updateConnections);
+                currNode.registerConnectorUpdater("", connector.updateConnections);
+                connector.element.classList.add("connector");
+                this.attach(connector);
+                this.connectorList.push(connector);
+            }
+            else {
+                connector = this.connectorList.find((c) => {
+                    return c.id == currNode.id + prevNode.id; 
+                });
+            }
+            this.markedOutput = "";
+            connector.updateConnections();
+        } 
+    }
+
+
 
     didAttach(parent) {
         const sizeButton = new SizeButton();
@@ -113,10 +124,10 @@ class Container extends View {
         this.attach(this.modal);
         
         const save = new SaveButton();
-        this.attach(save)
+        this.attach(save);
 
         const load = new LoadButton();
-        this.attach(load)
+        this.attach(load);
 
         eventEmitter.on('save', () =>  {
             this.saveClass.saveFlow(this.objects)
@@ -157,46 +168,59 @@ class Container extends View {
     }
 
 
+    removeNode() { // 68
+    if (this.markedObject != null) {
+            this.objects.splice( this.objects.indexOf(this.markedObject), 1 );
+            for( let i = this.connectorList.length - 1 ; i >= 0 ; i-- ) {
+                if (this.connectorList[i].id.includes(this.markedObject.id) ) {
+                    let connector = this.connectorList[i];
+                    this.connectorList.splice(i, 1);
+                    let connectorElement = document.getElementById(connector.id);
+                    connectorElement.parentElement.removeChild(connectorElement);
+                }
+            }
+            let nodeElement = document.getElementById(this.markedObject.id);
+            nodeElement.parentElement.removeChild(nodeElement);
+            this.markedObject = null;
+        }
+    }
+
+    copyNode() {
+        if (this.markedObject != null) {
+            // Save a copy without a reference to the original object.
+            document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
+            this.copyObject = new FlowchartNode(uuidv1());
+            this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
+        }
+    }
+
+    pasteNode() {
+        if (this.copyObject != null) {
+            //Create a new object based on the copy and add it to the workspace
+            let pasteObject = new FlowchartNode(uuidv1());
+            pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
+            this.addBox(pasteObject);
+        }
+    }
+
     onKeyPress(e){
 
         if(e.ctrlKey){
             switch(e.keyCode) {
                 case 67: 
                     // 67 = C Copy
-                    if (this.markedObject != null) {
-                        // Save a copy without a reference to the original object.
-                        document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
-                        this.copyObject = new FlowchartNode(uuidv1());
-                        this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
-                    }
+                    this.copyNode();
                     break;
 
                 case 86:
                     // 86 = V Paste
-                    if (this.copyObject != null) {
-                        //Create a new object based on the copy and add it to the workspace
-                        let pasteObject = new FlowchartNode(uuidv1());
-                        pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-                        this.addBox(pasteObject);
-                    }
+                    this.pasteNode();
                     break;
 
                 case 68:
                     // 68 = D Remove
                     e.preventDefault();
-                    if (this.markedObject != null) {
-                        this.objects.splice( this.objects.indexOf(this.markedObject), 1 );
-                        for( let i = this.connectorList.length - 1 ; i >= 0 ; i-- ) {
-                            if (this.connectorList[i].id.includes(this.markedObject.id) ) {
-                                let connectorElement = document.getElementById(this.connectorList[i].id);
-                                connectorElement.parentElement.removeChild(connectorElement);
-                                this.connectorList.splice(i, 1);
-                            }
-                        }
-                        let nodeElement = document.getElementById(this.markedObject.id);
-                        nodeElement.parentElement.removeChild(nodeElement);
-                        this.markedObject = null;
-                    }
+                    this.removeNode()
                     e.preventDefault();
                     break;
             }
@@ -204,7 +228,7 @@ class Container extends View {
     }
 
     render() {
-        this.child_views.forEach(c => c.render());
+        //this.child_views.forEach(c => c.render());
         this.setHeight(this.height)
         this.setWidth(this.width)
         return this.element;
@@ -253,7 +277,6 @@ class Container extends View {
     }
 
     addBox(box) {
-
         this.objects.push(box);
         this.attach(box);
         box.onScrolled(this.childScrolled);

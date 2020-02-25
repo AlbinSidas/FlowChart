@@ -1,59 +1,57 @@
 import elementString from '../static/views/modal.html';
 import Button from 'Base/button.js';
-import View from 'Base/view.js';
-import SaveObject from './saveObject.js';
-import styleClasses from 'Styles/modal-buttons.css';
-
+import SaveObject from './saveObj.js';
+import View, {InlineView} from 'Base/view.js';
 import eventEmitter from 'Singletons/event-emitter.js';
+import styleClasses from 'Styles/modal-buttons.css';
 
 class Modal extends View
 {
   constructor() {
-    super(elementString);
+    super();
+    this.setHtml(elementString)
     this.obj = {};
     this.render = this.render.bind(this);
+  
+    //lägg in sökruta här för att filtrera i dropdown --> <!-- Gör en loop här över de element som ligger i dropdownlistan som matchar de funktionsdefinitioner som sökes--> <!-- <li><a href="#!">one</a></li> <li><a href="#!">two</a></li> <li class="divider" tabindex="-1"></li> <li><a href="#!">three</a></li> <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
+    this.modalTitle   = InlineView`<div class="modalHeader"><span id="nodeid"></span>
+                                      <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load</a>
+                                      <ul id='modalDropdown' class='dropdown-content'>
+                                        <li><a href="#!">one</a></li> 
+                                        <li><a href="#!">two</a></li> 
+                                        <li class="divider" tabindex="-1"></li> 
+                                        <li><a href="#!">three</a></li> 
+                                        <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> 
+                                        <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
+                                      </ul>
+                                    </div>`;
+
+    this.modalContent = InlineView`<div class="modalContent"></div>`;
+    this.modalFooter  = InlineView`<div class="modalFooter">
+                                      <button class="btn" id="saveModalButton">Save</button>
+                                      <button class="btn" id="closeModalButton">Close</button>
+                                  </div>`;
+  }
+
+  didAttach(parent) {
+    this.attach(this.modalTitle)
+    this.attach(this.modalContent)
+    this.attach(this.modalFooter)
     
     document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.dropdown-trigger');
-      var options = {
+      let elems = document.querySelectorAll('.dropdown-trigger');
+      let options = {
         'alginment': 'right', 
         'autotrigger': true,
         'coverTrigger': false,
         'closeOnClick': true,
         'hover':false
       }
+      console.log(elems)
       M.Dropdown.init(elems, options);
+      console.log("kaka")
     });
-  }
 
-  show(obje) {
-    this.obj = obje;
-    function addContentToModal(title, content, footer, obj) {
-      let idField = document.getElementById("nodeid");
-      idField.classList.add(styleClasses.idText);
-      idField.textContent = "ID: " + obj.id.toString();
-      setConent(content, obj);
-	    
-	    function setConent(content, obj) {
-		  content.innerHTML = `
-                            <div id="boxtime">
-                              Name: <input type="text" id="name" value="${obj.getName()}"> </br>
-                              Input: <input type="text" id="inputBox" value="${obj.input.getValue()}"> </br>
-                              Output: <input type="text" id="outputBox" value="${obj.output.getValue()}"> </br>
-                              Description: <input type="text" id="fundescBox" value="${obj.functionDescription}">
-                            </div>`;
-	    }
-	  }
-    this.element.style.display = "block";
-    let children = this.element.childNodes;
-    let modalTitle   = children[1];
-    let modalContent = children[3];
-    let modalFooter  = children[5];
-    addContentToModal(modalTitle, modalContent, modalFooter, this.obj);
-  }
-
-  didAttach() {
-    super.didAttach(parent);
     this.closeButton = new CloseButton();
     this.saveButton  = new SaveButton();
     this.loadButton  = new LoadButton();
@@ -83,11 +81,27 @@ class Modal extends View
     })
   }
 
+  show(object) {
+      this.obj = object;
+      this.element.style.display = "block";
+      let idField = document.getElementById("nodeid");
+      idField.classList.add(styleClasses.idText);
+      idField.textContent = "ID: " + this.obj.id.toString();
+	    this.modalContent.changeHtml(`
+                            <div id="boxtime">
+                              Name: <input type="text" id="name" value=""> ${this.obj.getName()} </br>                       
+                              Input: <input type="text" id="inputBox" value="${this.obj.input.getValue()}"> </br>
+                              Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
+                              Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
+                            </div>`)
+      
+  }
+
   _save() {
     this.obj.setName(document.getElementById("name").value);
     this.obj.input.setValue(document.getElementById("inputBox").value);
     this.obj.output.setValue(document.getElementById("outputBox").value);
-    this.obj.functionDescription = document.getElementById("fundescBox").value;
+    this.obj.functionDescription = document.getElementById("funcdescBox").value;
   }
 
   close() {
@@ -96,14 +110,14 @@ class Modal extends View
   }
 
   render() {
-    this.child_views.forEach(c => c.render());
     return this.element;
   }
 }
 
 class CloseButton extends Button {
   constructor() {
-      super(document.getElementById('closeModalButton'));
+      super();
+      this.setHtml(document.getElementById('closeModalButton'));
       this.element = document.getElementById('closeModalButton');
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
@@ -118,7 +132,8 @@ class CloseButton extends Button {
 
 class SaveButton extends Button {
   constructor() {
-      super(document.getElementById('saveModalButton'));
+      super();
+      this.setHtml(document.getElementById('saveModalButton'));
       this.element = document.getElementById('saveModalButton');
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
@@ -133,7 +148,8 @@ class SaveButton extends Button {
 
 class LoadButton extends Button {
   constructor() {
-      super(document.getElementById('loadModalButton'));
+      super();
+      this.setHtml(document.getElementById('loadModalButton'));
       this.element = document.getElementById('loadModalButton');
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
