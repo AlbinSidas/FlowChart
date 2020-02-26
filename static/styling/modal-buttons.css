@@ -7,18 +7,9 @@
 .buttonLoad {
     margin: 1%;
     color: black;
-    /* justify-content: space-between;
-    align-self: flex-end;
-    */
-
 }
 
 .idText {
-    /*
-    justify-content: space-between;
-
-    align-self: flex-start;
-    */
     margin-right: auto;
     color: blue;
 }

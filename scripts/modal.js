@@ -11,18 +11,22 @@ class Modal extends View
     super();
     this.setHtml(elementString)
     this.obj = {};
+    this.functionDefinitions = [];
     this.render = this.render.bind(this);
-  
-    //lägg in sökruta här för att filtrera i dropdown --> <!-- Gör en loop här över de element som ligger i dropdownlistan som matchar de funktionsdefinitioner som sökes--> <!-- <li><a href="#!">one</a></li> <li><a href="#!">two</a></li> <li class="divider" tabindex="-1"></li> <li><a href="#!">three</a></li> <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
-    this.modalTitle   = InlineView`<div class="modalHeader"><span id="nodeid"></span>
-                                      <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load</a>
-                                      <ul id='modalDropdown' class='dropdown-content'>
-                                        <li><a href="#!">one</a></li> 
+    /* 
+    <li><a href="#!">one</a></li> 
                                         <li><a href="#!">two</a></li> 
                                         <li class="divider" tabindex="-1"></li> 
                                         <li><a href="#!">three</a></li> 
                                         <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> 
                                         <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
+    */
+
+    //lägg in sökruta här för att filtrera i dropdown --> <!-- Gör en loop här över de element som ligger i dropdownlistan som matchar de funktionsdefinitioner som sökes--> <!-- <li><a href="#!">one</a></li> <li><a href="#!">two</a></li> <li class="divider" tabindex="-1"></li> <li><a href="#!">three</a></li> <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
+    this.modalTitle   = InlineView`<div class="modalHeader"><span id="nodeid"></span>
+                                      <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load</a>
+                                      <ul id='modalDropdown' class='dropdown-content'>
+                                        
                                       </ul>
                                     </div>`;
 
@@ -47,9 +51,7 @@ class Modal extends View
         'closeOnClick': true,
         'hover':false
       }
-      console.log(elems)
       M.Dropdown.init(elems, options);
-      console.log("kaka")
     });
 
     this.closeButton = new CloseButton();
@@ -62,8 +64,9 @@ class Modal extends View
 
     eventEmitter.on('save-modal', () => {
       console.log("Spara ner all data på ett snyggt sätt och skicka till databasen");
+      // Ha en failsafe för att se vilka object som finns i listan över sedan tidigare sparade objekt föra tt inte spara samma flera gånger? Hur ska vi göra versionhanteringen?
       this._save();
-      let saveObject = new SaveObject( obj.name, 
+      let saveObject = new SaveObject( this.obj.name, 
                                        this.obj.functionDescription, 
                                        /* Vet ej hur vi vill göra vid denna delen av spara nod, kanske ha en spara funktionsdefinition som ärver från saveObject? eller bara annan funktion?*/
                                        100, 
@@ -73,10 +76,11 @@ class Modal extends View
                                        this.obj.input.connections, 
                                        this.obj.output.connections )
       
-
+      this.functionDefinitions.push(saveObject);
     })
 
     eventEmitter.on('load-modal', () => {
+      // Måste skapa en 2-way binding till listan med functionsdefinitioner som funnits sedan tidigare
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
     })
   }
