@@ -14,20 +14,7 @@ class Modal extends View
     this.functionDefinitions = [];
     this.loadList = [];
     this.render = this.render.bind(this);
-    /* 
-    <div viewclass:listview>
-    <li><a href="#!">one</a></li> 
-                                        <li><a href="#!">two</a></li> 
-                                        <li class="divider" tabindex="-1"></li> 
-                                        <li><a href="#!">three</a></li> 
-                                        <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> 
-                                        <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
-    </div>
-                                        */
-    //this.loadList = ``
-    //${list.render()}
-    //lägg in sökruta här för att filtrera i dropdown --> <!-- Gör en loop här över de element som ligger i dropdownlistan som matchar de funktionsdefinitioner som sökes--> <!-- <li><a href="#!">one</a></li> <li><a href="#!">two</a></li> <li class="divider" tabindex="-1"></li> <li><a href="#!">three</a></li> <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
-    
+
     this.modalTitle   = InlineView`<div class="modalHeader"><span id="nodeid"></span>
                                       <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
                                       <ul id='modalDropdown' class='dropdown-content' style="max-height: 500px; ">
@@ -67,7 +54,6 @@ class Modal extends View
 
     let input = document.getElementById('loadFunctionInput');
     input.addEventListener('keyup', () => {
-      // Filtrera loadList
       this.updateLoadList(input.value);
       this.updateLoadListDOM();
     });
@@ -87,6 +73,11 @@ class Modal extends View
     this.closeButton = new CloseButton();
     this.saveButton  = new SaveButton();
     this.loadButton  = new LoadButton();
+
+    eventEmitter.on('listClick', (element) => {
+      console.log(element)
+      console.log("listClick");
+    })
 
     eventEmitter.on('close-modal', () => {
       this.close();
@@ -110,7 +101,7 @@ class Modal extends View
     })
 
     eventEmitter.on('load-modal', () => {
-      // Måste skapa en 2-way binding till listan med functionsdefinitioner som funnits sedan tidigare
+      // Kan vara onödig
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
     })
   }
@@ -128,12 +119,13 @@ class Modal extends View
     let dropdown = document.getElementById('modalDropdown');
 
     while( dropdown.childElementCount > 1) {
-      console.log()
       dropdown.removeChild(dropdown.lastChild); 
     }
     let htmlList = '';
 
     for (let i = 0; i < this.loadList.length; i++) {
+      let list = new LoadItem();
+      htmlList += list.render(); 
       htmlList += `<li> ${this.loadList[i]} </li>`;
     }
 
@@ -220,6 +212,22 @@ class LoadButton extends Button {
 
   onClick() {
     eventEmitter.emit('load-modal');
+  }
+}
+
+class LoadItem extends View {
+  constructor() { 
+      super()
+      this.setHtml('<li> </li>')
+  }
+
+  didAttach(parent) {
+      super.didAttach(parent)
+      this.element.onclick = this.onClick
+  }
+
+  onClick(this) {
+    eventEmitter.emit('listClick', this);
   }
 }
 
