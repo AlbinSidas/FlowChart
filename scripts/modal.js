@@ -4,7 +4,6 @@ import SaveObject from './saveObj.js';
 import View, {InlineView} from 'Base/view.js';
 import eventEmitter from 'Singletons/event-emitter.js';
 import styleClasses from 'Styles/modal-buttons.css';
-import AUVButton from './adduservariable-button.js'
 
 class Modal extends View
 {
@@ -33,6 +32,7 @@ class Modal extends View
 
     this.modalContent = InlineView`<div class="modalContent"></div>`;
     this.modalFooter  = InlineView`<div class="modalFooter">
+                                      <button class="btn" id="addModalButton">Add</button>
                                       <button class="btn" id="saveModalButton">Save</button>
                                       <button class="btn" id="closeModalButton">Close</button>
                                   </div>`;
@@ -58,15 +58,6 @@ class Modal extends View
   }
 
   didAttach(parent) {
-    const add = new AUVButton();
-    this.attach(add)
-
-    eventEmitter.on('addThings', () =>  {
-      //knappen Add lägger till ett nytt objekt i 'userMadeVariables' och uppdaterar modal
-      this.obj.userMadeVariables[document.getElementById('nameInp').value] = document.getElementById('valInp').value;
-      this.uppdateList();
-    })
-
     this.attach(this.modalTitle)
     this.attach(this.modalContent)
     this.attach(this.modalFooter)
@@ -86,6 +77,7 @@ class Modal extends View
     this.closeButton = new CloseButton();
     this.saveButton  = new SaveButton();
     this.loadButton  = new LoadButton();
+    this.addButton   = new AddButton()
 
     eventEmitter.on('close-modal', () => {
       this.close();
@@ -112,6 +104,12 @@ class Modal extends View
       // Måste skapa en 2-way binding till listan med functionsdefinitioner som funnits sedan tidigare
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
     })
+
+    eventEmitter.on('addThings', () =>  {
+      //knappen Add lägger till ett nytt objekt i 'userMadeVariables' och uppdaterar modal
+      this.obj.userMadeVariables[document.getElementById('nameInp').value] = document.getElementById('valInp').value;
+      this.uppdateList();
+    })
   }
 
   show(object) {
@@ -126,7 +124,9 @@ class Modal extends View
                               Input: <input type="text" id="inputBox" value="${this.obj.input.getValue()}"> </br>
                               Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
                               Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}"> </br>
+                              Add new variable:
                               <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
+                              Variables:
                               <ul id="cVarList"></ul>
                             </div>`)
       this.uppdateList();
@@ -199,6 +199,21 @@ class LoadButton extends Button {
 
   onClick() {
     eventEmitter.emit('load-modal');
+  }
+}
+class AddButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementById('addModalButton'));
+      this.element = document.getElementById('addModalButton');
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.buttonFooterAdd);
+  }
+
+  onClick() {
+    eventEmitter.emit('addThings');
   }
 }
 
