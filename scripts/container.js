@@ -34,6 +34,8 @@ class Container extends View {
         this.mouseY = 0;
         this.sizeDelta = 200
 
+        this.flowchartList = [];
+
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", (id, e) => {
             /*
@@ -103,8 +105,22 @@ class Container extends View {
                 }
                 this.markedOutput = "";
                 connector.updateConnections();
+
+                console.log("PREVIOUS NODE:"+ prevNode.output.connections);
+                console.log("CURRENT NODE:" + currNode.id);
             } 
         })
+
+        eventEmitter.on("createRunnable", (id) => {   
+            console.log("in eventemitter createrunnable");
+            recursiveFlowchartCreation(id, this.objects, this.flowchartList);
+            console.log("after recursiveFlowchartCreation function has run");
+
+            for (node in flowchartList){
+                console.log(node.functionDescripton);
+            }
+        })
+  
     }
 
     didAttach(parent) {
@@ -266,5 +282,26 @@ class Container extends View {
     }
 
 }
+
+function recursiveFlowchartCreation(id, objects, flowchartList) {
+    //Recursivly runs through all nodes and adds them to a list in the order of left to right from lowest and up.
+    let outputNode = objects.find((temp) => {
+        return temp.id == id;
+    });
+    flowchartList.push(outputNode);
+
+
+    for (let i = 0; i < outputNode.output.connections.length; i++){
+        let inputNode = objects.find((temp) => {
+            return temp.id == outputNode.output.connections[i];
+        
+        });
+        //flowchartList.push(inputNode)       
+        recursiveFlowchartCreation(inputNode.id, objects, flowchartList);
+    }
+
+    console.log("Nu är " + outputNode.id + " klar :)");
+}
+
 
 export default Container;

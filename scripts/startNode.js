@@ -11,7 +11,7 @@ class StartNode extends View {
 
         this.onClick = this.onClick.bind(this);
         
-        this.posX = 1150;
+        this.posX = 910;
         this.posY = 30;
 
         this.element.classList.add(style.startnode);
@@ -24,7 +24,7 @@ class StartNode extends View {
         this.functionDescription = "STARTNODE FTW"
 
         this.output = new NodeIO(this, "box-start");
-        this.input  = new NodeIO(this, "box-dummy");
+        //this.input  = new NodeIO(this, "box-dummy");
         
 
         this.onScrolledCallbacks = [];
@@ -32,10 +32,17 @@ class StartNode extends View {
         
         this.attach(this.output);
         this.element.onclick = this.onClick;
-
-    
     }   
 
+    // createRunable(){
+    //     //Should the commandrows after each other depending on the connections in the flowchart.
+    //     //gör någotmed data
+    //     for (output in this.output.connections) {
+    //         console.log(output)
+            
+    //         output.run();
+    //     } 
+    // }
     
 
     onScrolled(callback) {
@@ -56,9 +63,8 @@ class StartNode extends View {
     }
 
     onClick(e) {
-        console.log("Click before emit");
-        eventEmitter.emit("clicked", this.id, e);
-        console.log("Click and emit works");
+        eventEmitter.emit("createRunnable", this.id, e);
+        console.log("EVENTEMITTER RAN ONCE");
     }
 
 }

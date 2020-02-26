@@ -64,8 +64,8 @@ body{
 
 .startnode{
     background-color: purple;
-    height: 3vh;
-    width: 3vw;
+    height: 5vh;
+    width: 5vw;
     position: absolute;
     border-radius: 10%;
     color: white;
@@ -75,35 +75,6 @@ body{
     z-index: 5;
 }
 
-.boxStart {
-    border-radius: 0px 0px 27.5px 27.5px;
-    width: 50px;
-    height: 25px;
-    margin-top: 34px;
-    margin-left: 11px;
-    background-color: black;
-    cursor: pointer;
-}
-
-.boxStartDummy {
-    visibility: hidden;
-    width: 0px;
-    height: 0px;
-    z-index: -3;
-}
-
-
-boxStartDummy
-/*Input circle*/
-.boxInput {
-    border-radius: 27.5px 27.5px 0px 0px;
-    height: 25px;
-    width: 50px;
-    margin-top: -25px;
-    margin-left: 25px;
-    background-color: green;
-    cursor: pointer;
-}
    
    
 :global .connector-line {
@@ -135,7 +106,35 @@ boxStartDummy
     background-color: red;
     cursor: pointer;
 }
+/* Startnode Output Half-Circle*/
+.boxStart {
+    border-radius: 0px 0px 27.5px 27.5px;
+    width: 50px;
+    height: 25px;
+    margin-top: 6vh;
+    margin-left: 1.2vw;
+    background-color: black;
+    cursor: pointer;
+    z-index: 3;
+}
+/* Invisible Dummy Node */
+.boxStartDummy {
+    visibility: hidden;
+    width: 0px;
+    height: 0px;
+    z-index: -3;
+}
 
+/*Input circle*/
+.boxInput {
+    border-radius: 27.5px 27.5px 0px 0px;
+    height: 25px;
+    width: 50px;
+    margin-top: -25px;
+    margin-left: 25px;
+    background-color: green;
+    cursor: pointer;
+}
 .flowchart_square {
     z-index: 10;
     width: 100px;

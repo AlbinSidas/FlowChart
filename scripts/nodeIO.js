@@ -56,6 +56,11 @@ class NodeIO extends View {
             return;
         }
     }
+
+    // run(){
+    //     this.parent.run();
+    // }
+
 }
 
 export default NodeIO;
