@@ -12,43 +12,73 @@ class Modal extends View
     this.setHtml(elementString)
     this.obj = {};
     this.functionDefinitions = [];
+    this.loadList = [];
     this.render = this.render.bind(this);
     /* 
+    <div viewclass:listview>
     <li><a href="#!">one</a></li> 
                                         <li><a href="#!">two</a></li> 
                                         <li class="divider" tabindex="-1"></li> 
                                         <li><a href="#!">three</a></li> 
                                         <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> 
                                         <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
-    */
-
+    </div>
+                                        */
+    //this.loadList = ``
+    //${list.render()}
     //lägg in sökruta här för att filtrera i dropdown --> <!-- Gör en loop här över de element som ligger i dropdownlistan som matchar de funktionsdefinitioner som sökes--> <!-- <li><a href="#!">one</a></li> <li><a href="#!">two</a></li> <li class="divider" tabindex="-1"></li> <li><a href="#!">three</a></li> <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
+    
     this.modalTitle   = InlineView`<div class="modalHeader"><span id="nodeid"></span>
-                                      <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load</a>
-                                      <ul id='modalDropdown' class='dropdown-content'>
-                                        
+                                      <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
+                                      <ul id='modalDropdown' class='dropdown-content' style="max-height: 500px; ">
+                                        <li><a href="#!"><input id="loadFunctionInput"> </input></a></li>
                                       </ul>
                                     </div>`;
 
     this.modalContent = InlineView`<div class="modalContent"></div>`;
     this.modalFooter  = InlineView`<div class="modalFooter">
-                                      <button class="btn" id="saveModalButton">Save</button>
+                                      <button class="btn" id="saveModalButton">Save function</button>
                                       <button class="btn" id="closeModalButton">Close</button>
                                   </div>`;
+
+    // hämta alla funktionstemplates
+    fetch('path', (templateNames) => {
+
+      // Ladda in dem i funktionslistan och loadlistan
+      this.functionDefinitions = templateNames;
+      this.loadList = templateNames;
+
+      // Uppdatera DOMen med alla funktionsobjekt
+    })
+
+    this.functionDefinitions.push("Kalle")
+    this.functionDefinitions.push("Kalle1")
+    this.functionDefinitions.push("Kalle2")
+    this.functionDefinitions.push("Kalle3")
+    this.functionDefinitions.push("Kalle4")
+    this.functionDefinitions.push("Kalle5")
+
   }
 
   didAttach(parent) {
     this.attach(this.modalTitle)
     this.attach(this.modalContent)
     this.attach(this.modalFooter)
+
+    let input = document.getElementById('loadFunctionInput');
+    input.addEventListener('keyup', () => {
+      // Filtrera loadList
+      this.updateLoadList(input.value);
+      this.updateLoadListDOM();
+    });
     
     document.addEventListener('DOMContentLoaded', function() {
       let elems = document.querySelectorAll('.dropdown-trigger');
       let options = {
         'alginment': 'right', 
-        'autotrigger': true,
+        'autotrigger': false,
         'coverTrigger': false,
-        'closeOnClick': true,
+        'closeOnClick': false,
         'hover':false
       }
       M.Dropdown.init(elems, options);
@@ -72,7 +102,7 @@ class Modal extends View
                                        100, 
                                        100, 
                                        
-                                       this.obj.id, 
+                                       this.obj.id,
                                        this.obj.input.connections, 
                                        this.obj.output.connections )
       
@@ -83,6 +113,33 @@ class Modal extends View
       // Måste skapa en 2-way binding till listan med functionsdefinitioner som funnits sedan tidigare
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
     })
+  }
+
+  updateLoadList(searchString) {
+    this.loadList = [];
+    for(let i = 0; i < this.functionDefinitions.length; i++){
+      if(this.functionDefinitions[i].includes(searchString)){
+        this.loadList.push(this.functionDefinitions[i]);
+      }
+    }
+  }
+
+  updateLoadListDOM() {
+    let dropdown = document.getElementById('modalDropdown');
+
+    while( dropdown.childElementCount > 1) {
+      console.log()
+      dropdown.removeChild(dropdown.lastChild); 
+    }
+    let htmlList = '';
+
+    for (let i = 0; i < this.loadList.length; i++) {
+      htmlList += `<li> ${this.loadList[i]} </li>`;
+    }
+
+    dropdown.insertAdjacentHTML('beforeend', htmlList);
+    dropdown.style.height = 'auto';
+    
   }
 
   show(object) {

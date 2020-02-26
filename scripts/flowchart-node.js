@@ -7,7 +7,6 @@ import NodeIO from './nodeIO.js';
 class FlowchartNode extends View {
     constructor(id){
         super()
-
         this.setHtml('<div></div>')
     
         //functions
