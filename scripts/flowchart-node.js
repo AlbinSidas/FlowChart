@@ -121,9 +121,19 @@ class FlowchartNode extends View {
         nextY = box_position_relative_to_window >= max_height_relative_to_window ? box_position_relative_to_container : nextY
         this.element.style.top  = `${this.posY}px`
         this.element.style.left = `${nextX}px`
+        eventEmitter.emit("dragged", nextX - this.posX ,  nextY - this.posY, this.id);
         this.posX = nextX;
         this.posY = nextY;
 
+        this._connectorUpdaters.forEach(callback => {
+            callback();
+        });
+    }
+    dragOthers(pxm, pym){
+        this.posX += pxm;
+        this.posY += pym;
+        this.element.style.top  = `${this.posY}px`
+        this.element.style.left = `${this.posX}px`
         this._connectorUpdaters.forEach(callback => {
             callback();
         });
@@ -149,13 +159,14 @@ class FlowchartNode extends View {
         this.offsetY = e.clientY - this.posY;
 
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})
-        document.onmousemove = (e) => { this.elementDrag(e)   };
-
+        document.onmousemove = (e) => {  this.elementDrag(e)   };
+        console.log(this.oldPosX)
         let x = 0
         let y = 0
         let shadow = ` box-shadow: ${x}px ${y}px 40px 20px #0ff;`;
         let elementStyle = document.getElementById(this.id).style.cssText;
         document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
+        //eventEmitter.emit("dragged", e);
      }
 
     onClick(e) {
