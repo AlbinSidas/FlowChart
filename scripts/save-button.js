@@ -8,7 +8,8 @@ import eventEmitter from 'Singletons/event-emitter.js'
 class SaveButton extends Button
 {
   constructor() {
-    super(elementString);
+    super();
+    this.setHtml(elementString)
     this.render = this.render.bind(this)
     this.name = "Save"
     this.onClick = this.onClick.bind(this);

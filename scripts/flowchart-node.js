@@ -6,7 +6,9 @@ import NodeIO from './nodeIO.js';
 
 class FlowchartNode extends View {
     constructor(id){
-        super('<div></div>')
+        super()
+
+        this.setHtml('<div></div>')
     
         //functions
         this.onClick          = this.onClick.bind(this);
@@ -27,7 +29,8 @@ class FlowchartNode extends View {
 
         this._connectorUpdaters = [];
         //flow
-        this.id = id;
+        this.id    = id;
+        this._name = "";
         this.functionDescription = "No function yet";
         this.userMadeVariables = {};
 
@@ -55,6 +58,7 @@ class FlowchartNode extends View {
         this.offsetY = other.offsetY;
         this.height = other.height;
         //flow
+        this._name = other.getName();
         this.functionDescription = other.functionDescription;
 
         //fullösning för att avreferera ist för this.userMadeVariables = other.userMadeVariables;
@@ -79,14 +83,22 @@ class FlowchartNode extends View {
         this.userMadeVariables = other.extra;
     }
 
-
     registerConnectorUpdater(id, func) {
         this._connectorUpdaters.push(func)
+    }
+
+    getName() {
+        return this._name;
+    }
+
+    setName(name) {
+        this._name = name;
     }
 
     unregisterConnectorUpdater(id) {
 
     }
+
     render() {
         this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
         return this.element;

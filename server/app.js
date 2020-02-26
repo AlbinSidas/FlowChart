@@ -10,9 +10,9 @@ const dbConfig     = config.db
 
 async function main() {
 
-    const app     = express()
-    const url     = `mongodb://${dbConfig.ip_addr}:${dbConfig.port}`;
-    const dbName  = dbConfig.db_name;
+    const app      = express();
+    const url      = `mongodb://${dbConfig.ip_addr}:${dbConfig.port}`;
+    const dbName   = dbConfig.db_name;
     await mongo.setup(url, dbName) //när du awaitar så kallar du på din promies then med resten av koden, kolla <Generators>
     app.use(bodyParser.json())
     app.use(cors({
@@ -49,7 +49,6 @@ async function main() {
 
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))
 }
-
 
 (function() {
    Promise.resolve(main());

@@ -3,7 +3,8 @@ import View from 'Base/view.js';
 class Connector extends View
 {
   constructor(id, prevNode, currNode) {
-    super("<div></div>");
+    super();
+    this.setHtml("<div></div>")
     this.render = this.render.bind(this);
     this.id = id;
     this.element.id = id;
