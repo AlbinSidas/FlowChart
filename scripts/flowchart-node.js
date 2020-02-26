@@ -56,11 +56,19 @@ class FlowchartNode extends View {
         this.height = other.height;
         //flow
         this.functionDescription = other.functionDescription;
-        this.userMadeVariables = other.userMadeVariables;
+
+        //fullösning för att avreferera ist för this.userMadeVariables = other.userMadeVariables;
+        //om nån kommer på ett bätre alternativ kän er välkommna att fixa
+        const keys = Object.keys(other.userMadeVariables)
+        for (const key of keys){
+            this.userMadeVariables[key] = other.userMadeVariables[key];
+        }
+        
     }
-    fillNode(other, mposX = other.posX, mposY = other.posY) {
-        this.posX = mposX;
-        this.posY = mposY;
+    fillNode(other) {
+        //fyller i data för en node baserat på ett metaobjekt från servern
+        this.posX = other.pX;
+        this.posY = other.pY;
         this.oldX = this.posX;
         this.oldY = this.posY;
         this.offsetX = other.offsetX;
