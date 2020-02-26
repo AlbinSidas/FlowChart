@@ -112,12 +112,18 @@ class Container extends View {
         })
 
         eventEmitter.on("createRunnable", (id) => {   
-            console.log("in eventemitter createrunnable");
+            
+            console.log("Before flowchart list clear" + this.flowchartList );
+            this.flowchartList = [];
+            this.flowchartList.length = 0;
+            console.log("After flowchart list clear" +this.flowchartList);
+            
+            
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
-            console.log("after recursiveFlowchartCreation function has run");
-
-            for (node in flowchartList){
-                console.log(node.functionDescripton);
+            
+            console.log("Finished list:")
+            for(let n = 0; n < this.flowchartList.length; n++){
+                console.log(this.flowchartList[n]);
             }
         })
   
@@ -288,8 +294,17 @@ function recursiveFlowchartCreation(id, objects, flowchartList) {
     let outputNode = objects.find((temp) => {
         return temp.id == id;
     });
-    flowchartList.push(outputNode);
+    let add = true
 
+
+    console.log("Current items in flowchartlist: "+ flowchartList);
+    for (let i = 0; i < flowchartList.length; i++){
+        if (outputNode.id == flowchartList[i].id){
+            add = false;
+        }     
+    }     
+    if (add) {flowchartList.push(outputNode);}
+    
 
     for (let i = 0; i < outputNode.output.connections.length; i++){
         let inputNode = objects.find((temp) => {
