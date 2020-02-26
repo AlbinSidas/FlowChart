@@ -23,7 +23,6 @@ class Container extends View {
         this.width = window.innerWidth;
         this.childScrolled = this.childScrolled.bind(this)
 
-        this.modal         = new Modal();      
 	    this.saveClass     = new Saving();
         this.objects       = [];
         this.markedObject  = null;
@@ -43,11 +42,9 @@ class Container extends View {
         this.inputClicked  = this.inputClicked.bind(this)
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
-        eventEmitter.on("clicked", this.objectClicked)
-
-        eventEmitter.on("outputClicked", (id) => this.markedOutput = id )
-        
-        eventEmitter.on("inputClicked", this.inputClicked)
+        eventEmitter.on("clicked", this.objectClicked);
+        eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
+        eventEmitter.on("inputClicked", this.inputClicked);
     }
 
     objectClicked(id, e) {
@@ -122,21 +119,24 @@ class Container extends View {
     didAttach(parent) {
         const sizeButton = new SizeButton();
         this.attach(sizeButton)
-	    const save = new SaveButton();
-        this.attach(save)
 
-	    eventEmitter.on('save', () =>  {
+        this.modal = new Modal();
+        this.attach(this.modal);
+        
+        const save = new SaveButton();
+        this.attach(save);
+
+        const load = new LoadButton();
+        this.attach(load);
+
+        eventEmitter.on('save', () =>  {
             this.saveClass.saveFlow(this.objects)
         })
 
-	    const load = new LoadButton();
-        this.attach(load)
-
-	    eventEmitter.on('load', () =>  {
+        eventEmitter.on('load', () =>  {
             this.saveClass.loadFlow(this.objects, this)
         })
- 
-        this.attach(this.modal)
+
         eventEmitter.on('increase_size', () =>  {
             this.increaseSize();
         })
@@ -277,7 +277,6 @@ class Container extends View {
     }
 
     addBox(box) {
-
         this.objects.push(box);
         this.attach(box);
         box.onScrolled(this.childScrolled);
