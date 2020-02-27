@@ -39,8 +39,8 @@ class Modal extends View
     })
 
     this.functionDefinitions.push("Kalle")
-    this.functionDefinitions.push("Kalle1")
-    this.functionDefinitions.push("Kalle2")
+    this.functionDefinitions.push("Zenit")
+    this.functionDefinitions.push("Felix")
     this.functionDefinitions.push("Kalle3")
     this.functionDefinitions.push("Kalle4")
     this.functionDefinitions.push("Kalle5")
@@ -75,9 +75,24 @@ class Modal extends View
     this.loadButton  = new LoadButton();
 
     eventEmitter.on('listClick', (element) => {
-      console.log(element)
-      console.log("listClick");
+      console.log(element.textContent)
+      /*
+      fetch(`path/till/hämta/enstaka/funcdesc/${element.textContent}`, (clickedDefinition) => {
+        loadDefinitionToModal(clickedDefinition);
+
+
+      })
+      */
     })
+
+    /*
+    loadDefinitionToModal(def) {
+      document.getElementById("name").value = def.getName();
+      document.getElementById("inputBox").value = def.input.getValue();
+      document.getElementById("outputBox").value = this.obj.output.getValue();
+      document.getElementById("funcdescBox").value = this.obj.functionDescription;
+    }
+    */
 
     eventEmitter.on('close-modal', () => {
       this.close();
@@ -99,11 +114,12 @@ class Modal extends View
       
       this.functionDefinitions.push(saveObject);
     })
-
-    eventEmitter.on('load-modal', () => {
+    /*
+  eventEmitter.on('load-modal', () => {
       // Kan vara onödig
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
     })
+    */
   }
 
   updateLoadList(searchString) {
@@ -121,17 +137,13 @@ class Modal extends View
     while( dropdown.childElementCount > 1) {
       dropdown.removeChild(dropdown.lastChild); 
     }
-    let htmlList = '';
 
     for (let i = 0; i < this.loadList.length; i++) {
-      let list = new LoadItem();
-      htmlList += list.render(); 
-      htmlList += `<li> ${this.loadList[i]} </li>`;
+      let listItem = new ListItem(this.loadList[i]);
+      dropdown.appendChild(listItem.render());
     }
 
-    dropdown.insertAdjacentHTML('beforeend', htmlList);
     dropdown.style.height = 'auto';
-    
   }
 
   show(object) {
@@ -215,18 +227,14 @@ class LoadButton extends Button {
   }
 }
 
-class LoadItem extends View {
-  constructor() { 
+class ListItem extends View {
+  constructor(innerValue) { 
       super()
-      this.setHtml('<li> </li>')
-  }
-
-  didAttach(parent) {
-      super.didAttach(parent)
+      this.setHtml(`<li> ${innerValue} </li>`)
       this.element.onclick = this.onClick
   }
 
-  onClick(this) {
+  onClick() {
     eventEmitter.emit('listClick', this);
   }
 }
