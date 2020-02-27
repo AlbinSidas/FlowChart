@@ -7,7 +7,7 @@ import eventEmitter from 'Singletons/event-emitter.js';
 class StartNode extends View {
 
     constructor(id){
-        super('<div></div>')
+        super('<div>Start :)</div>')
 
         this.onClick = this.onClick.bind(this);
         
