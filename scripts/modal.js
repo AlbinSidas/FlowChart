@@ -18,7 +18,7 @@ class Modal extends View
     this.modalTitle   = InlineView`<div class="modalHeader"><span id="nodeid"></span>
                                       <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
                                       <ul id='modalDropdown' class='dropdown-content' style="max-height: 500px; ">
-                                        <li><a href="#!"><input id="loadFunctionInput"> </input></a></li>
+                                        <li style="border-bottom:1px solid black"><a href="#!"><input id="loadFunctionInput"> </input></a></li>
                                       </ul>
                                     </div>`;
 
@@ -39,7 +39,7 @@ class Modal extends View
     })
 
     this.functionDefinitions.push("Kalle")
-    this.functionDefinitions.push("Zenit")
+    this.functionDefinitions.push("superlongonelinefunctiondefininitionexampleformeXD?")
     this.functionDefinitions.push("Felix")
     this.functionDefinitions.push("Kalle3")
     this.functionDefinitions.push("Kalle4")
@@ -114,12 +114,14 @@ class Modal extends View
       
       this.functionDefinitions.push(saveObject);
     })
-    /*
+    
   eventEmitter.on('load-modal', () => {
       // Kan vara onödig
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
+      // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
+      this.updateLoadList("");
+      this. updateLoadListDOM();
     })
-    */
   }
 
   updateLoadList(searchString) {
@@ -230,7 +232,8 @@ class LoadButton extends Button {
 class ListItem extends View {
   constructor(innerValue) { 
       super()
-      this.setHtml(`<li> ${innerValue} </li>`)
+      //lägg ut dessa grejer till extern css fil /Oskar 
+      this.setHtml(`<li style="padding: 15px 0; word-wrap: break-word; border-bottom:1px solid black"> ${innerValue} </li>`)
       this.element.onclick = this.onClick
   }
 
