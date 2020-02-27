@@ -32,6 +32,7 @@ class FlowchartNode extends View {
         this.id    = id;
         this._name = "";
         this.functionDescription = "No function yet";
+        this.userMadeVariables = {};
 
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output"); 
@@ -59,11 +60,19 @@ class FlowchartNode extends View {
         //flow
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
+
+        //fullösning för att avreferera ist för this.userMadeVariables = other.userMadeVariables;
+        //om nån kommer på ett bätre alternativ kän er välkommna att fixa
+        const keys = Object.keys(other.userMadeVariables)
+        for (const key of keys){
+            this.userMadeVariables[key] = other.userMadeVariables[key];
+        }
+        
     }
-    
-    fillNode(other, mposX = other.posX, mposY = other.posY) {
-        this.posX = mposX;
-        this.posY = mposY;
+    fillNode(other) {
+        //fyller i data för en node baserat på ett metaobjekt från servern
+        this.posX = other.pX;
+        this.posY = other.pY;
         this.oldX = this.posX;
         this.oldY = this.posY;
         this.offsetX = other.offsetX;
@@ -71,6 +80,7 @@ class FlowchartNode extends View {
         this.height = other.height;
         //flow
         this.functionDescription = other.functionDescription;
+        this.userMadeVariables = other.extra;
     }
 
     registerConnectorUpdater(id, func) {
@@ -111,9 +121,19 @@ class FlowchartNode extends View {
         nextY = box_position_relative_to_window >= max_height_relative_to_window ? box_position_relative_to_container : nextY
         this.element.style.top  = `${this.posY}px`
         this.element.style.left = `${nextX}px`
+        eventEmitter.emit("dragged", nextX - this.posX ,  nextY - this.posY, this.id);
         this.posX = nextX;
         this.posY = nextY;
 
+        this._connectorUpdaters.forEach(callback => {
+            callback();
+        });
+    }
+    dragOthers(pxm, pym){
+        this.posX += pxm;
+        this.posY += pym;
+        this.element.style.top  = `${this.posY}px`
+        this.element.style.left = `${this.posX}px`
         this._connectorUpdaters.forEach(callback => {
             callback();
         });
@@ -139,13 +159,14 @@ class FlowchartNode extends View {
         this.offsetY = e.clientY - this.posY;
 
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})
-        document.onmousemove = (e) => { this.elementDrag(e)   };
-
+        document.onmousemove = (e) => {  this.elementDrag(e)   };
+        console.log(this.oldPosX)
         let x = 0
         let y = 0
         let shadow = ` box-shadow: ${x}px ${y}px 40px 20px #0ff;`;
         let elementStyle = document.getElementById(this.id).style.cssText;
         document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
+        //eventEmitter.emit("dragged", e);
      }
 
     onClick(e) {
