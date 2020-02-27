@@ -1,6 +1,6 @@
 const _promisify = require('../util/promisify')
 
-const MongoProtocol = (db) => {
+const MongoProtocol = (db) => { // Base wrapper around mongo callbacks
     return {
         save: async (collectionName, data) =>  {
             const collection = db.collection(collectionName);
