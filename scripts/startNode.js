@@ -7,14 +7,15 @@ import eventEmitter from 'Singletons/event-emitter.js';
 class StartNode extends View {
 
     constructor(id){
-        super('<div>Start :)</div>')
+        super();
+        this.setHtml('<div>Start :]</div>');
 
         this.onClick = this.onClick.bind(this);
         
         this.posX = 910;
         this.posY = 30;
 
-        this.element.classList.add(style.startnode);
+        this.element.classList.add("startnode");
         this.element.setAttribute("style", 'margin-top:'+this.posY+'px; margin-left:'+this.posX+'px;');
         
         this.id = id;

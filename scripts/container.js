@@ -49,15 +49,15 @@ class Container extends View {
         eventEmitter.on("inputClicked", this.inputClicked);
         eventEmitter.on("createRunnable", (id) => {   
             
-        console.log("Before flowchart list clear" + this.flowchartList );
-        this.flowchartList = [];
-        this.flowchartList.length = 0;
-        console.log("After flowchart list clear" +this.flowchartList);
-        
-        
-        recursiveFlowchartCreation(id, this.objects, this.flowchartList);
-        
-        console.log("Finished list:")
+            console.log("Before flowchart list clear" + this.flowchartList );
+            this.flowchartList = [];
+            this.flowchartList.length = 0;
+            console.log("After flowchart list clear" +this.flowchartList);
+            
+            
+            recursiveFlowchartCreation(id, this.objects, this.flowchartList);
+            
+            console.log("Finished list:")
             for(let n = 0; n < this.flowchartList.length; n++){
                 console.log(this.flowchartList[n]);
             }
@@ -91,8 +91,6 @@ class Container extends View {
             if (this.markedObject.length != 0 && e.shiftKey == false) {
                 this.removeMarked();
             }
-            console.log(this.markedObject)
-            console.log(e)
             this.markedObject[this.markedObject.length] = obj;
         }
     }
