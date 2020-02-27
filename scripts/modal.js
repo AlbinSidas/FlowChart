@@ -75,7 +75,7 @@ class Modal extends View
     this.loadButton  = new LoadButton();
 
     eventEmitter.on('listClick', (element) => {
-      console.log(element.textContent)
+      console.log(element.textContent);
       /*
       fetch(`path/till/hämta/enstaka/funcdesc/${element.textContent}`, (clickedDefinition) => {
         loadDefinitionToModal(clickedDefinition);
@@ -110,7 +110,7 @@ class Modal extends View
                                        
                                        this.obj.id,
                                        this.obj.input.connections, 
-                                       this.obj.output.connections )
+                                       this.obj.output.connections );
       
       this.functionDefinitions.push(saveObject);
     })
@@ -160,7 +160,7 @@ class Modal extends View
                               Input: <input type="text" id="inputBox" value="${this.obj.input.getValue()}"> </br>
                               Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
                               Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
-                            </div>`)
+                            </div>`);
       
   }
 
@@ -231,10 +231,9 @@ class LoadButton extends Button {
 
 class ListItem extends View {
   constructor(innerValue) { 
-      super()
-      //lägg ut dessa grejer till extern css fil /Oskar 
-      this.setHtml(`<li style="padding: 15px 0; word-wrap: break-word; border-bottom:1px solid black"> ${innerValue} </li>`)
-      this.element.onclick = this.onClick
+      super();
+      this.setHtml(`<li class='loadDropdownItem'>${innerValue}</li>`);
+      this.element.onclick = this.onClick;
   }
 
   onClick() {
@@ -242,5 +241,5 @@ class ListItem extends View {
   }
 }
 
-
+ 
 export default Modal;
