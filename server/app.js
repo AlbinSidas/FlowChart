@@ -1,8 +1,7 @@
 const assert          = require('assert');
 const config          = require('./config.js')
 const express         = require('express')
-const mongo           = require('./mongo/mongo.js')
-const MongoController = require('./mongo/mongo_controller') 
+const mongo           = require('./mongo/mongo_controller') 
 const cors            = require('cors')
 const bodyParser      = require('body-parser')
 const fs              = require('fs');
@@ -19,9 +18,11 @@ async function main() {
     const app          = express()
     const url          = `mongodb://${dbConfig.ip_addr}:${dbConfig.port}`;
     const dbName       = dbConfig.db_name;
-    const db           = await mongo.setup(url, dbName); //när du awaitar så kallar du på din promies then med resten av koden, kolla <Generators>
+    
+    // Kanske sätta ihopp de här två till en sak
+    const db              = await mongo.setup(url, dbName); //när du awaitar så kallar du på din promies then med resten av koden, kolla <Generators>
     //const mongoHandler = MongoHandler(db);
-    const mongoController = new MongoController(db)
+    const mongoController = new mongo.MongoController(db)
 
     app.use(bodyParser.json());
     
@@ -75,7 +76,7 @@ async function main() {
 
 
     app.get('/funcdef', async(req, res) => {
-        const databaseOps = await mongoController.funcDefHandler.getAll();
+        const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
         res.json(Response("", databaseOps))
     });
 

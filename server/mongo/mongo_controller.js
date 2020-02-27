@@ -1,4 +1,6 @@
 const FuncDefHandler = require("./func_def_handler") 
+const MongoClient    = require('mongodb').MongoClient;
+const assert         = require('assert');
 
 class MongoController {
     constructor(db) {
@@ -10,4 +12,15 @@ class MongoController {
     */
 }
 
-module.exports = MongoController;
+async function setup(url, dbName) { // kan abstraheras om man vill
+    return await new Promise((accept, reject) => {
+        MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true } , function(err, client) {
+            assert.equal(null, err);
+            const db = client.db(dbName); 
+            //client.close();
+            accept(db)
+        });
+    })
+}
+
+module.exports = {MongoController, setup};
