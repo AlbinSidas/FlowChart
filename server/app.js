@@ -1,23 +1,29 @@
-const assert       = require('assert');
-const config       = require('./config.js')
-const express      = require('express')
-const mongo        = require('./mongo.js')
-const cors         = require('cors')
-const bodyParser   = require('body-parser')
-const fs           = require('fs');
-const serverConfig = config.server
-const dbConfig     = config.db 
-const MongoHandler = mongo.MongoHanlder;
-const Schema       = require('./schema.js')
+const assert          = require('assert');
+const config          = require('./config.js')
+const express         = require('express')
+const mongo           = require('./mongo/mongo_controller') 
+const cors            = require('cors')
+const bodyParser      = require('body-parser')
+const fs              = require('fs');
+const serverConfig    = config.server
+const dbConfig        = config.db 
+const MongoHandler    = mongo.MongoHanlder;
+const Schema          = require('./schema.js')
+const apiAux          = require('./api_auxiliary')
+const Response        = apiAux.Response
+
 
 async function main() {
 
     const app          = express()
     const url          = `mongodb://${dbConfig.ip_addr}:${dbConfig.port}`;
     const dbName       = dbConfig.db_name;
-    const db           = await mongo.setup(url, dbName); //när du awaitar så kallar du på din promies then med resten av koden, kolla <Generators>
-    const mongoHandler = MongoHandler(db);
     
+    // Kanske sätta ihopp de här två till en sak
+    const db              = await mongo.setup(url, dbName); //när du awaitar så kallar du på din promies then med resten av koden, kolla <Generators>
+    //const mongoHandler = MongoHandler(db);
+    const mongoController = new mongo.MongoController(db)
+
     app.use(bodyParser.json());
     
     app.use(cors({
@@ -27,11 +33,12 @@ async function main() {
         "allowedHeaders": "Origin, X-Requested-With, Content-Type, Accept",
         "preflightContinue": true
     }))
+    
     console.log("Back to main generated function")
     app.get('/', (req, res) => res.json({'apa':'Hello World!'}))
 
     app.put('/saved', function (req, res){
-        fs.writeFile("./saved/"+req.body.filename+".json",JSON.stringify(req.body.data),function (err) {
+        fs.writeFile("./saved/"+req.body.filename+".json", JSON.stringify(req.body.data),function (err) {
             if (err) throw err;
             console.log('File is created successfully.');
           }); 
@@ -57,14 +64,23 @@ async function main() {
         try {
              await Schema.validate(data, Schema.jsonSchemas.funcDefSchema);
         } catch (InvalidTypeError) {
-            console.log(InvalidTypeError)
+            console.log(InvalidTypeError.message)
             res.status(400);
             res.send(InvalidTypeError.message);
+            return
         }
-        mongoHandler.saveFunctionDef(data)
+        const databaseOps = await mongoController.funcDefHandler.save(data)
         res.status(200)
-        res.end("express");
+        res.json(Response("Save function definition", databaseOps));
     });
+
+
+    app.get('/funcdef', async(req, res) => {
+        const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
+        res.json(Response("", databaseOps))
+    });
+
+
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))
 }
 
