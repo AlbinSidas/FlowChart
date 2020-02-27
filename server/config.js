@@ -1,6 +1,3 @@
-
-
-
 const config = {
     server: { 
         port: 3000 
@@ -11,7 +8,6 @@ const config = {
         db_name: 'foran_flow_chart'
     }
 }
-
 
 module.exports = config;
 

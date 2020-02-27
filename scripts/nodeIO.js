@@ -4,8 +4,8 @@ import style from 'Styles/style.css';
 
 class NodeIO extends View {
     constructor(parent, inputOutput) {
-        super('<div></div>')
-
+        super()
+        this.setHtml('<div></div>')
         this.type = inputOutput;
         this.parent = parent;
         this.onClick = this.onClick.bind(this);

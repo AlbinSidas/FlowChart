@@ -13,7 +13,6 @@ function main() {
     workspaceObject.addBox(startNode);
 
     function createNewObject(){
-        // Funktion som kallas då knappen "skapa nytt objekt trycks"
         if (document.getElementById("element-picker").style.visibility == "hidden"){
             document.getElementById("element-picker").style.visibility = "visible";
         }

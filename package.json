@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "webpack-dev-server"
+    "start:dev": "webpack-dev-server",
+    "webpack":  "webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -19,9 +20,16 @@
   "homepage": "https://github.com/AlbinSidas/FlowChart#readme",
   "dependencies": {
     "events": "^3.1.0",
+    "materialize-css": "^1.0.0-rc.2",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-transform-arrow-functions": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
     "css-loader": "^3.4.2",
     "file-loader": "^5.0.2",
     "html-loader": "^0.5.5",

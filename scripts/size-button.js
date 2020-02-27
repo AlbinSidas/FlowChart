@@ -8,7 +8,8 @@ import eventEmitter from 'Singletons/event-emitter.js'
 class SizeButtons extends View
 {
   constructor(){
-    super('<div></div>');
+    super();
+    this.setHtml('<div></div>')
   }
 
   didAttach(parent) {
@@ -31,13 +32,12 @@ class SizeButtons extends View
     this.element.classList.add(styleClasses.size_button);
     return this.element;
   }
-
 }
 
 class IncreaseSizeButton extends Button {
   constructor() {
-      super('<button type="button" name="button">Increase</button>');
-
+      super();
+      this.setHtml('<button type="button" name="button">Increase</button>')
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
     }
@@ -50,8 +50,8 @@ class IncreaseSizeButton extends Button {
 
 class DecreaseSizeButton extends Button {
   constructor() {
-    super('<button type="button" name="decrease_button">Decrease</button>');
-
+    super();
+    this.setHtml('<button type="button" name="decrease_button">Decrease</button>')
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
   }
@@ -63,8 +63,8 @@ class DecreaseSizeButton extends Button {
 
 class IncreaseHorizontalSizeButton extends Button {
   constructor() {
-      super('<button type="button" name="button_horizontal">Increase Width</button>');
-
+      super();
+      this.setHtml('<button type="button" name="button_horizontal">Increase Width</button>')
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
     }
@@ -77,8 +77,8 @@ class IncreaseHorizontalSizeButton extends Button {
 
 class DecreaseHorizontalSizeButton extends Button {
   constructor() {
-    super('<button type="button" name="decrease_button_horizontal">Decrease Width</button>');
-
+    super();
+    this.setHtml('<button type="button" name="decrease_button_horizontal">Decrease Width</button>')
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
   }

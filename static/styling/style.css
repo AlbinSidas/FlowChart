@@ -76,8 +76,6 @@ body{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-   
-   
 :global .connector-line {
     stroke-width: 10;
     stroke: black;
@@ -146,7 +144,7 @@ body{
 }
 
 /* The Modal (background) */
-:global .modal {
+:global .modalFrame {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 15; /* Sit on top */
@@ -160,24 +158,31 @@ body{
 }
 
 /* Modal Header */
-:global .modal-header {
+:global .modalHeader {
   margin: 15% auto 0;
   width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
   background-color: #BEBEBE;
 }
 
 /* Modal Footer */
-:global .modal-footer {
+:global .modalFooter {
   margin: 0 auto;
   width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
   background-color: #BEBEBE;
 }
 
 /* Modal Content/Box */
-:global .modal-content {
+:global .modalContent {
   margin: 0 auto;
   background-color: #fefefe;
   padding: 20px;
   border: 1px solid #888;
-  width: 77%; 
+  width: 77%;
+  /* align-content: right; */
 }

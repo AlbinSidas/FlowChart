@@ -1,0 +1,22 @@
+
+.buttonFooter {
+    color: black;
+    margin: 1%;
+}
+
+.buttonLoad {
+    margin: 1%;
+    color: black;
+}
+
+.idText {
+    margin-right: auto;
+    color: blue;
+}
+
+.buttonFooterAdd {
+    color: black;
+    position: absolute;
+    margin: 0.82%;
+    left: 10%;
+}

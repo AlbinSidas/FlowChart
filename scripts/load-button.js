@@ -8,7 +8,8 @@ import eventEmitter from 'Singletons/event-emitter.js'
 class LoadButton extends Button
 {
   constructor() {
-    super(elementString);
+    super();
+    this.setHtml(elementString)
     this.render = this.render.bind(this)
     this.name = "Load"
     this.onClick = this.onClick.bind(this);
@@ -19,7 +20,7 @@ class LoadButton extends Button
   }
 
   render() {
-    this.child_views.forEach(c => c.render());
+    //this.child_views.forEach(c => c.render());
     return this.element;
   }
     
