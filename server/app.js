@@ -1,16 +1,17 @@
-const assert       = require('assert');
-const config       = require('./config.js')
-const express      = require('express')
-const mongo        = require('./mongo.js')
-const cors         = require('cors')
-const bodyParser   = require('body-parser')
-const fs           = require('fs');
-const serverConfig = config.server
-const dbConfig     = config.db 
-const MongoHandler = mongo.MongoHanlder;
-const Schema       = require('./schema.js')
-const apiAux       = require('./api_auxiliary')
-const Response     = apiAux.Response
+const assert          = require('assert');
+const config          = require('./config.js')
+const express         = require('express')
+const mongo           = require('./mongo/mongo.js')
+const MongoController = require('./mongo/mongo_controller') 
+const cors            = require('cors')
+const bodyParser      = require('body-parser')
+const fs              = require('fs');
+const serverConfig    = config.server
+const dbConfig        = config.db 
+const MongoHandler    = mongo.MongoHanlder;
+const Schema          = require('./schema.js')
+const apiAux          = require('./api_auxiliary')
+const Response        = apiAux.Response
 
 
 async function main() {
@@ -19,8 +20,9 @@ async function main() {
     const url          = `mongodb://${dbConfig.ip_addr}:${dbConfig.port}`;
     const dbName       = dbConfig.db_name;
     const db           = await mongo.setup(url, dbName); //när du awaitar så kallar du på din promies then med resten av koden, kolla <Generators>
-    const mongoHandler = MongoHandler(db);
-    
+    //const mongoHandler = MongoHandler(db);
+    const mongoController = new MongoController(db)
+
     app.use(bodyParser.json());
     
     app.use(cors({
@@ -66,14 +68,14 @@ async function main() {
             res.send(InvalidTypeError.message);
             return
         }
-        const databaseOps = await mongoHandler.saveFunctionDef(data)
+        const databaseOps = await mongoController.funcDefHandler.save(data)
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
     });
 
 
     app.get('/funcdef', async(req, res) => {
-        const databaseOps = await mongoHandler.getAllFunctionDef();
+        const databaseOps = await mongoController.funcDefHandler.getAll();
         res.json(Response("", databaseOps))
     });
 
