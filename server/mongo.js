@@ -1,6 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert      = require('assert');
 
+<<<<<<< HEAD
 
 
 /*
@@ -11,11 +12,12 @@ const assert      = require('assert');
 */
 
 
+=======
+>>>>>>> master
 async function setup(url, dbName) { // kan abstraheras om man vill
     return await new Promise((accept, reject) => {
         MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true } , function(err, client) {
             assert.equal(null, err);
-            console.log("Connected successfully to database");
             const db = client.db(dbName); 
             //client.close();
             accept(db)
@@ -23,6 +25,7 @@ async function setup(url, dbName) { // kan abstraheras om man vill
     })
 }
 
+<<<<<<< HEAD
 /*
     data: 
         id; Object Int
@@ -47,6 +50,8 @@ const MongoHanlder = (db) => {
 
 
 
+=======
+>>>>>>> master
 module.exports = {
     setup,
     MongoHanlder

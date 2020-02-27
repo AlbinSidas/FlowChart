@@ -15,7 +15,7 @@ class Save
 		let saveObjectList = [];
 		let i = 0;
 		for (i = 0; i < obj.length; i++){
-			let saveObj = new SaveObj(obj[i].functionDescription, obj[i].posX, obj[i].posY, obj[i].id, obj[i].input.connections, obj[i].output.connections);
+			let saveObj = new SaveObj(obj.name, obj[i].functionDescription, obj[i].posX, obj[i].posY, obj[i].id, obj[i].input.connections, obj[i].output.connections);
 			saveObjectList.push(saveObj);
 		}
 		const data = {

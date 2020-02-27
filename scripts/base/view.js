@@ -1,6 +1,5 @@
  function _html(tagString) {
     var range = document.createRange();
-    
     // Make the parent of the first div in the document becomes the context node
     range.selectNode(document.getElementById("context"));
     var documentFragment = range.createContextualFragment(tagString);

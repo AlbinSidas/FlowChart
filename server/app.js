@@ -68,7 +68,6 @@ async function main() {
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))
 }
 
-
 (function() {
    Promise.resolve(main());
 })();
