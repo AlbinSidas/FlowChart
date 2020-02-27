@@ -24,11 +24,11 @@ class Modal extends View
 
     this.modalContent = InlineView`<div class="modalContent"></div>`;
     this.modalFooter  = InlineView`<div class="modalFooter">
-
+                                      <button class="btn" id="addModalButton">Add</button>
                                       <button class="btn" id="saveModalButton">Save function</button>
                                       <button class="btn" id="closeModalButton">Close</button>
                                   </div>`;
-
+/*
     // hämta alla funktionstemplates
     fetch('path', (templateNames) => {
 
@@ -37,7 +37,7 @@ class Modal extends View
       this.loadList = templateNames;
 
       // Uppdatera DOMen med alla funktionsobjekt
-    })
+    })*/
 
     this.functionDefinitions.push("Kalle")
     this.functionDefinitions.push("superlongonelinefunctiondefininitionexampleformeXD?")
@@ -45,13 +45,6 @@ class Modal extends View
     this.functionDefinitions.push("Kalle3")
     this.functionDefinitions.push("Kalle4")
     this.functionDefinitions.push("Kalle5")
-
-/*
-                                      <button class="btn" id="addModalButton">Add</button>
-                                      <button class="btn" id="saveModalButton">Save</button>
-                                      <button class="btn" id="closeModalButton">Close</button>
-                                  </div>`;
-           
   }
 
   uppdateList(){
@@ -70,7 +63,12 @@ class Modal extends View
       ul.appendChild(li);
     }
     
-*/
+  }
+  loadDefinitionToModal(def) {
+    document.getElementById("name").value = def.getName();
+    document.getElementById("inputBox").value = def.input.getValue();
+    document.getElementById("outputBox").value = this.obj.output.getValue();
+    document.getElementById("funcdescBox").value = this.obj.functionDescription;
   }
 
   didAttach(parent) {
@@ -100,26 +98,19 @@ class Modal extends View
     this.saveButton  = new SaveButton();
     this.loadButton  = new LoadButton();
     this.addButton   = new AddButton()
-
+    /*
     eventEmitter.on('listClick', (element) => {
       console.log(element.textContent);
-      /*
       fetch(`path/till/hämta/enstaka/funcdesc/${element.textContent}`, (clickedDefinition) => {
         loadDefinitionToModal(clickedDefinition);
 
 
       })
-      */
-    })
+    })*/
 
-    /*
-    loadDefinitionToModal(def) {
-      document.getElementById("name").value = def.getName();
-      document.getElementById("inputBox").value = def.input.getValue();
-      document.getElementById("outputBox").value = this.obj.output.getValue();
-      document.getElementById("funcdescBox").value = this.obj.functionDescription;
-    }
-    */
+    
+    
+    
 
     eventEmitter.on('close-modal', () => {
       this.close();
@@ -194,17 +185,12 @@ class Modal extends View
                               Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
 
                               Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
-                            </div>`);
-/*
-                              Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}"> </br>
-                              Add new variable:
                               <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
                               Variables:
                               <ul id="cVarList"></ul>
-                            </div>`)
-      this.uppdateList();
-*/
-      
+                            </div>`);
+
+      this.uppdateList();      
   }
 
   _save() {
