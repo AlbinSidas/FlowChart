@@ -14,7 +14,7 @@ class Save
 		let filename = prompt("Please enter the name for your save file")
 		let saveObjectList = [];
 		let i = 0;
-		for (i = 0; i < obj.length; i++){
+		for (i = 1; i < obj.length; i++){
 			let saveObj = new SaveObj(obj.name, obj[i].functionDescription, obj[i].posX, obj[i].posY, obj[i].id, obj[i].input.connections, obj[i].output.connections, obj[i].userMadeVariables);
 			saveObjectList.push(saveObj);
 		}
@@ -22,7 +22,7 @@ class Save
 			"data": saveObjectList,
 			"filename": filename
 		};
-		fetch('http://localhost:3000/save', 
+		fetch('http://localhost:3000/saved', 
 		{
 			method: 'PUT',
 			headers: {
@@ -55,8 +55,11 @@ class Save
 			}
 		}
 		for (i=0; i < object.length; i++){
-			let j = 0;
-			for (j=0; j < object[i].oCon.length; j++){
+			if(object[i].iCon.includes("start-node")){
+				eventEmitter.emit("outputClicked", "start-node");
+				eventEmitter.emit("inputClicked", object[i].id);
+			}
+			for (let j=0; j < object[i].oCon.length; j++){
 				eventEmitter.emit("outputClicked", object[i].id);
 				eventEmitter.emit("inputClicked", object[i].oCon[j]);
 				
