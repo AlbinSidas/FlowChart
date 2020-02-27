@@ -24,6 +24,7 @@ class Modal extends View
 
     this.modalContent = InlineView`<div class="modalContent"></div>`;
     this.modalFooter  = InlineView`<div class="modalFooter">
+
                                       <button class="btn" id="saveModalButton">Save function</button>
                                       <button class="btn" id="closeModalButton">Close</button>
                                   </div>`;
@@ -45,6 +46,31 @@ class Modal extends View
     this.functionDefinitions.push("Kalle4")
     this.functionDefinitions.push("Kalle5")
 
+/*
+                                      <button class="btn" id="addModalButton">Add</button>
+                                      <button class="btn" id="saveModalButton">Save</button>
+                                      <button class="btn" id="closeModalButton">Close</button>
+                                  </div>`;
+           
+  }
+
+  uppdateList(){
+    //uppdaterar listan med variabler baserat på objektet
+    var ul = document.getElementById("cVarList");
+    while(ul.firstChild) ul.removeChild(ul.firstChild);
+    const keys = Object.keys(this.obj.userMadeVariables)
+    for (const key of keys){
+      var li = document.createElement("li");
+      li.appendChild(document.createTextNode(key));
+      let theBox = document.createElement("INPUT");
+      theBox.type = "text";
+      theBox.value = this.obj.userMadeVariables[key];
+      theBox.id = key;
+      li.appendChild(theBox);
+      ul.appendChild(li);
+    }
+    
+*/
   }
 
   didAttach(parent) {
@@ -73,6 +99,7 @@ class Modal extends View
     this.closeButton = new CloseButton();
     this.saveButton  = new SaveButton();
     this.loadButton  = new LoadButton();
+    this.addButton   = new AddButton()
 
     eventEmitter.on('listClick', (element) => {
       console.log(element.textContent);
@@ -122,6 +149,12 @@ class Modal extends View
       this.updateLoadList("");
       this. updateLoadListDOM();
     })
+
+    eventEmitter.on('addThings', () =>  {
+      //knappen Add lägger till ett nytt objekt i 'userMadeVariables' och uppdaterar modal
+      this.obj.userMadeVariables[document.getElementById('nameInp').value] = document.getElementById('valInp').value;
+      this.uppdateList();
+    })
   }
 
   updateLoadList(searchString) {
@@ -159,8 +192,18 @@ class Modal extends View
                               Name: <input type="text" id="name" value=""> ${this.obj.getName()} </br>                       
                               Input: <input type="text" id="inputBox" value="${this.obj.input.getValue()}"> </br>
                               Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
+
                               Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
                             </div>`);
+/*
+                              Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}"> </br>
+                              Add new variable:
+                              <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
+                              Variables:
+                              <ul id="cVarList"></ul>
+                            </div>`)
+      this.uppdateList();
+*/
       
   }
 
@@ -169,6 +212,10 @@ class Modal extends View
     this.obj.input.setValue(document.getElementById("inputBox").value);
     this.obj.output.setValue(document.getElementById("outputBox").value);
     this.obj.functionDescription = document.getElementById("funcdescBox").value;
+    const keys = Object.keys(this.obj.userMadeVariables)
+    for (const key of keys){
+      this.obj.userMadeVariables[key] = document.getElementById(key).value;
+    }
   }
 
   close() {
@@ -226,6 +273,21 @@ class LoadButton extends Button {
 
   onClick() {
     eventEmitter.emit('load-modal');
+  }
+}
+class AddButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementById('addModalButton'));
+      this.element = document.getElementById('addModalButton');
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.buttonFooterAdd);
+  }
+
+  onClick() {
+    eventEmitter.emit('addThings');
   }
 }
 

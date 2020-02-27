@@ -4,7 +4,7 @@ const config = {
     },
     db: {
         port:    27017,
-        ip_addr: 'localhost',
+        ip_addr: '127.0.0.1',
         db_name: 'foran_flow_chart'
     }
 }

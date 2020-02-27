@@ -25,11 +25,11 @@ class Container extends View {
 
 	    this.saveClass     = new Saving();
         this.objects       = [];
-        this.markedObject  = null;
+        this.markedObject  = [];
         this.markedOutput  = "";
         this.connectorList = [];
         this.objectClick   = {};
-        this.copyObject    = {};
+        this.copyObject    = [];
         
         this.mouseX     = 0;
         this.mouseY     = 0;
@@ -41,10 +41,25 @@ class Container extends View {
         this.objectClicked = this.objectClicked.bind(this)
         this.inputClicked  = this.inputClicked.bind(this)
 
+        this.flowchartList = [];
+
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", this.objectClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
         eventEmitter.on("inputClicked", this.inputClicked);
+        eventEmitter.on("createRunnable", (id) => {   
+            
+            this.flowchartList = [];
+            this.flowchartList.length = 0;           
+            
+            recursiveFlowchartCreation(id, this.objects, this.flowchartList);
+            /*
+            console.log("Finished list:")
+            for(let n = 0; n < this.flowchartList.length; n++){
+                console.log(this.flowchartList[n]);
+            }*/
+        })
+    
     }
 
     objectClicked(id, e) {
@@ -60,7 +75,7 @@ class Container extends View {
         });
 
         // If the click is on the marked object it's a doubleclick and will open the modal.
-        if (obj == this.markedObject) {
+        if (this.markedObject.includes(obj)) {
             // Prevents further draging after doubleclick.
             obj.closeDragElement();
             this.modal.show(obj);
@@ -70,10 +85,10 @@ class Container extends View {
                 }
             }.bind(this)
         } else {
-            if (this.markedObject != null) {
+            if (this.markedObject.length != 0 && e.shiftKey == false) {
                 this.removeMarked();
             }
-            this.markedObject = obj;
+            this.markedObject[this.markedObject.length] = obj;
         }
     }
 
@@ -116,6 +131,8 @@ class Container extends View {
 
 
 
+    
+
     didAttach(parent) {
         const sizeButton = new SizeButton();
         this.attach(sizeButton)
@@ -149,57 +166,86 @@ class Container extends View {
         eventEmitter.on('decrease_size_horizonal', () =>  {
             this.decreaseSizeHorizontal();
         })
+        eventEmitter.on('dragged', (pxm, pym, id) =>  {
+            if(this.markedObject.length > 0){
+                for (let i = 0; i < this.markedObject.length; i++){
+                    if(this.markedObject[i].id != id){
+                        this.markedObject[i].dragOthers(pxm, pym);
+                    }
+                }
+
+            }
+        })
+
 
         this.element.onkeydown = this.onKeyPress;
         this.element.onclick = this.onClick;
     }
 
     onClick(e) {
-        if ((e.clientX != this.objectClick.clientX || e.clientY != this.objectClick.clientY) && this.markedObject != null) {
+        if ((e.clientX != this.objectClick.clientX || e.clientY != this.objectClick.clientY) && this.markedObject.length != 0) {
             this.removeMarked();
         }
     }
 
     removeMarked() {
-        let css = document.getElementById(this.markedObject.id).style.cssText;
-        css = css.split(" box-shadow")[0];
-        document.getElementById(this.markedObject.id).style.cssText = css;
-        this.markedObject = null;
+        for (let i = this.markedObject.length-1; i >= 0; i--){
+            let css = document.getElementById(this.markedObject[i].id).style.cssText;
+            css = css.split(" box-shadow")[0];
+            document.getElementById(this.markedObject[i].id).style.cssText = css;
+            //delete this.markedObject[i-1];
+        }
+        this.markedObject = [];
     }
 
 
     removeNode() { // 68
-    if (this.markedObject != null) {
-            this.objects.splice( this.objects.indexOf(this.markedObject), 1 );
-            for( let i = this.connectorList.length - 1 ; i >= 0 ; i-- ) {
-                if (this.connectorList[i].id.includes(this.markedObject.id) ) {
-                    let connector = this.connectorList[i];
-                    this.connectorList.splice(i, 1);
-                    let connectorElement = document.getElementById(connector.id);
-                    connectorElement.parentElement.removeChild(connectorElement);
+        if (this.markedObject.length != 0) {
+
+            for (let j = this.markedObject.length-1; j >= 0; j--){
+                this.objects.splice( this.objects.indexOf(this.markedObject[j]), 1 );
+                for( let i = this.connectorList.length - 1 ; i >= 0 ; i-- ) {
+                    if (this.connectorList[i].id.includes(this.markedObject[j].id) ) {
+                        let connector = this.connectorList[i];
+                        this.connectorList.splice(i, 1);
+                        let connectorElement = document.getElementById(connector.id);
+                        connectorElement.parentElement.removeChild(connectorElement);
+                    }
                 }
+                let nodeElement = document.getElementById(this.markedObject[j].id);
+                nodeElement.parentElement.removeChild(nodeElement);
+                
             }
-            let nodeElement = document.getElementById(this.markedObject.id);
-            nodeElement.parentElement.removeChild(nodeElement);
-            this.markedObject = null;
+            this.markedObject = [];
         }
     }
 
     copyNode() {
-        if (this.markedObject != null) {
-            // Save a copy without a reference to the original object.
+        if (this.markedObject.length != 0) {
+            // Save a copy list without a reference to the original objects.
+            this.copyObject = [];
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
-            this.copyObject = new FlowchartNode(uuidv1());
-            this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
+            for(let i = 0; i < this.markedObject.length; i++){
+                this.copyObject[i] = new FlowchartNode(uuidv1());
+                this.copyObject[i].copyOther(this.markedObject[i]);
+            }
         }
     }
 
     pasteNode() {
-        if (this.copyObject != null) {
-            //Create a new object based on the copy and add it to the workspace
-            let pasteObject = new FlowchartNode(uuidv1());
-            pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-            this.addBox(pasteObject);
+        if (this.copyObject.length != 0) {
+            //Create new objects based on the copies and add them to the workspace
+            for(let i = 0; i < this.copyObject.length; i++){
+                let pasteObject = new FlowchartNode(uuidv1());
+                if(i == 0){
+                    pasteObject.copyOther(this.copyObject[i], this.mouseX, this.mouseY);
+                }
+                else {
+                    pasteObject.copyOther(this.copyObject[i], this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY));
+                }
+                this.addBox(pasteObject);
+            }
+            
         }
     }
 
@@ -289,5 +335,30 @@ class Container extends View {
     }
 
 }
+
+function recursiveFlowchartCreation(id, objects, flowchartList) {
+    //Recursivly runs through all nodes and adds them to a list in the order of left to right from lowest and up.
+    let outputNode = objects.find((temp) => {
+        return temp.id == id;
+    });
+    let add = true
+    for (let i = 0; i < flowchartList.length; i++){
+        if (outputNode.id == flowchartList[i].id){
+            add = false;
+        }     
+    }     
+    if (add) {flowchartList.push(outputNode);}
+    
+
+    for (let i = 0; i < outputNode.output.connections.length; i++){
+        let inputNode = objects.find((temp) => {
+            return temp.id == outputNode.output.connections[i];
+        
+        });
+        //flowchartList.push(inputNode)       
+        recursiveFlowchartCreation(inputNode.id, objects, flowchartList);
+    }
+}
+
 
 export default Container;
