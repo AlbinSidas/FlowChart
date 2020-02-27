@@ -29,7 +29,7 @@ class Container extends View {
         this.markedOutput  = "";
         this.connectorList = [];
         this.objectClick   = {};
-        this.copyObject    = {};
+        this.copyObject    = [];
         
         this.mouseX     = 0;
         this.mouseY     = 0;
@@ -207,20 +207,31 @@ class Container extends View {
     }
 
     copyNode() {
-        if (this.markedObject[0] != null) {
-            // Save a copy without a reference to the original object.
+        if (this.markedObject.length != 0) {
+            // Save a copy list without a reference to the original objects.
+            this.copyObject = [];
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
-            this.copyObject = new FlowchartNode(uuidv1());
-            this.copyObject.copyOther(this.markedObject[0], this.mouseX, this.mouseY);
+            for(let i = 0; i < this.markedObject.length; i++){
+                this.copyObject[i] = new FlowchartNode(uuidv1());
+                this.copyObject[i].copyOther(this.markedObject[i]);
+            }
         }
     }
 
     pasteNode() {
-        if (this.copyObject != null) {
-            //Create a new object based on the copy and add it to the workspace
-            let pasteObject = new FlowchartNode(uuidv1());
-            pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-            this.addBox(pasteObject);
+        if (this.copyObject.length != 0) {
+            //Create new objects based on the copies and add them to the workspace
+            for(let i = 0; i < this.copyObject.length; i++){
+                let pasteObject = new FlowchartNode(uuidv1());
+                if(i == 0){
+                    pasteObject.copyOther(this.copyObject[i], this.mouseX, this.mouseY);
+                }
+                else {
+                    pasteObject.copyOther(this.copyObject[i], this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY));
+                }
+                this.addBox(pasteObject);
+            }
+            
         }
     }
 
