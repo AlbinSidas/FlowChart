@@ -62,15 +62,18 @@ body{
     width: 15vw;
 }
 
-/*Input circle*/
-.boxInput {
-    border-radius: 27.5px 27.5px 0px 0px;
-    height: 25px;
-    width: 50px;
-    margin-top: -25px;
-    margin-left: 25px;
-    background-color: green;
-    cursor: pointer;
+.startnode{
+    background-color: purple;
+    height: 50px;
+    width: 100px;
+    position: absolute;
+    border-radius: 10%;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 25px;
+    z-index: 5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 :global .connector-line {
@@ -102,7 +105,35 @@ body{
     background-color: red;
     cursor: pointer;
 }
+/* Startnode Output Half-Circle*/
+.boxStart {
+    border-radius: 0px 0px 27.5px 27.5px;
+    width: 50px;
+    height: 25px;
+    margin-top: 0px;
+    margin-left: 15px;
+    background-color: black;
+    cursor: pointer;
+    z-index: 3;
+}
+/* Invisible Dummy Node */
+.boxStartDummy {
+    visibility: hidden;
+    width: 0px;
+    height: 0px;
+    z-index: -3;
+}
 
+/*Input circle*/
+.boxInput {
+    border-radius: 27.5px 27.5px 0px 0px;
+    height: 25px;
+    width: 50px;
+    margin-top: -25px;
+    margin-left: 25px;
+    background-color: green;
+    cursor: pointer;
+}
 .flowchart_square {
     z-index: 10;
     width: 100px;
@@ -154,4 +185,12 @@ body{
   border: 1px solid #888;
   width: 77%;
   /* align-content: right; */
+}
+
+:global .loadDropdownItem {
+    padding: 15px 0; 
+    padding-left: 5px; 
+    padding-right: 5px; 
+    word-wrap: break-word; 
+    border-bottom:1px solid black
 }

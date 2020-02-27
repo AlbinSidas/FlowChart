@@ -29,7 +29,7 @@ class Container extends View {
         this.markedOutput  = "";
         this.connectorList = [];
         this.objectClick   = {};
-        this.copyObject    = {};
+        this.copyObject    = [];
         
         this.mouseX     = 0;
         this.mouseY     = 0;
@@ -41,10 +41,25 @@ class Container extends View {
         this.objectClicked = this.objectClicked.bind(this)
         this.inputClicked  = this.inputClicked.bind(this)
 
+        this.flowchartList = [];
+
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", this.objectClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
         eventEmitter.on("inputClicked", this.inputClicked);
+        eventEmitter.on("createRunnable", (id) => {   
+            
+            this.flowchartList = [];
+            this.flowchartList.length = 0;           
+            
+            recursiveFlowchartCreation(id, this.objects, this.flowchartList);
+            /*
+            console.log("Finished list:")
+            for(let n = 0; n < this.flowchartList.length; n++){
+                console.log(this.flowchartList[n]);
+            }*/
+        })
+    
     }
 
     objectClicked(id, e) {
@@ -73,8 +88,6 @@ class Container extends View {
             if (this.markedObject.length != 0 && e.shiftKey == false) {
                 this.removeMarked();
             }
-            console.log(this.markedObject)
-            console.log(e)
             this.markedObject[this.markedObject.length] = obj;
         }
     }
@@ -118,18 +131,22 @@ class Container extends View {
 
 
 
+    
+
     didAttach(parent) {
         const sizeButton = new SizeButton();
         this.attach(sizeButton)
 
-        this.modal = new Modal();
-        this.attach(this.modal);
-        
         const save = new SaveButton();
         this.attach(save);
 
         const load = new LoadButton();
         this.attach(load);
+
+        this.modal = new Modal();
+        this.attach(this.modal);
+        
+        
 
         eventEmitter.on('save', () =>  {
             this.saveClass.saveFlow(this.objects)
@@ -174,7 +191,6 @@ class Container extends View {
     }
 
     removeMarked() {
-        console.log(this.markedObject)
         for (let i = this.markedObject.length-1; i >= 0; i--){
             let css = document.getElementById(this.markedObject[i].id).style.cssText;
             css = css.split(" box-shadow")[0];
@@ -207,20 +223,31 @@ class Container extends View {
     }
 
     copyNode() {
-        if (this.markedObject[0] != null) {
-            // Save a copy without a reference to the original object.
+        if (this.markedObject.length != 0) {
+            // Save a copy list without a reference to the original objects.
+            this.copyObject = [];
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
-            this.copyObject = new FlowchartNode(uuidv1());
-            this.copyObject.copyOther(this.markedObject[0], this.mouseX, this.mouseY);
+            for(let i = 0; i < this.markedObject.length; i++){
+                this.copyObject[i] = new FlowchartNode(uuidv1());
+                this.copyObject[i].copyOther(this.markedObject[i]);
+            }
         }
     }
 
     pasteNode() {
-        if (this.copyObject != null) {
-            //Create a new object based on the copy and add it to the workspace
-            let pasteObject = new FlowchartNode(uuidv1());
-            pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-            this.addBox(pasteObject);
+        if (this.copyObject.length != 0) {
+            //Create new objects based on the copies and add them to the workspace
+            for(let i = 0; i < this.copyObject.length; i++){
+                let pasteObject = new FlowchartNode(uuidv1());
+                if(i == 0){
+                    pasteObject.copyOther(this.copyObject[i], this.mouseX, this.mouseY);
+                }
+                else {
+                    pasteObject.copyOther(this.copyObject[i], this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY));
+                }
+                this.addBox(pasteObject);
+            }
+            
         }
     }
 
@@ -310,5 +337,30 @@ class Container extends View {
     }
 
 }
+
+function recursiveFlowchartCreation(id, objects, flowchartList) {
+    //Recursivly runs through all nodes and adds them to a list in the order of left to right from lowest and up.
+    let outputNode = objects.find((temp) => {
+        return temp.id == id;
+    });
+    let add = true
+    for (let i = 0; i < flowchartList.length; i++){
+        if (outputNode.id == flowchartList[i].id){
+            add = false;
+        }     
+    }     
+    if (add) {flowchartList.push(outputNode);}
+    
+
+    for (let i = 0; i < outputNode.output.connections.length; i++){
+        let inputNode = objects.find((temp) => {
+            return temp.id == outputNode.output.connections[i];
+        
+        });
+        //flowchartList.push(inputNode)       
+        recursiveFlowchartCreation(inputNode.id, objects, flowchartList);
+    }
+}
+
 
 export default Container;

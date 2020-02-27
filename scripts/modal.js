@@ -12,31 +12,39 @@ class Modal extends View
     this.setHtml(elementString)
     this.obj = {};
     this.functionDefinitions = [];
+    this.loadList = [];
     this.render = this.render.bind(this);
-    /* 
-    <li><a href="#!">one</a></li> 
-                                        <li><a href="#!">two</a></li> 
-                                        <li class="divider" tabindex="-1"></li> 
-                                        <li><a href="#!">three</a></li> 
-                                        <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> 
-                                        <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
-    */
 
-    //lägg in sökruta här för att filtrera i dropdown --> <!-- Gör en loop här över de element som ligger i dropdownlistan som matchar de funktionsdefinitioner som sökes--> <!-- <li><a href="#!">one</a></li> <li><a href="#!">two</a></li> <li class="divider" tabindex="-1"></li> <li><a href="#!">three</a></li> <li><a href="#!"><i class="material-icons">view_module</i>four</a></li> <li><a href="#!"><i class="material-icons">cloud</i>five</a></li> 
     this.modalTitle   = InlineView`<div class="modalHeader"><span id="nodeid"></span>
-                                      <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load</a>
-                                      <ul id='modalDropdown' class='dropdown-content'>
-                                        
+                                      <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
+                                      <ul id='modalDropdown' class='dropdown-content' style="max-height: 500px; ">
+                                        <li style="border-bottom:1px solid black"><a href="#!"><input id="loadFunctionInput"> </input></a></li>
                                       </ul>
                                     </div>`;
 
     this.modalContent = InlineView`<div class="modalContent"></div>`;
     this.modalFooter  = InlineView`<div class="modalFooter">
                                       <button class="btn" id="addModalButton">Add</button>
-                                      <button class="btn" id="saveModalButton">Save</button>
+                                      <button class="btn" id="saveModalButton">Save function</button>
                                       <button class="btn" id="closeModalButton">Close</button>
                                   </div>`;
-           
+/*
+    // hämta alla funktionstemplates
+    fetch('path', (templateNames) => {
+
+      // Ladda in dem i funktionslistan och loadlistan
+      this.functionDefinitions = templateNames;
+      this.loadList = templateNames;
+
+      // Uppdatera DOMen med alla funktionsobjekt
+    })*/
+
+    this.functionDefinitions.push("Kalle")
+    this.functionDefinitions.push("superlongonelinefunctiondefininitionexampleformeXD?")
+    this.functionDefinitions.push("Felix")
+    this.functionDefinitions.push("Kalle3")
+    this.functionDefinitions.push("Kalle4")
+    this.functionDefinitions.push("Kalle5")
   }
 
   uppdateList(){
@@ -56,19 +64,31 @@ class Modal extends View
     }
     
   }
+  loadDefinitionToModal(def) {
+    document.getElementById("name").value = def.getName();
+    document.getElementById("inputBox").value = def.input.getValue();
+    document.getElementById("outputBox").value = this.obj.output.getValue();
+    document.getElementById("funcdescBox").value = this.obj.functionDescription;
+  }
 
   didAttach(parent) {
     this.attach(this.modalTitle)
     this.attach(this.modalContent)
     this.attach(this.modalFooter)
+
+    let input = document.getElementById('loadFunctionInput');
+    input.addEventListener('keyup', () => {
+      this.updateLoadList(input.value);
+      this.updateLoadListDOM();
+    });
     
     document.addEventListener('DOMContentLoaded', function() {
       let elems = document.querySelectorAll('.dropdown-trigger');
       let options = {
         'alginment': 'right', 
-        'autotrigger': true,
+        'autotrigger': false,
         'coverTrigger': false,
-        'closeOnClick': true,
+        'closeOnClick': false,
         'hover':false
       }
       M.Dropdown.init(elems, options);
@@ -78,6 +98,19 @@ class Modal extends View
     this.saveButton  = new SaveButton();
     this.loadButton  = new LoadButton();
     this.addButton   = new AddButton()
+    /*
+    eventEmitter.on('listClick', (element) => {
+      console.log(element.textContent);
+      fetch(`path/till/hämta/enstaka/funcdesc/${element.textContent}`, (clickedDefinition) => {
+        loadDefinitionToModal(clickedDefinition);
+
+
+      })
+    })*/
+
+    
+    
+    
 
     eventEmitter.on('close-modal', () => {
       this.close();
@@ -93,16 +126,19 @@ class Modal extends View
                                        100, 
                                        100, 
                                        
-                                       this.obj.id, 
+                                       this.obj.id,
                                        this.obj.input.connections, 
-                                       this.obj.output.connections )
+                                       this.obj.output.connections );
       
       this.functionDefinitions.push(saveObject);
     })
-
-    eventEmitter.on('load-modal', () => {
-      // Måste skapa en 2-way binding till listan med functionsdefinitioner som funnits sedan tidigare
+    
+  eventEmitter.on('load-modal', () => {
+      // Kan vara onödig
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
+      // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
+      this.updateLoadList("");
+      this. updateLoadListDOM();
     })
 
     eventEmitter.on('addThings', () =>  {
@@ -110,6 +146,30 @@ class Modal extends View
       this.obj.userMadeVariables[document.getElementById('nameInp').value] = document.getElementById('valInp').value;
       this.uppdateList();
     })
+  }
+
+  updateLoadList(searchString) {
+    this.loadList = [];
+    for(let i = 0; i < this.functionDefinitions.length; i++){
+      if(this.functionDefinitions[i].includes(searchString)){
+        this.loadList.push(this.functionDefinitions[i]);
+      }
+    }
+  }
+
+  updateLoadListDOM() {
+    let dropdown = document.getElementById('modalDropdown');
+
+    while( dropdown.childElementCount > 1) {
+      dropdown.removeChild(dropdown.lastChild); 
+    }
+
+    for (let i = 0; i < this.loadList.length; i++) {
+      let listItem = new ListItem(this.loadList[i]);
+      dropdown.appendChild(listItem.render());
+    }
+
+    dropdown.style.height = 'auto';
   }
 
   show(object) {
@@ -123,14 +183,14 @@ class Modal extends View
                               Name: <input type="text" id="name" value=""> ${this.obj.getName()} </br>                       
                               Input: <input type="text" id="inputBox" value="${this.obj.input.getValue()}"> </br>
                               Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
-                              Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}"> </br>
-                              Add new variable:
+
+                              Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
                               <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
                               Variables:
                               <ul id="cVarList"></ul>
-                            </div>`)
-      this.uppdateList();
-      
+                            </div>`);
+
+      this.uppdateList();      
   }
 
   _save() {
@@ -217,5 +277,17 @@ class AddButton extends Button {
   }
 }
 
+class ListItem extends View {
+  constructor(innerValue) { 
+      super();
+      this.setHtml(`<li class='loadDropdownItem'>${innerValue}</li>`);
+      this.element.onclick = this.onClick;
+  }
 
+  onClick() {
+    eventEmitter.emit('listClick', this);
+  }
+}
+
+ 
 export default Modal;
