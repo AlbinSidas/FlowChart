@@ -1,6 +1,20 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert      = require('assert');
+const _promisify  = (func) => {
+    return (...args) => { 
+        return new Promise((accept, reject)=> {
+            //const cb = args.pop();
+            func(...args, (err, result) => {
+                if (err) { 
+                    reject(err)
+                } else {
+                    accept(result);
+                }
+            });
 
+        });
+    }
+}
 
 
 /*
@@ -31,12 +45,25 @@ const MongoHanlder = (db) => {
     return {
         saveFunctionDef: async (data) =>  {
             const collection = db.collection('function_definition');
-            collection.insertOne(data, (err, result)=> {
-                console.log(err);
-                console.log(result.ops);
-            });
-            console.log("RES ");
+            const insertOne  = _promisify((...args) => { collection.insertOne(...args) });
+            const result     =  await insertOne(data).then(a  => a)
+                                                     .catch(e => console.log(e))
+            return result.ops
+        },
+
+        getFunctionDefById: async (data) =>  {
+            const collection      = db.collection('function_definition');
+            const collectionFunc  = _promisify((...args) => { collection.findOne(...args) });
+            const result          =  await collectionFunc(data).then(a  => a)
+                                                               .catch(e => console.log(e))
+            return result.ops
+        },
+
+        getAllFunctionDef: async () => {
+            const data = db.collection('function_definition').find();
+            return await data.toArray();
         }
+
     }
 }
 
