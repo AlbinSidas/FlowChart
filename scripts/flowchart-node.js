@@ -41,6 +41,14 @@ class FlowchartNode extends View {
         this.element.id = id;
     }
 
+    // run(){
+    //     console.log(this.functionDescription);
+    //     for (output in this.output.connections){
+    //         output.run();
+    //     }
+    // }
+
+
     didAttach(parent) {
         this.attach(this.input);
         this.attach(this.output);

@@ -41,10 +41,28 @@ class Container extends View {
         this.objectClicked = this.objectClicked.bind(this)
         this.inputClicked  = this.inputClicked.bind(this)
 
+        this.flowchartList = [];
+
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", this.objectClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
         eventEmitter.on("inputClicked", this.inputClicked);
+        eventEmitter.on("createRunnable", (id) => {   
+            
+            console.log("Before flowchart list clear" + this.flowchartList );
+            this.flowchartList = [];
+            this.flowchartList.length = 0;
+            console.log("After flowchart list clear" +this.flowchartList);
+            
+            
+            recursiveFlowchartCreation(id, this.objects, this.flowchartList);
+            
+            console.log("Finished list:")
+            for(let n = 0; n < this.flowchartList.length; n++){
+                console.log(this.flowchartList[n]);
+            }
+        })
+    
     }
 
     objectClicked(id, e) {
@@ -73,8 +91,6 @@ class Container extends View {
             if (this.markedObject.length != 0 && e.shiftKey == false) {
                 this.removeMarked();
             }
-            console.log(this.markedObject)
-            console.log(e)
             this.markedObject[this.markedObject.length] = obj;
         }
     }
@@ -117,6 +133,8 @@ class Container extends View {
     }
 
 
+
+    
 
     didAttach(parent) {
         const sizeButton = new SizeButton();
@@ -310,5 +328,35 @@ class Container extends View {
     }
 
 }
+
+function recursiveFlowchartCreation(id, objects, flowchartList) {
+    //Recursivly runs through all nodes and adds them to a list in the order of left to right from lowest and up.
+    let outputNode = objects.find((temp) => {
+        return temp.id == id;
+    });
+    let add = true
+
+
+    console.log("Current items in flowchartlist: "+ flowchartList);
+    for (let i = 0; i < flowchartList.length; i++){
+        if (outputNode.id == flowchartList[i].id){
+            add = false;
+        }     
+    }     
+    if (add) {flowchartList.push(outputNode);}
+    
+
+    for (let i = 0; i < outputNode.output.connections.length; i++){
+        let inputNode = objects.find((temp) => {
+            return temp.id == outputNode.output.connections[i];
+        
+        });
+        //flowchartList.push(inputNode)       
+        recursiveFlowchartCreation(inputNode.id, objects, flowchartList);
+    }
+
+    console.log("Nu är " + outputNode.id + " klar :)");
+}
+
 
 export default Container;
