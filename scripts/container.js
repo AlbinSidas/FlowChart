@@ -25,7 +25,7 @@ class Container extends View {
 
 	    this.saveClass     = new Saving();
         this.objects       = [];
-        this.markedObject  = null;
+        this.markedObject  = [];
         this.markedOutput  = "";
         this.connectorList = [];
         this.objectClick   = {};
@@ -60,7 +60,7 @@ class Container extends View {
         });
 
         // If the click is on the marked object it's a doubleclick and will open the modal.
-        if (obj == this.markedObject) {
+        if (this.markedObject.includes(obj)) {
             // Prevents further draging after doubleclick.
             obj.closeDragElement();
             this.modal.show(obj);
@@ -70,10 +70,12 @@ class Container extends View {
                 }
             }.bind(this)
         } else {
-            if (this.markedObject != null) {
+            if (this.markedObject.length != 0 && e.shiftKey == false) {
                 this.removeMarked();
             }
-            this.markedObject = obj;
+            console.log(this.markedObject)
+            console.log(e)
+            this.markedObject[this.markedObject.length] = obj;
         }
     }
 
@@ -149,48 +151,67 @@ class Container extends View {
         eventEmitter.on('decrease_size_horizonal', () =>  {
             this.decreaseSizeHorizontal();
         })
+        eventEmitter.on('dragged', (pxm, pym, id) =>  {
+            if(this.markedObject.length > 0){
+                for (let i = 0; i < this.markedObject.length; i++){
+                    if(this.markedObject[i].id != id){
+                        this.markedObject[i].dragOthers(pxm, pym);
+                    }
+                }
+
+            }
+        })
+
 
         this.element.onkeydown = this.onKeyPress;
         this.element.onclick = this.onClick;
     }
 
     onClick(e) {
-        if ((e.clientX != this.objectClick.clientX || e.clientY != this.objectClick.clientY) && this.markedObject != null) {
+        if ((e.clientX != this.objectClick.clientX || e.clientY != this.objectClick.clientY) && this.markedObject.length != 0) {
             this.removeMarked();
         }
     }
 
     removeMarked() {
-        let css = document.getElementById(this.markedObject.id).style.cssText;
-        css = css.split(" box-shadow")[0];
-        document.getElementById(this.markedObject.id).style.cssText = css;
-        this.markedObject = null;
+        console.log(this.markedObject)
+        for (let i = this.markedObject.length-1; i >= 0; i--){
+            let css = document.getElementById(this.markedObject[i].id).style.cssText;
+            css = css.split(" box-shadow")[0];
+            document.getElementById(this.markedObject[i].id).style.cssText = css;
+            //delete this.markedObject[i-1];
+        }
+        this.markedObject = [];
     }
 
 
     removeNode() { // 68
-    if (this.markedObject != null) {
-            this.objects.splice( this.objects.indexOf(this.markedObject), 1 );
-            for( let i = this.connectorList.length - 1 ; i >= 0 ; i-- ) {
-                if (this.connectorList[i].id.includes(this.markedObject.id) ) {
-                    let connector = this.connectorList[i];
-                    this.connectorList.splice(i, 1);
-                    let connectorElement = document.getElementById(connector.id);
-                    connectorElement.parentElement.removeChild(connectorElement);
+        if (this.markedObject.length != 0) {
+
+            for (let j = this.markedObject.length-1; j >= 0; j--){
+                this.objects.splice( this.objects.indexOf(this.markedObject[j]), 1 );
+                for( let i = this.connectorList.length - 1 ; i >= 0 ; i-- ) {
+                    if (this.connectorList[i].id.includes(this.markedObject[j].id) ) {
+                        let connector = this.connectorList[i];
+                        this.connectorList.splice(i, 1);
+                        let connectorElement = document.getElementById(connector.id);
+                        connectorElement.parentElement.removeChild(connectorElement);
+                    }
                 }
+                let nodeElement = document.getElementById(this.markedObject[j].id);
+                nodeElement.parentElement.removeChild(nodeElement);
+                
             }
-            let nodeElement = document.getElementById(this.markedObject.id);
-            nodeElement.parentElement.removeChild(nodeElement);
-            this.markedObject = null;
+            this.markedObject = [];
         }
     }
 
     copyNode() {
-        if (this.markedObject != null) {
+        if (this.markedObject[0] != null) {
             // Save a copy without a reference to the original object.
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
             this.copyObject = new FlowchartNode(uuidv1());
-            this.copyObject.copyOther(this.markedObject, this.mouseX, this.mouseY);
+            this.copyObject.copyOther(this.markedObject[0], this.mouseX, this.mouseY);
         }
     }
 

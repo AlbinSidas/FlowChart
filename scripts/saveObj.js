@@ -5,7 +5,7 @@ import FlowchartNode from "./flowchart-node";
 
 class SaveObj
 {
-    constructor(name, funDes, pX, pY, id, iCon, oCon) {
+    constructor(name, funDes, pX, pY, id, iCon, oCon, extra) {
     this.name = name;
     this.funDes = funDes;
     this.pX = pX;
@@ -13,6 +13,7 @@ class SaveObj
     this.id = id;
     this.iCon = iCon;
     this.oCon = oCon;
+    this.extra = extra;
     }
 }
 
