@@ -5,6 +5,12 @@ const assert         = require('assert');
 class MongoController {
     constructor(db) {
         this.funcDefHandler = new FuncDefHandler(db, "function_definition");
+        /*
+        this.AndraHandlers..
+        ...
+        ...
+        Samma mönster bör följas för alla collection handlers
+        */
     }
 
     /*
