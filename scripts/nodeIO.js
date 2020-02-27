@@ -15,10 +15,16 @@ class NodeIO extends View {
         switch (inputOutput) {
             case 'box-input':
                 this.element.classList.add(style.boxInput);
-                break
+                break;
             case 'box-output':
                 this.element.classList.add(style.boxOutput);
-                break
+                break;
+            case 'box-start':
+                this.element.classList.add(style.boxStart);
+                break;
+            case 'box-dummy':
+                this.element.classList.add(style.boxStartDummy);
+                break;
             default:
                 break;
         }
@@ -43,7 +49,18 @@ class NodeIO extends View {
         else if (this.type == "box-input") {
             eventEmitter.emit("inputClicked", this.id);
         }
+        else if (this.type == "box-start") {
+            eventEmitter.emit("outputClicked", this.id);
+        }
+        else if (this.type == "box-dummy") {
+            return;
+        }
     }
+
+    // run(){
+    //     this.parent.run();
+    // }
+
 }
 
 export default NodeIO;

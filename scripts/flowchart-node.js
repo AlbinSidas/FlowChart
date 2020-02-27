@@ -41,6 +41,14 @@ class FlowchartNode extends View {
         this.element.id = id;
     }
 
+    // run(){
+    //     console.log(this.functionDescription);
+    //     for (output in this.output.connections){
+    //         output.run();
+    //     }
+    // }
+
+
     didAttach(parent) {
         this.attach(this.input);
         this.attach(this.output);
@@ -153,7 +161,7 @@ class FlowchartNode extends View {
     mouseDown(e) {
         e = e || window.event;
         e.preventDefault();
-
+        eventEmitter.emit("clicked", this.id, e);
         this.lastScrollPosition = window.scrollY;
         this.offsetX = e.clientX - this.posX;
         this.offsetY = e.clientY - this.posY;
@@ -170,7 +178,8 @@ class FlowchartNode extends View {
      }
 
     onClick(e) {
-        eventEmitter.emit("clicked", this.id, e);
+        //was moved to mousedown to fix bug
+        //eventEmitter.emit("clicked", this.id, e);
     }
     
 }
