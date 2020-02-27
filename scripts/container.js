@@ -137,14 +137,16 @@ class Container extends View {
         const sizeButton = new SizeButton();
         this.attach(sizeButton)
 
-        this.modal = new Modal();
-        this.attach(this.modal);
-        
         const save = new SaveButton();
         this.attach(save);
 
         const load = new LoadButton();
         this.attach(load);
+
+        this.modal = new Modal();
+        this.attach(this.modal);
+        
+        
 
         eventEmitter.on('save', () =>  {
             this.saveClass.saveFlow(this.objects)
