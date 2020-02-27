@@ -161,14 +161,13 @@ class FlowchartNode extends View {
     mouseDown(e) {
         e = e || window.event;
         e.preventDefault();
-
+        eventEmitter.emit("clicked", this.id, e);
         this.lastScrollPosition = window.scrollY;
         this.offsetX = e.clientX - this.posX;
         this.offsetY = e.clientY - this.posY;
 
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})
         document.onmousemove = (e) => {  this.elementDrag(e)   };
-        console.log(this.oldPosX)
         let x = 0
         let y = 0
         let shadow = ` box-shadow: ${x}px ${y}px 40px 20px #0ff;`;
@@ -178,7 +177,8 @@ class FlowchartNode extends View {
      }
 
     onClick(e) {
-        eventEmitter.emit("clicked", this.id, e);
+        //was moved to mousedown to fix bug
+        //eventEmitter.emit("clicked", this.id, e);
     }
     
 }

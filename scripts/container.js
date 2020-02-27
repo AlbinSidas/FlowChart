@@ -29,7 +29,7 @@ class Container extends View {
         this.markedOutput  = "";
         this.connectorList = [];
         this.objectClick   = {};
-        this.copyObject    = {};
+        this.copyObject    = [];
         
         this.mouseX     = 0;
         this.mouseY     = 0;
@@ -49,18 +49,15 @@ class Container extends View {
         eventEmitter.on("inputClicked", this.inputClicked);
         eventEmitter.on("createRunnable", (id) => {   
             
-            console.log("Before flowchart list clear" + this.flowchartList );
             this.flowchartList = [];
-            this.flowchartList.length = 0;
-            console.log("After flowchart list clear" +this.flowchartList);
-            
+            this.flowchartList.length = 0;           
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
-            
+            /*
             console.log("Finished list:")
             for(let n = 0; n < this.flowchartList.length; n++){
                 console.log(this.flowchartList[n]);
-            }
+            }*/
         })
     
     }
@@ -192,7 +189,6 @@ class Container extends View {
     }
 
     removeMarked() {
-        console.log(this.markedObject)
         for (let i = this.markedObject.length-1; i >= 0; i--){
             let css = document.getElementById(this.markedObject[i].id).style.cssText;
             css = css.split(" box-shadow")[0];
@@ -225,20 +221,31 @@ class Container extends View {
     }
 
     copyNode() {
-        if (this.markedObject[0] != null) {
-            // Save a copy without a reference to the original object.
+        if (this.markedObject.length != 0) {
+            // Save a copy list without a reference to the original objects.
+            this.copyObject = [];
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
-            this.copyObject = new FlowchartNode(uuidv1());
-            this.copyObject.copyOther(this.markedObject[0], this.mouseX, this.mouseY);
+            for(let i = 0; i < this.markedObject.length; i++){
+                this.copyObject[i] = new FlowchartNode(uuidv1());
+                this.copyObject[i].copyOther(this.markedObject[i]);
+            }
         }
     }
 
     pasteNode() {
-        if (this.copyObject != null) {
-            //Create a new object based on the copy and add it to the workspace
-            let pasteObject = new FlowchartNode(uuidv1());
-            pasteObject.copyOther(this.copyObject, this.mouseX, this.mouseY);
-            this.addBox(pasteObject);
+        if (this.copyObject.length != 0) {
+            //Create new objects based on the copies and add them to the workspace
+            for(let i = 0; i < this.copyObject.length; i++){
+                let pasteObject = new FlowchartNode(uuidv1());
+                if(i == 0){
+                    pasteObject.copyOther(this.copyObject[i], this.mouseX, this.mouseY);
+                }
+                else {
+                    pasteObject.copyOther(this.copyObject[i], this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY));
+                }
+                this.addBox(pasteObject);
+            }
+            
         }
     }
 
@@ -335,9 +342,6 @@ function recursiveFlowchartCreation(id, objects, flowchartList) {
         return temp.id == id;
     });
     let add = true
-
-
-    console.log("Current items in flowchartlist: "+ flowchartList);
     for (let i = 0; i < flowchartList.length; i++){
         if (outputNode.id == flowchartList[i].id){
             add = false;
@@ -354,8 +358,6 @@ function recursiveFlowchartCreation(id, objects, flowchartList) {
         //flowchartList.push(inputNode)       
         recursiveFlowchartCreation(inputNode.id, objects, flowchartList);
     }
-
-    console.log("Nu är " + outputNode.id + " klar :)");
 }
 
 
