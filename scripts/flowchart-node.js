@@ -168,7 +168,6 @@ class FlowchartNode extends View {
 
         document.addEventListener('mouseup', (e) => {this.closeDragElement(e)})
         document.onmousemove = (e) => {  this.elementDrag(e)   };
-        console.log(this.oldPosX)
         let x = 0
         let y = 0
         let shadow = ` box-shadow: ${x}px ${y}px 40px 20px #0ff;`;
