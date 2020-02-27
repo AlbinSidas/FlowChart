@@ -29,7 +29,6 @@ export function InlineView (elementString) {
 
 
 class View {
-
   constructor() {
     this.child_views = []
     this.element = null
