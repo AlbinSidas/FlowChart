@@ -180,7 +180,7 @@ class Modal extends View
       idField.textContent = "ID: " + this.obj.id.toString();
 	    this.modalContent.changeHtml(`
                             <div id="boxtime">
-                              Name: <input type="text" id="name" value=""> ${this.obj.getName()} </br>                       
+                              Name: <input type="text" id="name" value="${this.obj.getName()}"> </br>                       
                               Input: <input type="text" id="inputBox" value="${this.obj.input.getValue()}"> </br>
                               Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
 
