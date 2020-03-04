@@ -58,7 +58,11 @@ async function main() {
             res.send(files);
           }); 
     });
-
+    /*
+    app.post('/savefunction/:functionName', async function(req, res) {
+        console.log("Kommer in i spara funktions i DB")
+    })
+    */
     app.post('/save', async (req, res) => {
         const data = req.body;
         try {
