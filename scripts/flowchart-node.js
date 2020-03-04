@@ -3,6 +3,7 @@ import View from 'Base/view.js';
 import style from 'Styles/style.css';
 import eventEmitter from 'Singletons/event-emitter.js';
 import NodeIO from './nodeIO.js';
+import { InlineView } from './base/view.js';
 
 class FlowchartNode extends View {
     constructor(id){
@@ -34,10 +35,18 @@ class FlowchartNode extends View {
         this.userMadeVariables = {};
 
         this.input  = new NodeIO(this, "box-input");
-        this.output = new NodeIO(this, "box-output"); 
-        
+        this.output = new NodeIO(this, "box-output");
+        this.functionName = "";
+        this.functionNameView = InlineView(`<p id='${this.id}_function'>-no function-</p>`);
+
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
+        
+    }
+
+    changeFunctionName(name){
+        this.functionName = name;
+        document.getElementById(`${this.id}_function`).innerHTML = name;
     }
 
     // run(){
@@ -49,6 +58,7 @@ class FlowchartNode extends View {
 
 
     didAttach(parent) {
+        this.attach(this.functionNameView);
         this.attach(this.input);
         this.attach(this.output);
         this.element.onclick     = this.onClick;
@@ -85,6 +95,7 @@ class FlowchartNode extends View {
         this.offsetX = other.offsetX;
         this.offsetY = other.offsetY;
         this.height = other.height;
+
         //flow
         this.functionDescription = other.functionDescription;
         this.userMadeVariables = other.extra;

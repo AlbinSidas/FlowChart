@@ -98,15 +98,16 @@ class Modal extends View
     this.saveButton  = new SaveButton();
     this.loadButton  = new LoadButton();
     this.addButton   = new AddButton()
-    /*
+
     eventEmitter.on('listClick', (element) => {
       console.log(element.textContent);
+      /*
       fetch(`path/till/hämta/enstaka/funcdesc/${element.textContent}`, (clickedDefinition) => {
         loadDefinitionToModal(clickedDefinition);
-
-
       })
-    })*/
+      */
+     this.obj.changeFunctionName(element.textContent);
+    })
 
     
     
@@ -138,7 +139,7 @@ class Modal extends View
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
       this.updateLoadList("");
-      this. updateLoadListDOM();
+      this.updateLoadListDOM();
     })
 
     eventEmitter.on('addThings', () =>  {
