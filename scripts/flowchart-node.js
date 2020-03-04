@@ -31,7 +31,7 @@ class FlowchartNode extends View {
         this.id    = id;
         this._name = "";
         this.functionDescription = "No function yet";
-        this.userMadeVariables = {};
+        this.userMadeVariables = [];
 
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output"); 
@@ -70,9 +70,9 @@ class FlowchartNode extends View {
 
         //fullösning för att avreferera ist för this.userMadeVariables = other.userMadeVariables;
         //om nån kommer på ett bätre alternativ kän er välkommna att fixa
-        const keys = Object.keys(other.userMadeVariables)
-        for (const key of keys){
-            this.userMadeVariables[key] = other.userMadeVariables[key];
+        //const keys = Object.keys(other.userMadeVariables)
+        for (let i = 0; i < other.userMadeVariables.length; i++){
+            this.userMadeVariables[i] = other.userMadeVariables[i];
         }
         
     }
@@ -96,6 +96,22 @@ class FlowchartNode extends View {
 
     getName() {
         return this._name;
+    }
+    getInValue() {
+        for (let i = 0; i < this.userMadeVariables.length; i++){
+            if(this.userMadeVariables[i].type == "input"){
+                return this.userMadeVariables[i].value;
+            }
+        }
+        return "no input found";
+    }
+    getOutValue() {
+        for (let i = 0; i < this.userMadeVariables.length; i++){
+            if(this.userMadeVariables[i].type == "output"){
+                return this.userMadeVariables[i].value;
+            }
+        }
+        return "no output found";
     }
 
     setName(name) {
