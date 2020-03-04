@@ -324,7 +324,6 @@ class Container extends View {
         let element = document.getElementById("toolbox");
         let style = getComputedStyle(element);
         let visibility = style.getPropertyValue('visibility');
-        console.log(visibility);
         if (visibility == 'hidden') {
             document.getElementById("toolbox").style.visibility = 'visible';
         }
