@@ -31,12 +31,12 @@ class Modal extends View
                                   </div>`;
 
     // hämta alla funktionstemplates
-    fetch('http://localhost3000/funcdef/all', (templateNames) => {
+    fetch('http://localhost:3000/funcdef/all', (templateNames) => {
 
       // Ladda in dem i funktionslistan och loadlistan
       this.functionDefinitions = templateNames;
       this.loadList = templateNames;
-
+      console.log(templateNames)
       // Uppdatera DOMen med alla funktionsobjekt
     })
 
@@ -104,7 +104,7 @@ class Modal extends View
     eventEmitter.on('listClick', (listObject) => {
       console.log(listObject);
       /*
-      fetch(`http://localhost3000/funcdef/:id{}`, (clickedDefinition) => {
+      fetch(`http://localhost:3000/funcdef/:id{}`, (clickedDefinition) => {
         loadDefinitionToModal(clickedDefinition);
         
       })
@@ -128,20 +128,21 @@ class Modal extends View
                                        {}, 
                                        {} );
       
+      console.log("SAVED SAKER", JSON.parse(JSON.stringify(saveObject)))
       this.functionDefinitions.push(saveObject);
-      fetch('http://localhost3000/funcdef/save', 
+      fetch('http://localhost:3000/funcdef/save', 
       {
-        method:   'PUT',
+        method:   'POST',
         headers:  {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(this.saveObject)
+        body: JSON.stringify(saveObject)
       }).then((response) => {
           // Confirm save
           console.log("success", response.json().data);
       }).catch((error) => {
           // Handle error
-          console.log("success", error);
+          console.log("Fail", error);
       });
 
       // Konfirmation that object was saved

@@ -64,6 +64,7 @@ async function main() {
         try {
             await Schema.validate(data, Schema.jsonSchemas.funcDefSchema);
         } catch (InvalidTypeError) {
+            console.log("invalidated")
             console.log(InvalidTypeError.message)
             res.status(400);
             res.send(InvalidTypeError.message);
