@@ -8,15 +8,16 @@ class StartNode extends View {
 
     constructor(id){
         super();
-        this.setHtml('<div>Start :]</div>');
+        this.setHtml('<div>Start</div>');
 
         this.onClick = this.onClick.bind(this);
         
-        this.posX = 910;
-        this.posY = 30;
+        this.posX = 880;
+        this.posY = 0;
 
         this.element.classList.add("startnode");
         this.element.setAttribute("style", 'margin-top:'+this.posY+'px; margin-left:'+this.posX+'px;');
+        //this.element.setAttribute("style", 'background-color:blue')
         
         this.id = id;
         this.element.id = id;

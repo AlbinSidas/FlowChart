@@ -37,7 +37,8 @@ class SizeButtons extends View
 class IncreaseSizeButton extends Button {
   constructor() {
       super();
-      this.setHtml('<button type="button" name="button">Increase</button>')
+      this.setHtml('<button type="button" class="btn" name="button">Increase Height</button>')
+      this.element.setAttribute("style", "background-color:var(--button-color); width:200px; margin-top:2px")
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
     }
@@ -51,7 +52,8 @@ class IncreaseSizeButton extends Button {
 class DecreaseSizeButton extends Button {
   constructor() {
     super();
-    this.setHtml('<button type="button" name="decrease_button">Decrease</button>')
+    this.setHtml('<button type="button" class="btn" name="decrease_button">Decrease Height</button>')
+    this.element.setAttribute("style", "background-color:var(--button-color); width:200px; margin-top:2px")
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
   }
@@ -64,9 +66,11 @@ class DecreaseSizeButton extends Button {
 class IncreaseHorizontalSizeButton extends Button {
   constructor() {
       super();
-      this.setHtml('<button type="button" name="button_horizontal">Increase Width</button>')
+      this.setHtml('<button type="button" class="btn" name="button_horizontal">Increase Width</button>')
+      this.element.setAttribute("style", "background-color:var(--button-color); width:200px; margin-top:2px")
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
+      
     }
 
 
@@ -78,9 +82,11 @@ class IncreaseHorizontalSizeButton extends Button {
 class DecreaseHorizontalSizeButton extends Button {
   constructor() {
     super();
-    this.setHtml('<button type="button" name="decrease_button_horizontal">Decrease Width</button>')
+    this.setHtml('<button type="button" class="btn" name="decrease_button_horizontal">Decrease Width</button>')
+    this.element.setAttribute("style", "background-color:var(--button-color); width:200px; margin-top:2px")
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
+    
   }
 
   onClick(e) {

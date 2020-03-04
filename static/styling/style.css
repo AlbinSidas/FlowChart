@@ -1,3 +1,27 @@
+
+/* ============================== COLORS ============================= */
+:root {
+    /* General colors */
+    --background-color: rgb(71, 110, 119);
+    --accent-color:     rgb(168, 48, 108);
+    --button-color:     rgb(226, 179, 51);
+
+    /* Node colors */
+    --node-background:  rgb(26, 160, 104);
+    --node-input:       rgb(113, 184, 113);
+    --node-output:      rgb(182, 83, 104);
+    --node-connector:   rgb(72, 163, 175);
+    --node-highlight:   rgb(138, 179, 218);
+
+    /* Modal colors */
+    --modal-bg-color:   rgb(190, 219, 224);
+    --modal-acc-color:  rgb(130, 147, 170);
+    --modal-dropdown:   rgb(236, 221, 173);
+}
+
+
+
+/* ============================== WORKSPACE ============================= */
 body{
     margin:0;
     padding:0;
@@ -32,7 +56,7 @@ body{
 :global #workspace-root {
     flex-grow: 8;
     position: relative;
-    background-color: mediumseagreen;
+    background-color: var(--background-color);
     height: 1500px;
     padding: 0;
     margin: 0;
@@ -45,14 +69,15 @@ body{
     position: fixed;
     right: 3%;
     bottom: 3%;
-    background-color: orangered;
+    background-color: var(--button-color);
 }
 
 :global #newObject img {
     width: 100%;
 }
 
-:global #element-picker {
+/* används inte atm */
+:global #element-picker { 
     background-color: orange;
     visibility: hidden;
     position: fixed;
@@ -62,31 +87,29 @@ body{
     width: 15vw;
 }
 
-.startnode{
-    background-color: purple;
+/* ============================== NODES ============================= */
+:global .startnode{
+    background-color: var(--accent-color);
     height: 50px;
     width: 100px;
     position: absolute;
-    border-radius: 10%;
+    border-radius: 20%;
     color: white;
     padding: 10px;
     text-align: center;
-    font-size: 25px;
+    font-size: 20px;
     z-index: 5;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 :global .connector-line {
     stroke-width: 10;
     stroke: black;
-    fill: yellowgreen;
-    /*stroke:rgb(255,255,0);*/
 }
 
 :global .connector {
     z-index: 1;
-    /* background: transparent; */
-    background-color: blue;
+    background-color: var(--node-connector);
     pointer-events: none;
     position: absolute;
     padding:0px; 
@@ -100,21 +123,21 @@ body{
     border-radius: 0px 0px 27.5px 27.5px;
     height: 25px;
     width: 50px;
-    margin-top: 100px;
-    margin-left: 25px;
-    background-color: red;
+    margin-top: 250px;
+    margin-left: 125px;
+    background-color: var(--node-output);
     cursor: pointer;
 }
-/* Startnode Output Half-Circle*/
+/* Startnode Output */
 .boxStart {
     border-radius: 0px 0px 27.5px 27.5px;
     width: 50px;
     height: 25px;
-    margin-top: 0px;
-    margin-left: 15px;
-    background-color: black;
+    margin-top: 10px;
+    margin-left: 16px;
+    background-color: var(--node-output);
     cursor: pointer;
-    z-index: 3;
+    z-index: 0;
 }
 /* Invisible Dummy Node */
 .boxStartDummy {
@@ -130,19 +153,24 @@ body{
     height: 25px;
     width: 50px;
     margin-top: -25px;
-    margin-left: 25px;
-    background-color: green;
+    margin-left: 125px;
+    background-color: var(--node-input);
     cursor: pointer;
 }
+
+
 .flowchart_square {
     z-index: 10;
-    width: 100px;
-    height: 100px;
+    width: 300px;
+    height: 300px;
+    border-radius: 10px;
     cursor: move;
     position: absolute;
-    background-color: cornflowerblue;
+    background-color: var(--node-background);
 }
 
+
+/* ============================== MODAL ============================= */
 /* The Modal (background) */
 :global .modalFrame {
   display: none; /* Hidden by default */
@@ -160,11 +188,19 @@ body{
 /* Modal Header */
 :global .modalHeader {
   margin: 15% auto 0;
+  margin-top: 100px;
   width: 80%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  background-color: #BEBEBE;
+  background-color: var(--modal-acc-color);
+}
+
+:global .modalHeader span{
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    margin-left: 10px;
+    margin-top: 18px;
 }
 
 /* Modal Footer */
@@ -174,13 +210,13 @@ body{
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  background-color: #BEBEBE;
+  background-color: var(--modal-acc-color);
 }
 
 /* Modal Content/Box */
 :global .modalContent {
   margin: 0 auto;
-  background-color: #fefefe;
+  background-color: var(--modal-bg-color);
   padding: 20px;
   border: 1px solid #888;
   width: 77%;
@@ -192,5 +228,6 @@ body{
     padding-left: 5px; 
     padding-right: 5px; 
     word-wrap: break-word; 
-    border-bottom:1px solid black
+    border-bottom:1px solid black;
+    background-color: var(--modal-dropdown);
 }

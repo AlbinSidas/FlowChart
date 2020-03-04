@@ -18,7 +18,7 @@ class FlowchartNode extends View {
         //ui
         this.posX    = 100;
         this.posY    = 100;
-        this.height  = 100;
+        this.height  = 250;
         this.oldPosY = this.posY;
         this.oldPosX = this.posX;
         this.oldX    = this.posX;
@@ -169,7 +169,7 @@ class FlowchartNode extends View {
         document.onmousemove = (e) => {  this.elementDrag(e)   };
         let x = 0
         let y = 0
-        let shadow = ` box-shadow: ${x}px ${y}px 40px 20px #0ff;`;
+        let shadow = ` box-shadow: ${x}px ${y}px 40px 20px var(--node-highlight)`;
         let elementStyle = document.getElementById(this.id).style.cssText;
         document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
         //eventEmitter.emit("dragged", e);

@@ -16,7 +16,8 @@ class Modal extends View
     this.render = this.render.bind(this);
 
     this.modalTitle   = InlineView`<div class="modalHeader"><span id="nodeid"></span>
-                                      <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
+                                      <a class='dropdown-trigger btn' style="
+                                      background-color: var(--button-color);"  id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
                                       <ul id='modalDropdown' class='dropdown-content' style="max-height: 500px; ">
                                         <li style="border-bottom:1px solid black"><a href="#!"><input id="loadFunctionInput"> </input></a></li>
                                       </ul>
@@ -24,9 +25,9 @@ class Modal extends View
 
     this.modalContent = InlineView`<div class="modalContent"></div>`;
     this.modalFooter  = InlineView`<div class="modalFooter">
-                                      <button class="btn" id="addModalButton">Add</button>
-                                      <button class="btn" id="saveModalButton">Save function</button>
-                                      <button class="btn" id="closeModalButton">Close</button>
+                                    <button class="btn" style="background-color: var(--button-color)" id="addModalButton">Add</button>
+                                    <button class="btn" style="background-color: var(--button-color)"id="saveModalButton">Save function</button>
+                                    <button class="btn" style="background-color: var(--button-color)"id="closeModalButton">Close</button>
                                   </div>`;
 /*
     // hämta alla funktionstemplates

@@ -13,6 +13,7 @@ class SaveButton extends Button
     this.render = this.render.bind(this)
     this.name = "Save"
     this.onClick = this.onClick.bind(this);
+    this.element.setAttribute("style", "background-color:--main-accent")
   }
 
   didAttach(parent) {

@@ -13,6 +13,8 @@ class LoadButton extends Button
     this.render = this.render.bind(this)
     this.name = "Load"
     this.onClick = this.onClick.bind(this);
+    //this.element.classList.add("btn");
+    //this.element.setAttribute("style", "blaa")
   }
 
   didAttach(parent) {

@@ -13,12 +13,12 @@ function main() {
     workspaceObject.addBox(startNode);
 
     function createNewObject(){
-        if (document.getElementById("element-picker").style.visibility == "hidden"){
-            document.getElementById("element-picker").style.visibility = "visible";
-        }
-        else {
-            document.getElementById("element-picker").style.visibility = "hidden";
-        }
+        // if (document.getElementById("element-picker").style.visibility == "hidden"){
+        //     document.getElementById("element-picker").style.visibility = "visible";
+        // }
+        // else {
+        //     document.getElementById("element-picker").style.visibility = "hidden";
+        // }
 
         const flowObj = new FlowchartNode(uuidv1());
         workspaceObject.addBox(flowObj);
