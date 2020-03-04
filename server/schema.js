@@ -20,10 +20,9 @@ const Schema = {
     },
     jsonSchemas: {
         funcDefSchema: {
-            name:         {type: datatype.String, innerSchema: null},
-            description:  {type: datatype.String, innerSchema: null},
-            type:         {type: datatype.String, innerSchema: null},
-            variables:    {type: datatype.Array,  innerSchema: null}
+            name:                 {type: datatype.String, innerSchema: null},
+            description:          {type: datatype.String, innerSchema: null},
+            functionVariables:    {type: datatype.Array,  innerSchema: null}
         }
     }
 
