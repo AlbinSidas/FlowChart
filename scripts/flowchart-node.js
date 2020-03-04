@@ -95,6 +95,7 @@ class FlowchartNode extends View {
         this.offsetX = other.offsetX;
         this.offsetY = other.offsetY;
         this.height = other.height;
+        this.functionNameView = InlineView(`<p id='${this.id}_function'>${other.funName}</p>`);
 
         //flow
         this.functionDescription = other.functionDescription;

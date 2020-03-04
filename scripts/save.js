@@ -49,8 +49,7 @@ class Save
 
 			if(document.getElementById(object[i].id) == null){
 				let loadnode = new FlowchartNode(object[i].id);
-				loadnode.fillNode(object[i])
-				loadnode.changeFunctionName(object[i].funName);
+				loadnode.fillNode(object[i]);
 				obj.push(loadnode);
 				that.attach(loadnode);
 			}
