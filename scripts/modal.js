@@ -4,7 +4,7 @@ import SaveObject from './saveObj.js';
 import View, {InlineView} from 'Base/view.js';
 import eventEmitter from 'Singletons/event-emitter.js';
 import styleClasses from 'Styles/modal-buttons.css';
-import UserMadeVariable from './usermadevariable.js'
+import FunctionVariable from './functionvariable.js'
 
 class Modal extends View
 {
@@ -52,14 +52,14 @@ class Modal extends View
     //uppdaterar listan med variabler baserat på objektet
     var ul = document.getElementById("cVarList");
     while(ul.firstChild) ul.removeChild(ul.firstChild);
-    for (let i = 0; i < this.obj.userMadeVariables.length; i++){
-      if(this.obj.userMadeVariables[i].type == "var"){
+    for (let i = 0; i < this.obj.functionVariables.length; i++){
+      if(this.obj.functionVariables[i].type == "var"){
         var li = document.createElement("li");
-        li.appendChild(document.createTextNode(this.obj.userMadeVariables[i].name));
+        li.appendChild(document.createTextNode(this.obj.functionVariables[i].name));
         let theBox = document.createElement("INPUT");
         theBox.type = "text";
-        theBox.value = this.obj.userMadeVariables[i].value;
-        theBox.id = this.obj.userMadeVariables[i].name;
+        theBox.value = this.obj.functionVariables[i].value;
+        theBox.id = this.obj.functionVariables[i].name;
         li.appendChild(theBox);
         ul.appendChild(li);
       }
@@ -144,8 +144,7 @@ class Modal extends View
     })
 
     eventEmitter.on('addThings', () =>  {
-      //knappen Add lägger till ett nytt objekt i 'userMadeVariables' och uppdaterar modal || document.getElementById('nameInp').value
-      this.obj.userMadeVariables[this.obj.userMadeVariables.length] = new UserMadeVariable(document.getElementById('nameInp').value, "var", document.getElementById('valInp').value);
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable(document.getElementById('nameInp').value, "var", document.getElementById('valInp').value);
       this.uppdateList();
     })
   }
@@ -202,24 +201,24 @@ class Modal extends View
     this.obj.functionDescription = document.getElementById("funcdescBox").value;
     let fulIn = true;
     let fulOut = true;
-    for (let i = 0; i < this.obj.userMadeVariables.length; i++){
-      if(this.obj.userMadeVariables[i].type == "var"){
-        this.obj.userMadeVariables[i].value = document.getElementById(this.obj.userMadeVariables[i].name).value;
+    for (let i = 0; i < this.obj.functionVariables.length; i++){
+      if(this.obj.functionVariables[i].type == "var"){
+        this.obj.functionVariables[i].value = document.getElementById(this.obj.functionVariables[i].name).value;
       }
-      else if(this.obj.userMadeVariables[i].type == "input"){
-        this.obj.userMadeVariables[i].value = document.getElementById("inputBox").value;
+      else if(this.obj.functionVariables[i].type == "input"){
+        this.obj.functionVariables[i].value = document.getElementById("inputBox").value;
         fulIn = false;
       }
-      else if(this.obj.userMadeVariables[i].type == "output"){
-        this.obj.userMadeVariables[i].value = document.getElementById("outputBox").value;
+      else if(this.obj.functionVariables[i].type == "output"){
+        this.obj.functionVariables[i].value = document.getElementById("outputBox").value;
         fulOut = false;
       }
     }
     if (fulIn){
-      this.obj.userMadeVariables[this.obj.userMadeVariables.length] = new UserMadeVariable("Stefan", "input", document.getElementById("inputBox").value);
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("Stefan", "input", document.getElementById("inputBox").value);
     }
     if (fulOut){
-      this.obj.userMadeVariables[this.obj.userMadeVariables.length] = new UserMadeVariable("Glen", "output", document.getElementById("outputBox").value);
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("Glen", "output", document.getElementById("outputBox").value);
     }
   }
 

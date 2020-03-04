@@ -1,4 +1,4 @@
-class UserMadeVariable {
+class FunctionVariable {
     constructor(name, type, value, extra ={}){
         this.name = name;
         this.type = type;
@@ -6,4 +6,4 @@ class UserMadeVariable {
         this.extra = extra;
     }
 }
-export default UserMadeVariable;
+export default FunctionVariable;
