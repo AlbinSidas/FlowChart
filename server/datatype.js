@@ -3,5 +3,6 @@ module.exports = {
     Function: "function",
     Boolean: "boolean",
     Object: "object",
+    Array: "object",
     Number: "number"
 }
