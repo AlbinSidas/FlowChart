@@ -28,16 +28,16 @@ class Modal extends View
                                       <button class="btn" id="saveModalButton">Save function</button>
                                       <button class="btn" id="closeModalButton">Close</button>
                                   </div>`;
-/*
+
     // hämta alla funktionstemplates
-    fetch('path', (templateNames) => {
+    fetch('http://localhost3000/funcdef/all', (templateNames) => {
 
       // Ladda in dem i funktionslistan och loadlistan
       this.functionDefinitions = templateNames;
       this.loadList = templateNames;
 
       // Uppdatera DOMen med alla funktionsobjekt
-    })*/
+    })
 
     this.functionDefinitions.push("Kalle")
     this.functionDefinitions.push("superlongonelinefunctiondefininitionexampleformeXD?")
@@ -98,19 +98,16 @@ class Modal extends View
     this.saveButton  = new SaveButton();
     this.loadButton  = new LoadButton();
     this.addButton   = new AddButton()
-    /*
-    eventEmitter.on('listClick', (element) => {
-      console.log(element.textContent);
-      fetch(`path/till/hämta/enstaka/funcdesc/${element.textContent}`, (clickedDefinition) => {
+    
+    eventEmitter.on('listClick', (listObject) => {
+      console.log(listObject);
+      /*
+      fetch(`http://localhost3000/funcdef/:id{}`, (clickedDefinition) => {
         loadDefinitionToModal(clickedDefinition);
-
-
+        
       })
-    })*/
-
-    
-    
-    
+      */
+    })
 
     eventEmitter.on('closeModal', () => {
       this.close();
@@ -123,23 +120,29 @@ class Modal extends View
       let saveObject = new SaveObject( this.obj.name, 
                                        this.obj.functionDescription, 
                                        /* Vet ej hur vi vill göra vid denna delen av spara nod, kanske ha en spara funktionsdefinition som ärver från saveObject? eller bara annan funktion?*/
-                                       100, 
-                                       100, 
-                                       
+                                       100,
+                                       100,
                                        0,
                                        {}, 
-                                       {});
+                                       {} );
       
       this.functionDefinitions.push(saveObject);
-      fetch('http://localhost3000/saveFunctionDefinition', 
+      fetch('http://localhost3000/funcdef/save', 
       {
         method:   'PUT',
         headers:  {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(this.saveObject)
-
+      }).then((response) => {
+          // Confirm save
+          console.log("success", response.json().data);
+      }).catch((error) => {
+          // Handle error
+          console.log("success", error);
       });
+
+      // Konfirmation that object was saved
       
       // Kolla på fetch för PUT för att skicka med objektet till backend 
     })
