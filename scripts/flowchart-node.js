@@ -25,7 +25,7 @@ class FlowchartNode extends View {
         this.oldY    = this.posY;
         this.offsetX = 0;
         this.offsetY = 0;
-
+        this.idRef   = "";
         this._connectorUpdaters = [];
         //flow
         this.id    = id;
@@ -56,7 +56,7 @@ class FlowchartNode extends View {
         this.onScrolledCallbacks = []
     }
 
-    copyOther(other, mposX = other.posX, mposY = other.posY) {
+    copyOther(other, rid = other.id, mposX = other.posX, mposY = other.posY) {
         this.posX = mposX + event.view.scrollX -50;
         this.posY = mposY + event.view.scrollY -50;
         this.oldX = this.posX;
@@ -65,9 +65,10 @@ class FlowchartNode extends View {
         this.offsetY = other.offsetY;
         this.height = other.height;
         //flow
+        this.idRef = rid;
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
-
+        this.output.connections = other.output.connections;
         //fullösning för att avreferera ist för this.userMadeVariables = other.userMadeVariables;
         //om nån kommer på ett bätre alternativ kän er välkommna att fixa
         const keys = Object.keys(other.userMadeVariables)
