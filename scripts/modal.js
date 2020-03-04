@@ -1,10 +1,14 @@
-import elementString from '../static/views/modal.html';
-import Button from 'Base/button.js';
-import SaveObject from './saveObj.js';
-import View, {InlineView} from 'Base/view.js';
-import eventEmitter from 'Singletons/event-emitter.js';
-import styleClasses from 'Styles/modal-buttons.css';
-import FunctionVariable from './functionvariable.js'
+import elementString                          from '../static/views/modal.html';
+import Button                                 from 'Base/button.js';
+//import SaveObject                             from './saveObj.js';
+import View, {InlineView}                     from 'Base/view.js';
+import eventEmitter                           from 'Singletons/event-emitter.js';
+import styleClasses                           from 'Styles/modal-buttons.css';
+
+import FunctionVariable   from 'Model/function-variable.js'
+import FunctionDefinition from 'Model/function-definition.js'
+import NetworkAPIs         from 'Network/network.js'
+const funcDefAPI = NetworkAPIs.funcDefAPI;
 
 class Modal extends View
 {
@@ -31,21 +35,18 @@ class Modal extends View
                                   </div>`;
 
     // hämta alla funktionstemplates
-    fetch('http://localhost:3000/funcdef/all', (templateNames) => {
+    this.setupDropdownList();
 
-      // Ladda in dem i funktionslistan och loadlistan
-      this.functionDefinitions = templateNames;
-      this.loadList = templateNames;
-      console.log(templateNames)
-      // Uppdatera DOMen med alla funktionsobjekt
+  }
+
+  async setupDropdownList() {
+    const data = await funcDefAPI.getAll();
+    console.log("data", data)
+    data.forEach(funcdef => {
+      this.functionDefinitions.push(funcdef);
+      this.loadList.push(funcdef.name);
     })
 
-    this.functionDefinitions.push("Kalle")
-    this.functionDefinitions.push("superlongonelinefunctiondefininitionexampleformeXD?")
-    this.functionDefinitions.push("Felix")
-    this.functionDefinitions.push("Kalle3")
-    this.functionDefinitions.push("Kalle4")
-    this.functionDefinitions.push("Kalle5")
   }
 
   uppdateList(){
@@ -116,42 +117,11 @@ class Modal extends View
     })
 
     eventEmitter.on('saveModal', () => {
-      console.log("Spara ner all data på ett snyggt sätt och skicka till databasen");
-      // Ha en failsafe för att se vilka object som finns i listan över sedan tidigare sparade objekt föra tt inte spara samma flera gånger? Hur ska vi göra versionhanteringen?
       this._save();
-      let saveObject = new SaveObject( this.obj.name, 
-                                       this.obj.functionDescription, 
-                                       /* Vet ej hur vi vill göra vid denna delen av spara nod, kanske ha en spara funktionsdefinition som ärver från saveObject? eller bara annan funktion?*/
-                                       100,
-                                       100,
-                                       0,
-                                       {}, 
-                                       {} );
-      
-      console.log("SAVED SAKER", JSON.parse(JSON.stringify(saveObject)))
-      this.functionDefinitions.push(saveObject);
-      fetch('http://localhost:3000/funcdef/save', 
-      {
-        method:   'POST',
-        headers:  {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(saveObject)
-      }).then((response) => {
-          // Confirm save
-          console.log("success", response.json().data);
-      }).catch((error) => {
-          // Handle error
-          console.log("Fail", error);
-      });
-
-      // Konfirmation that object was saved
-      
-      // Kolla på fetch för PUT för att skicka med objektet till backend 
+      this._saveFuncDef();  
     })
     
   eventEmitter.on('loadModal', () => {
-      // Kan vara onödig
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
       this.updateLoadList("");
@@ -167,7 +137,7 @@ class Modal extends View
   updateLoadList(searchString) {
     this.loadList = [];
     for(let i = 0; i < this.functionDefinitions.length; i++){
-      if(this.functionDefinitions[i].includes(searchString)){
+      if(this.functionDefinitions[i].name.includes(searchString)){
         this.loadList.push(this.functionDefinitions[i]);
       }
     }
@@ -181,7 +151,7 @@ class Modal extends View
     }
 
     for (let i = 0; i < this.loadList.length; i++) {
-      let listItem = new ListItem(this.loadList[i]);
+      let listItem = new ListItem(this.loadList[i].name);
       dropdown.appendChild(listItem.render());
     }
 
@@ -196,16 +166,9 @@ class Modal extends View
       idField.textContent = "ID: " + this.obj.id.toString();
 	    this.modalContent.changeHtml(`
                             <div id="boxtime">
-<<<<<<< HEAD
-                              Name: <input type="text" id="name" value="${this.obj.getName()}"> </br>                       
-                              Input: <input type="text" id="inputBox" value="${this.obj.input.getValue()}"> </br>
-                              Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
-=======
                               Name: <input type="text" id="name" value=""> ${this.obj.getName()} </br>                       
                               Input: <input type="text" id="inputBox" value="${this.obj.getInValue()}"> </br>
                               Output: <input type="text" id="outputBox" value="${this.obj.getOutValue()}"> </br>
->>>>>>> origin/UMV_changes
-
                               Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
                               <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
                               Variables:
@@ -215,8 +178,19 @@ class Modal extends View
       this.uppdateList();      
   }
 
+  async _saveFuncDef() {
+      try {
+          await funcDefAPI.save(
+            new FunctionDefinition(this.obj.getName(), this.obj.functionDescription, [
+              new FunctionVariable("MockInput",  "Input",  "Value rm-rf * Mock"),
+              new FunctionVariable("MockOutput", "Output", "Value rm-rf * Mock"),
+          ]));
+      } catch(e) {
+        throw e;
+      }
+  }
+
   _save() {
-    
     this.obj.setName(document.getElementById("name").value);
     
     this.obj.functionDescription = document.getElementById("funcdescBox").value;

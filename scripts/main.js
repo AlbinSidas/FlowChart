@@ -8,6 +8,8 @@ import 'Styles/style.css';
 function main() {
     const workspaceObject = new Container();
     const root_container  = new Root(workspaceObject);
+
+    // Bör dessa flyttas till container?
     const startNode = new StartNode("start-node");
     workspaceObject.addBox(startNode);
 
