@@ -2,10 +2,11 @@
 
 .size_button {
   position: fixed;
-  width: 210px;
+  width: 230px;
   bottom: 0px;
-  padding: 5px;
+  padding: 13px;
   left: 0px;
-  background-color: blue;
+  background-color: var(--accent-color);
   visibility: hidden;
+  z-index: 10;
 }

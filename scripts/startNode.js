@@ -13,7 +13,7 @@ class StartNode extends View {
         this.onClick = this.onClick.bind(this);
         
         this.posX = 880;
-        this.posY = 0;
+        this.posY = 30;
 
         this.element.classList.add("startnode");
         this.element.setAttribute("style", 'margin-top:'+this.posY+'px; margin-left:'+this.posX+'px;');

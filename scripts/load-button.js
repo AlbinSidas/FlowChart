@@ -9,7 +9,7 @@ class LoadButton extends Button
 {
   constructor() {
     super();
-    this.setHtml('<button type="button" name="button">Load</button>')
+    this.setHtml('<button type="button" class="btn" style="background-color:var(--button-color); margin-right:16px; width:90px;" name="button">Load</button>')
     this.render = this.render.bind(this)
     this.name = "Load"
     this.onClick = this.onClick.bind(this);

@@ -22,7 +22,7 @@ class Connector extends View
 
     if (this.prevNode.id == "start-node"){
       outX = this.prevNode.posX + 50;
-      outY = this.prevNode.posY + 125;
+      outY = this.prevNode.posY + 50;
     }
     
     // line contains the length, position x and y, and the angle

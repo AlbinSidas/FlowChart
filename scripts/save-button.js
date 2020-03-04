@@ -9,11 +9,10 @@ class SaveButton extends Button
 {
   constructor() {
     super();
-    this.setHtml('<button type="button" name="button">Save</button>')
+    this.setHtml('<button type="button" class="btn" style="background-color:var(--button-color); width:90px; name="button">Save</button>')
     this.render = this.render.bind(this)
     this.name = "Save"
     this.onClick = this.onClick.bind(this);
-    this.element.setAttribute("style", "background-color:--main-accent")
   }
 
   didAttach(parent) {
