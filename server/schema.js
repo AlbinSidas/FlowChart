@@ -9,7 +9,7 @@ const Schema = {
             const value = data[key];
             const targetType = schemaValue.type
             if(value && typeof value == targetType) { 
-                if (targetType == "object") { 
+                if (targetType == "object" && schemaValue.innerSchema) { 
                     this.validate(value, schemaValue.innerSchema); 
                 }
                 continue; 
@@ -20,8 +20,10 @@ const Schema = {
     },
     jsonSchemas: {
         funcDefSchema: {
-            name: {type: datatype.String, innerSchema: null},
-            num:  {type: datatype.Number, innerSchema: null},
+            name:         {type: datatype.String, innerSchema: null},
+            description:  {type: datatype.String, innerSchema: null},
+            type:         {type: datatype.String, innerSchema: null},
+            variables:    {type: datatype.Array,  innerSchema: null}
         }
     }
 
