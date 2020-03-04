@@ -112,11 +112,11 @@ class Modal extends View
     
     
 
-    eventEmitter.on('close-modal', () => {
+    eventEmitter.on('closeModal', () => {
       this.close();
     })
 
-    eventEmitter.on('save-modal', () => {
+    eventEmitter.on('saveModal', () => {
       console.log("Spara ner all data på ett snyggt sätt och skicka till databasen");
       // Ha en failsafe för att se vilka object som finns i listan över sedan tidigare sparade objekt föra tt inte spara samma flera gånger? Hur ska vi göra versionhanteringen?
       this._save();
@@ -126,14 +126,25 @@ class Modal extends View
                                        100, 
                                        100, 
                                        
-                                       this.obj.id,
-                                       this.obj.input.connections, 
-                                       this.obj.output.connections );
+                                       0,
+                                       {}, 
+                                       {});
       
       this.functionDefinitions.push(saveObject);
+      fetch('http://localhost3000/saveFunctionDefinition', 
+      {
+        method:   'PUT',
+        headers:  {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.saveObject)
+
+      });
+      
+      // Kolla på fetch för PUT för att skicka med objektet till backend 
     })
     
-  eventEmitter.on('load-modal', () => {
+  eventEmitter.on('loadModal', () => {
       // Kan vara onödig
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
@@ -226,7 +237,7 @@ class CloseButton extends Button {
   }
 
   onClick() {
-    eventEmitter.emit('close-modal');
+    eventEmitter.emit('closeModal');
   }
 }
 
@@ -242,7 +253,7 @@ class SaveButton extends Button {
     }
 
   onClick() {
-    eventEmitter.emit('save-modal');
+    eventEmitter.emit('saveModal');
   }
 }
 
@@ -258,9 +269,10 @@ class LoadButton extends Button {
     }
 
   onClick() {
-    eventEmitter.emit('load-modal');
+    eventEmitter.emit('loadModal');
   }
 }
+
 class AddButton extends Button {
   constructor() {
       super();
