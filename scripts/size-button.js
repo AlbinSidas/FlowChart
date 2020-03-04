@@ -3,17 +3,26 @@ import styleClasses from 'Styles/size_button.css'
 import Button from 'Base/button.js'
 import View from 'Base/view.js'
 import eventEmitter from 'Singletons/event-emitter.js'
+import LoadButton from './load-button';
+import SaveButton from './save-button';
 
 
 class SizeButtons extends View
 {
   constructor(){
     super();
-    this.setHtml('<div></div>')
+    this.setHtml('<div></div>');
+    this.element.setAttribute('id', 'toolbox');
   }
 
   didAttach(parent) {
     super.didAttach(parent);
+    //Load
+    this.loadButton = new LoadButton();
+    this.attach(this.loadButton);
+    //Save
+    this.saveButton = new SaveButton();
+    this.attach(this.saveButton);
     //Vertical
     this.increase_size_btn = new IncreaseSizeButton();
     this.attach(this.increase_size_btn);

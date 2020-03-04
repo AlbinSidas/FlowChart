@@ -1,7 +1,7 @@
 
 import SizeButton from './size-button.js'
-import SaveButton from './save-button.js'
-import LoadButton from './load-button.js'
+/* import SaveButton from './save-button.js'
+import LoadButton from './load-button.js' */
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
 import Modal from './modal.js'
@@ -10,6 +10,7 @@ import View from 'Base/view.js'
 import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
+import ShowHideButton from './showHideButton.js';
 
 class Container extends View {
     constructor() {
@@ -137,16 +138,21 @@ class Container extends View {
         const sizeButton = new SizeButton();
         this.attach(sizeButton)
 
-        const save = new SaveButton();
+        const showHideButton = new ShowHideButton();
+        this.attach(showHideButton);
+
+        /* const save = new SaveButton();
         this.attach(save);
 
         const load = new LoadButton();
-        this.attach(load);
+        this.attach(load); */
 
         this.modal = new Modal();
         this.attach(this.modal);
         
-        
+        eventEmitter.on('showHide', () => {
+            this.showHide();
+        })
 
         eventEmitter.on('save', () =>  {
             this.saveClass.saveFlow(this.objects)
@@ -311,6 +317,19 @@ class Container extends View {
                 }
             }
             this.setWidth(this.width - this.sizeDelta);
+        }
+    }
+
+    showHide() {
+        let element = document.getElementById("toolbox");
+        let style = getComputedStyle(element);
+        let visibility = style.getPropertyValue('visibility');
+        console.log(visibility);
+        if (visibility == 'hidden') {
+            document.getElementById("toolbox").style.visibility = 'visible';
+        }
+        else {
+            document.getElementById("toolbox").style.visibility = 'hidden';
         }
     }
 

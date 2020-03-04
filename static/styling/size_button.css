@@ -1,7 +1,9 @@
 .size_button {
   position: fixed;
-  width: 100px;
+  width: 210px;
   bottom: 0px;
   padding: 5px;
   left: 0px;
+  background-color: blue;
+  visibility: hidden;
 }
