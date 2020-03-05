@@ -35,6 +35,61 @@ class Modal extends View
     this.setupDropdownList();
   }
 
+  didAttach(parent) {
+    this.attach(this.modalTitle)
+    this.attach(this.modalContent)
+    this.attach(this.modalFooter)
+
+    // This listener handles the load-dropdownlist on keypresses
+    let input = document.getElementById('loadFunctionInput');
+    input.addEventListener('keyup', () => {
+      this.updateLoadList(input.value);
+      this.updateLoadListDOM();
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      let elems = document.querySelectorAll('.dropdown-trigger');
+      let options = {
+        'alginment': 'right', 
+        'autotrigger': false,
+        'coverTrigger': false,
+        'closeOnClick': false,
+        'hover':false
+      }
+      M.Dropdown.init(elems, options);
+    });
+
+    this.closeButton = new CloseButton();
+    this.saveButton  = new SaveButton();
+    this.loadButton  = new LoadButton();
+    this.addButton   = new AddButton()
+    
+    eventEmitter.on('listClick', (listObject) => {
+      this.loadDefinitionToModal(listObject);
+      this._save();
+    })
+
+    eventEmitter.on('closeModal', () => {
+      this.close();
+    })
+
+    eventEmitter.on('saveModal', () => {
+      this._save();
+      this._saveFuncDef();  
+    })
+    
+  eventEmitter.on('loadModal', () => {
+      // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
+      this.updateLoadList("");
+      this.updateLoadListDOM();
+    })
+
+    eventEmitter.on('addThings', () =>  {
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable(document.getElementById('nameInp').value, "var", document.getElementById('valInp').value);
+      this.uppdateList();
+    })
+  }
+
   async setupDropdownList() {
     const data = await funcDefAPI.getAll();
     data.forEach(funcdef => {
@@ -63,71 +118,13 @@ class Modal extends View
   }
 
   loadDefinitionToModal(def) {
-    document.getElementById("name").value = def.getName();
-    document.getElementById("inputBox").value = def.input.getValue();
-    document.getElementById("outputBox").value = this.obj.output.getValue();
-    document.getElementById("funcdescBox").value = this.obj.functionDescription;
+    document.getElementById("name").value = def.name;
+    document.getElementById("funcdescBox").value = def.description;
+    // Nedanstående är kvar endast för demo, kommer behöva förändras då funktionsdefinitionen förändras
+    document.getElementById("inputBox").value = def.input;
+    document.getElementById("outputBox").value = this.obj.output;
   }
 
-  didAttach(parent) {
-    this.attach(this.modalTitle)
-    this.attach(this.modalContent)
-    this.attach(this.modalFooter)
-
-    let input = document.getElementById('loadFunctionInput');
-    input.addEventListener('keyup', () => {
-      this.updateLoadList(input.value);
-      this.updateLoadListDOM();
-    });
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      let elems = document.querySelectorAll('.dropdown-trigger');
-      let options = {
-        'alginment': 'right', 
-        'autotrigger': false,
-        'coverTrigger': false,
-        'closeOnClick': false,
-        'hover':false
-      }
-      M.Dropdown.init(elems, options);
-    });
-
-    this.closeButton = new CloseButton();
-    this.saveButton  = new SaveButton();
-    this.loadButton  = new LoadButton();
-    this.addButton   = new AddButton()
-    
-    eventEmitter.on('listClick', (listObject) => {
-      console.log(listObject);
-      /*
-      fetch(`http://localhost:3000/funcdef/:id{}`, (clickedDefinition) => {
-        loadDefinitionToModal(clickedDefinition);
-        
-      })
-      */
-    })
-
-    eventEmitter.on('closeModal', () => {
-      this.close();
-    })
-
-    eventEmitter.on('saveModal', () => {
-      this._save();
-      this._saveFuncDef();  
-    })
-    
-  eventEmitter.on('loadModal', () => {
-      console.log("Hämta data från databasen och visa upp i dropdownmenyn");
-      // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
-      this.updateLoadList("");
-      this. updateLoadListDOM();
-    })
-
-    eventEmitter.on('addThings', () =>  {
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable(document.getElementById('nameInp').value, "var", document.getElementById('valInp').value);
-      this.uppdateList();
-    })
-  }
 
   updateLoadList(searchString) {
     this.loadList = [];
@@ -175,6 +172,7 @@ class Modal extends View
 
   async _saveFuncDef() {
       try {
+        console.log(this.obj.functionDescription)
           await funcDefAPI.save(
             new FunctionDefinition(this.obj.getName(), this.obj.functionDescription, [
               new FunctionVariable("MockInput",  "Input",  "Value rm-rf * Mock"),
@@ -186,7 +184,6 @@ class Modal extends View
   }
 
   _save() {
-    
     this.obj.setName(document.getElementById("name").value);
     
     this.obj.functionDescription = document.getElementById("funcdescBox").value;
@@ -292,15 +289,11 @@ class ListItem extends View {
       super();
       this.setHtml(`<li class='loadDropdownItem'>${innerValue}</li>`);
       this.object          = object;
-      this.onClick = this.onClick.bind(this)
+      this.onClick         = this.onClick.bind(this)
       this.element.onclick = this.onClick;
-      console.log(this.object);
-
   }
 
   onClick() {
-    console.log(this.object)
-    console.log(this)
     eventEmitter.emit('listClick', this.object);
   }
 }
