@@ -56,7 +56,7 @@ class FlowchartNode extends View {
         this.onScrolledCallbacks = []
     }
 
-    copyOther(other, rid = other.id, mposX = other.posX, mposY = other.posY) {
+    copyOther(other, rid = other.id, mposX = other.posX, mposY = other.posY, cRef = other.output.connections) {
         this.posX = mposX + event.view.scrollX -50;
         this.posY = mposY + event.view.scrollY -50;
         this.oldX = this.posX;
@@ -68,7 +68,7 @@ class FlowchartNode extends View {
         this.idRef = rid;
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
-        this.output.connections = other.output.connections;
+        this.output.connections = cRef;
         //fullösning för att avreferera ist för this.userMadeVariables = other.userMadeVariables;
         //om nån kommer på ett bätre alternativ kän er välkommna att fixa
         const keys = Object.keys(other.userMadeVariables)

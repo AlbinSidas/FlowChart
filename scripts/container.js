@@ -231,7 +231,7 @@ class Container extends View {
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
             for(let i = 0; i < this.markedObject.length; i++){
                 this.copyObject[i] = new FlowchartNode(uuidv1());
-                this.copyObject[i].copyOther(this.markedObject[i], this.markedObject[0].id);
+                this.copyObject[i].copyOther(this.markedObject[i], this.markedObject[i].id);
                 this.idsbeforepaste[i] = this.markedObject[i].id; 
             }
             
@@ -245,24 +245,21 @@ class Container extends View {
             for(let i = 0; i < this.copyObject.length; i++){
                 let pasteObject = new FlowchartNode(uuidv1());
                 if(i == 0){
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX, this.mouseY);
+                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX, this.mouseY, []);
                 }
                 else {
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY));
+                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY), []);
                 }
                 this.addBox(pasteObject);
                 tempRef[i] = pasteObject;
                 
             }
-            if(this.copyObject.length > 1){
+            if(tempRef.length > 1){
                 for(let i = 0; i < this.copyObject.length; i++){
                     for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
                         if(this.idsbeforepaste.includes(this.copyObject[i].output.connections[j])){                           
-                            
                             for(let k = 0; k < tempRef.length; k++){
-                                console.log("gg")
                                 if(tempRef[k].idRef == this.copyObject[i].output.connections[j]){
-                                    console.log("yeet")
                                     eventEmitter.emit("outputClicked", tempRef[i].id);
                                     eventEmitter.emit("inputClicked", tempRef[k].id);
                                 }
