@@ -191,29 +191,30 @@ class Modal extends View
   }
 
   _save() {
+    
     this.obj.setName(document.getElementById("name").value);
     
     this.obj.functionDescription = document.getElementById("funcdescBox").value;
-    let fulIn = true;
-    let fulOut = true;
+    let setDefaultInput = true;
+    let setDefaultOutput = true;
     for (let i = 0; i < this.obj.functionVariables.length; i++){
       if(this.obj.functionVariables[i].type == "var"){
         this.obj.functionVariables[i].value = document.getElementById(this.obj.functionVariables[i].name).value;
       }
       else if(this.obj.functionVariables[i].type == "input"){
         this.obj.functionVariables[i].value = document.getElementById("inputBox").value;
-        fulIn = false;
+        setDefaultInput = false;
       }
       else if(this.obj.functionVariables[i].type == "output"){
         this.obj.functionVariables[i].value = document.getElementById("outputBox").value;
-        fulOut = false;
+        setDefaultOutput = false;
       }
     }
-    if (fulIn){
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("Stefan", "input", document.getElementById("inputBox").value);
+    if (setDefaultInput){
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultInput", "input", document.getElementById("inputBox").value);
     }
-    if (fulOut){
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("Glen", "output", document.getElementById("outputBox").value);
+    if (setDefaultOutput){
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultOutput", "output", document.getElementById("outputBox").value);
     }
   }
 
