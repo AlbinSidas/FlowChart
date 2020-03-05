@@ -55,7 +55,7 @@ class Save
 			}
 		}
 		for (i=0; i < object.length; i++){
-			if(object[i].iCon.includes("start-node")){
+			if(object[i].iCon.length !=0 && object[i].iCon.includes("start-node")){
 				eventEmitter.emit("outputClicked", "start-node");
 				eventEmitter.emit("inputClicked", object[i].id);
 			}

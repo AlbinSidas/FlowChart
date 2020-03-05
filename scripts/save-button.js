@@ -1,8 +1,8 @@
 
-import elementString from '../static/views/save-button.html'
-import styleClasses from 'Styles/size_button.css'
-import Button from 'Base/button.js'
-import eventEmitter from 'Singletons/event-emitter.js'
+import elementString from '../static/views/save-button.html';
+import styleClasses from 'Styles/size_button.css';
+import Button from 'Base/button.js';
+import eventEmitter from 'Singletons/event-emitter.js';
 
 
 class SaveButton extends Button

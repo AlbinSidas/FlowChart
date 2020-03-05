@@ -76,8 +76,9 @@ class Container extends View {
         });
 
         // If the click is on the marked object it's a doubleclick and will open the modal.
-        if (this.markedObject.includes(obj)) {
+        if (this.markedObject.includes(obj) ) {
             // Prevents further draging after doubleclick.
+
             obj.closeDragElement();
             this.modal.show(obj);
             window.onclick = function (event) {
@@ -129,10 +130,6 @@ class Container extends View {
         } 
     }
 
-
-
-    
-
     didAttach(parent) {
         const sizeButton = new SizeButton();
         this.attach(sizeButton)
@@ -145,8 +142,6 @@ class Container extends View {
 
         this.modal = new Modal();
         this.attach(this.modal);
-        
-        
 
         eventEmitter.on('save', () =>  {
             this.saveClass.saveFlow(this.objects)
