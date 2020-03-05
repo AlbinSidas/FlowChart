@@ -9,9 +9,9 @@ const serverConfig    = config.server
 const dbConfig        = config.db 
 const MongoHandler    = mongo.MongoHanlder;
 const Schema          = require('./schema.js')
-const apiAux          = require('./api_auxiliary')
+const apiAux          = require('./api/api_auxiliary')
 const Response        = apiAux.Response
-
+const apiHandlers     = require('./api/api-handlers');
 
 async function main() {
 
@@ -59,10 +59,10 @@ async function main() {
           }); 
     });
 
-    app.post('/save', async (req, res) => {
+    app.post('/funcdef/save', async (req, res) => {
         const data = req.body;
         try {
-             await Schema.validate(data, Schema.jsonSchemas.funcDefSchema);
+            await Schema.validate(data, Schema.jsonSchemas.funcDefSchema);
         } catch (InvalidTypeError) {
             console.log(InvalidTypeError.message)
             res.status(400);
@@ -74,11 +74,16 @@ async function main() {
         res.json(Response("Save function definition", databaseOps));
     });
 
-
-    app.get('/funcdef', async(req, res) => {
+    app.get('/funcdef/all', async(req, res) => {
         const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
         res.json(Response("", databaseOps))
     });
+
+    app.get('/funcdef/:id', async(req, res) => {
+        const databaseOps = await mongoController.funcDefHandler.getById(req.params.id); // kan behöva kallas på från någon annanstans om det blir större
+        res.json(Response("", databaseOps))
+    });
+
 
 
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))
