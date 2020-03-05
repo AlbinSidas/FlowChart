@@ -110,6 +110,7 @@ class Modal extends View
         
       })
       */
+     his.obj.changeFunctionName(listObject.textContent);
     })
 
     eventEmitter.on('closeModal', () => {
@@ -125,7 +126,7 @@ class Modal extends View
       console.log("Hämta data från databasen och visa upp i dropdownmenyn");
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
       this.updateLoadList("");
-      this. updateLoadListDOM();
+      this.updateLoadListDOM();
     })
 
     eventEmitter.on('addThings', () =>  {
