@@ -3,6 +3,7 @@ import View from 'Base/view.js';
 import style from 'Styles/style.css';
 import eventEmitter from 'Singletons/event-emitter.js';
 import NodeIO from './nodeIO.js';
+import NodeMetaInfo from 'Model/node-meta-info.js'
 
 class FlowchartNode extends View {
     constructor(id){
@@ -14,15 +15,12 @@ class FlowchartNode extends View {
         this.elementDrag      = this.elementDrag.bind(this);
         this.mouseDown        = this.mouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
+        this.getMetaInfo      = this.getMetaInfo.bind(this)
 
         //ui
         this.posX    = 100;
         this.posY    = 100;
         this.height  = 100;
-        this.oldPosY = this.posY;
-        this.oldPosX = this.posX;
-        this.oldX    = this.posX;
-        this.oldY    = this.posY;
         this.offsetX = 0;
         this.offsetY = 0;
 
@@ -31,7 +29,11 @@ class FlowchartNode extends View {
         this.id    = id;
         this._name = "";
         this.functionDescription = "No function yet";
-        this.functionVariables = [];
+        this.functionVariables = []; // Helt ok
+        /* 
+            men det är INTE en del av NodeMetaInfo!
+            tänk this.functionVariables = funcdefAPI.getTemplateFill(this.id); då hämtas funktionsdefinition variabelfyllningen för den här nodens id
+        */
 
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output"); 
@@ -59,8 +61,6 @@ class FlowchartNode extends View {
     copyOther(other, mposX = other.posX, mposY = other.posY) {
         this.posX = mposX + event.view.scrollX -50;
         this.posY = mposY + event.view.scrollY -50;
-        this.oldX = this.posX;
-        this.oldY = this.posY;
         this.offsetX = other.offsetX;
         this.offsetY = other.offsetY;
         this.height = other.height;
@@ -75,16 +75,13 @@ class FlowchartNode extends View {
     }
     fillNode(other) {
         //fyller i data för en node baserat på ett metaobjekt från servern
-        this.posX = other.pX;
-        this.posY = other.pY;
-        this.oldX = this.posX;
-        this.oldY = this.posY;
-        this.offsetX = other.offsetX;
-        this.offsetY = other.offsetY;
-        this.height = other.height;
-        //flow
-        this.functionDescription = other.functionDescription;
-        this.functionVariables = other.extra;
+        this.posX                = other.pX;
+        this.posY                = other.pY;
+        this.id                  = other.id;
+        this.functionVariables   = other.functionVariables
+        this.funcDefId           = other.funDefId;
+        this.nodeDescription     = other.nodeDescription;
+        //this.functionDescription = other.funDefId;
     }
 
     registerConnectorUpdater(id, func) {
@@ -187,6 +184,19 @@ class FlowchartNode extends View {
         document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
         //eventEmitter.emit("dragged", e);
      }
+
+    getMetaInfo() {
+        console.log("i noden", this.input.connections)
+        return new NodeMetaInfo(
+                this.type, 
+                this.functionDescription,
+                this.posX, 
+                this.posY, 
+                this.id, 
+                this.output.connections, 
+                this.input.connections,   
+                this.functionVariables);
+    }
 
     onClick(e) {
         //was moved to mousedown to fix bug

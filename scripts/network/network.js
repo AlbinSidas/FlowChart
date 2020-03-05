@@ -3,12 +3,12 @@ class Network {
         this.host = host;
         this.port = port;
         this.apiRoute = apiRoute
-        this.baseURL = `http://${this.host}:${this.port}`
+        this.baseURL = `http://${this.host}:${this.port}/${this.apiRoute}`
     }
 
     async save(obj) {
-        console.log("Fest i save", JSON.stringify(obj))
-        fetch(`${this.baseURL}/${this.apiRoute}/save`, 
+        console.log("OBJ", obj)
+        fetch(`${this.baseURL}/save`, 
         {
             method:   'POST',
             headers:  {
@@ -30,13 +30,21 @@ class Network {
     }
 
     async getAll() {
-        const data = await fetch('http://localhost:3000/funcdef/all').then(res  => res.json())
-                                                                     .then(res => res.data)
+        const data = await fetch(`${this.baseURL}/all`).then(res  => res.json())
+                                                                        .then(res => res.data)
         return data;
     }
 
-    async load() {
+    async getById(id) {
+        const data = await fetch(`${this.baseURL}/${id}`).then(res  => res.json())
+                                                         .then(res => res.data)
+        return data;
+    }
 
+    async getNameList() {
+        const data = await fetch(`${this.baseURL}/view`).then(res  => res.json())
+                                                                        .then(res => res.data)
+        return data;
     }
 }
 
@@ -45,10 +53,60 @@ class FuncDefAPI extends Network {
         super(host, port, apiRoute)
     }
 
+
+}
+
+class FlowchartAPI extends Network {
+    constructor(host, port, apiRoute) {
+        super(host, port, apiRoute)
+    }
+
+}
+class NodeAPI extends Network {
+    constructor(host, port, apiRoute) {
+        super(host, port, apiRoute)
+    }
+
+//     async updateVariableTemplate(nodeId, variables) {
+//         return fetch(`${this.baseURL}/variables/${nodeId}`, 
+//         {
+//             method:   'PUT',
+//             headers:  {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(variables)
+//         }).then(response => response.json())
+//           .then(response => response.data)
+//           .catch((error) => {
+//             // Handle error
+//             console.log("Fail", error);
+//         });
+//     } 
+
+//    async getVariables(nodeId) {
+//        return fetch(`${this.baseURL}/variables/${nodeId}`, 
+//         {
+//             method:   'GET',
+//             headers:  {
+//                 'Content-Type': 'application/json'
+//             }
+//         }).then((response) => {
+//             // Confirm save
+//             console.log("success", response.json().data);
+            
+//         }).catch((error) => {
+//             // Handle error
+//             console.log("Fail", error);
+//         });
+//     }
 }
 
 
-const funcDefAPI = new FuncDefAPI('localhost', '3000', 'funcdef')
+
+const funcDefAPI   = new FuncDefAPI('localhost', '3000', 'funcdef')
+const flowchartAPI = new FlowchartAPI('localhost', '3000', 'flowchart')
+const nodeAPI      = new NodeAPI('localhost', '3000', 'node')
+
 // class .... Samma sak för andra generella saker som funcDef, antar FlowChart 
 // ... Fyll i
 // ... Fyll i
@@ -66,7 +124,19 @@ const funcDefAPI = new FuncDefAPI('localhost', '3000', 'funcdef')
     //                                    0,
     //                                    {}, 
     //                                    {} );
-    //                                    console.log("SAVED SAKER", JSON.parse(JSON.stringify(saveObject)))
+    //                                    console.log("SAVED SAKER", JSON.parse
+
+
+    /*
+    {
+        id : {functionvariable}, 
+    }
+
+
+
+
+    */
+    //(JSON.stringify(saveObject)))
 
     //   this.functionDefinitions.push(saveObject);
-export default { funcDefAPI }
+export default { funcDefAPI, flowchartAPI }
