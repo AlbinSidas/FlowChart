@@ -27,7 +27,6 @@ export function InlineView (elementString) {
   return Object.assign(object, ViewInterface(object))
 }
 
-
 class View {
   constructor() {
     this.child_views = []

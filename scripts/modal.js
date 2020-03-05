@@ -67,6 +67,7 @@ class Modal extends View
     eventEmitter.on('listClick', (listObject) => {
       this.loadDefinitionToModal(listObject);
       this._save();
+      this.obj.changeFunctionName(listObject.textContent);
     })
 
     eventEmitter.on('closeModal', () => {
@@ -172,7 +173,6 @@ class Modal extends View
 
   async _saveFuncDef() {
       try {
-        console.log(this.obj.functionDescription)
           await funcDefAPI.save(
             new FunctionDefinition(this.obj.getName(), this.obj.functionDescription, [
               new FunctionVariable("MockInput",  "Input",  "Value rm-rf * Mock"),

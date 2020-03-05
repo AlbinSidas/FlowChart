@@ -15,7 +15,7 @@ class Save
 		let saveObjectList = [];
 		let i = 0;
 		for (i = 1; i < obj.length; i++){
-			let saveObj = new SaveObj(obj.name, obj[i].functionDescription, obj[i].posX, obj[i].posY, obj[i].id, obj[i].input.connections, obj[i].output.connections, obj[i].userMadeVariables);
+			let saveObj = new SaveObj(obj.name, obj[i].functionDescription, obj[i].posX, obj[i].posY, obj[i].id, obj[i].input.connections, obj[i].output.connections, obj[i].userMadeVariables, obj[i].functionName);
 			saveObjectList.push(saveObj);
 		}
 		const data = {
@@ -49,7 +49,7 @@ class Save
 
 			if(document.getElementById(object[i].id) == null){
 				let loadnode = new FlowchartNode(object[i].id);
-				loadnode.fillNode(object[i])
+				loadnode.fillNode(object[i]);
 				obj.push(loadnode);
 				that.attach(loadnode);
 			}
