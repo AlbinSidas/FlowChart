@@ -4,6 +4,7 @@ import SaveObject from './saveObj.js';
 import View, {InlineView} from 'Base/view.js';
 import eventEmitter from 'Singletons/event-emitter.js';
 import styleClasses from 'Styles/modal-buttons.css';
+import FunctionVariable from './functionvariable.js'
 
 class Modal extends View
 {
@@ -51,16 +52,17 @@ class Modal extends View
     //uppdaterar listan med variabler baserat på objektet
     var ul = document.getElementById("cVarList");
     while(ul.firstChild) ul.removeChild(ul.firstChild);
-    const keys = Object.keys(this.obj.userMadeVariables)
-    for (const key of keys){
-      var li = document.createElement("li");
-      li.appendChild(document.createTextNode(key));
-      let theBox = document.createElement("INPUT");
-      theBox.type = "text";
-      theBox.value = this.obj.userMadeVariables[key];
-      theBox.id = key;
-      li.appendChild(theBox);
-      ul.appendChild(li);
+    for (let i = 0; i < this.obj.functionVariables.length; i++){
+      if(this.obj.functionVariables[i].type == "var"){
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(this.obj.functionVariables[i].name));
+        let theBox = document.createElement("INPUT");
+        theBox.type = "text";
+        theBox.value = this.obj.functionVariables[i].value;
+        theBox.id = this.obj.functionVariables[i].name;
+        li.appendChild(theBox);
+        ul.appendChild(li);
+      }
     }
     
   }
@@ -142,8 +144,7 @@ class Modal extends View
     })
 
     eventEmitter.on('addThings', () =>  {
-      //knappen Add lägger till ett nytt objekt i 'userMadeVariables' och uppdaterar modal
-      this.obj.userMadeVariables[document.getElementById('nameInp').value] = document.getElementById('valInp').value;
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable(document.getElementById('nameInp').value, "var", document.getElementById('valInp').value);
       this.uppdateList();
     })
   }
@@ -181,8 +182,8 @@ class Modal extends View
 	    this.modalContent.changeHtml(`
                             <div id="boxtime">
                               Name: <input type="text" id="name" value=""> ${this.obj.getName()} </br>                       
-                              Input: <input type="text" id="inputBox" value="${this.obj.input.getValue()}"> </br>
-                              Output: <input type="text" id="outputBox" value="${this.obj.output.getValue()}"> </br>
+                              Input: <input type="text" id="inputBox" value="${this.obj.getInValue()}"> </br>
+                              Output: <input type="text" id="outputBox" value="${this.obj.getOutValue()}"> </br>
 
                               Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
                               <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
@@ -194,13 +195,30 @@ class Modal extends View
   }
 
   _save() {
+    
     this.obj.setName(document.getElementById("name").value);
-    this.obj.input.setValue(document.getElementById("inputBox").value);
-    this.obj.output.setValue(document.getElementById("outputBox").value);
+    
     this.obj.functionDescription = document.getElementById("funcdescBox").value;
-    const keys = Object.keys(this.obj.userMadeVariables)
-    for (const key of keys){
-      this.obj.userMadeVariables[key] = document.getElementById(key).value;
+    let setDefaultInput = true;
+    let setDefaultOutput = true;
+    for (let i = 0; i < this.obj.functionVariables.length; i++){
+      if(this.obj.functionVariables[i].type == "var"){
+        this.obj.functionVariables[i].value = document.getElementById(this.obj.functionVariables[i].name).value;
+      }
+      else if(this.obj.functionVariables[i].type == "input"){
+        this.obj.functionVariables[i].value = document.getElementById("inputBox").value;
+        setDefaultInput = false;
+      }
+      else if(this.obj.functionVariables[i].type == "output"){
+        this.obj.functionVariables[i].value = document.getElementById("outputBox").value;
+        setDefaultOutput = false;
+      }
+    }
+    if (setDefaultInput){
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultInput", "input", document.getElementById("inputBox").value);
+    }
+    if (setDefaultOutput){
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultOutput", "output", document.getElementById("outputBox").value);
     }
   }
 
