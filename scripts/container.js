@@ -29,6 +29,7 @@ class Container extends View {
         this.connectorList = [];
         this.objectClick   = {};
         this.copyObject    = [];
+        this.toolboxVisible = false;
         
         this.mouseX     = 0;
         this.mouseY     = 0;
@@ -132,8 +133,8 @@ class Container extends View {
     
 
     didAttach(parent) {
-        const toolbox = new Toolbox();
-        this.attach(toolbox)
+        this.toolbox = new Toolbox();
+        this.attach(this.toolbox)
 
         const showHideButton = new ShowHideButton();
         this.attach(showHideButton);
@@ -312,15 +313,14 @@ class Container extends View {
     }
 
     showHide() {
-        let element = document.getElementById("toolbox");
-        let style = getComputedStyle(element);
-        let visibility = style.getPropertyValue('visibility');
-        if (visibility == 'hidden') {
-            document.getElementById("toolbox").style.visibility = 'visible';
+        if (this.toolboxVisible) {
+            this.toolbox.hide();
+            this.toolboxVisible = false;
         }
         else {
-            document.getElementById("toolbox").style.visibility = 'hidden';
-        }
+            this.toolbox.show();
+            this.toolboxVisible = true;
+        }    
     }
 
     setHeight(height) {

@@ -36,12 +36,21 @@ class Toolbox extends View
 
   }
 
+  show() {
+    this.element.setAttribute("style", "visibility:visible");
+  }
+
+  hide() {
+    this.element.setAttribute("style", "visibility:hidden");
+  }
+
   render() {
     this.child_views.forEach(c => c.render());
     this.element.classList.add(styleClasses.tool_box);
     return this.element;
   }
 }
+
 
 class IncreaseSizeButton extends Button {
   constructor() {
