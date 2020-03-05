@@ -16,8 +16,7 @@
 
 .buttonFooterAdd {
     color: black;
-    /* position: absolute; */
-    margin-right: 1300px;  
+    position: absolute;
     margin: 0.82%;
-    left: 10;
+    left: 11%;
 }

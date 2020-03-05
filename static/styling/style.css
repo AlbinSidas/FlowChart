@@ -20,7 +20,6 @@
 }
 
 
-
 /* ============================== WORKSPACE ============================= */
 /* Standard measurement is in vw for width and height of items on the workspace. */
 body{
@@ -61,14 +60,14 @@ body{
     height: 1500px;
     padding: 0;
     margin: 0;
-    width: 100%;
-    
+    /* width: 4000px; */
+    zoom: 1; /* Sätt scale på hela sidan */
    /* transform: scale(0.9); */
 }
 
 :global #newObject {
-    height: 4vw;
-    width: 4vw;
+    height: 50px;
+    width: 50px;
     border-radius: 50%;
     position: fixed;
     right: 3%;
@@ -197,25 +196,25 @@ body{
 :global .modalHeader {
   margin: 15% auto 0;
   margin-top: 10vh;
-  width: 1400px;
+  width: 80%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   background-color: var(--modal-acc-color);
-  padding: 0.5vw;
+  padding: 10px;
 }
 
 :global .modalHeader span{
     font-family: 'Roboto', sans-serif;
-    font-size: 10%;
-    margin-left: 0.5vw;
-    margin-top: 1vw;
+    font-size: 25px;
+    margin-left: 10px;
+    margin-top: 5px;
 }
 
 /* Modal Footer */
 :global .modalFooter {
   margin: 0 auto;
-  width: 1400px;
+  width: 80%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -228,7 +227,7 @@ body{
   background-color: var(--modal-bg-color);
   padding: 20px;
   border: 1px solid #888;
-  width: 1300px;
+  width: 77%;
   /* align-content: right; */
 }
 
