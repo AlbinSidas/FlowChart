@@ -56,7 +56,7 @@ class IncreaseSizeButton extends Button {
   constructor() {
       super();
       this.setHtml('<button type="button" class="btn" name="button">Increase Height</button>')
-      this.element.setAttribute("style", "background-color:var(--button-color); width:200px; margin-top:40px")
+      this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:15%; margin-left: 5%")
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
     }
@@ -71,7 +71,7 @@ class DecreaseSizeButton extends Button {
   constructor() {
     super();
     this.setHtml('<button type="button" class="btn" name="decrease_button">Decrease Height</button>')
-    this.element.setAttribute("style", "background-color:var(--button-color); width:200px; margin-top:10px")
+    this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:5%; margin-left: 5%")
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
   }
@@ -85,7 +85,7 @@ class IncreaseHorizontalSizeButton extends Button {
   constructor() {
       super();
       this.setHtml('<button type="button" class="btn" name="button_horizontal">Increase Width</button>')
-      this.element.setAttribute("style", "background-color:var(--button-color); width:200px; margin-top:10px")
+      this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:5%; margin-left: 5%")
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
       
@@ -101,7 +101,7 @@ class DecreaseHorizontalSizeButton extends Button {
   constructor() {
     super();
     this.setHtml('<button type="button" class="btn" name="decrease_button_horizontal">Decrease Width</button>')
-    this.element.setAttribute("style", "background-color:var(--button-color); width:200px; margin-top:10px")
+    this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:5%; margin-left: 5%; margin-bottom: 5%")
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
     

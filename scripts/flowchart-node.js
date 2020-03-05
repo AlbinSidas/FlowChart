@@ -18,7 +18,7 @@ class FlowchartNode extends View {
         //ui
         this.posX    = 100;
         this.posY    = 100;
-        this.height  = 250;
+        this.height  = 12.5;
         this.oldPosY = this.posY;
         this.oldPosX = this.posX;
         this.oldX    = this.posX;
@@ -107,7 +107,7 @@ class FlowchartNode extends View {
     }
 
     render() {
-        this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}px`)
+        this.element.setAttribute('style', `position:absolut; left: ${this.posX}px; top:${this.posY}px; height:${this.height}vw`)
         return this.element;
     }
 

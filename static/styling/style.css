@@ -22,6 +22,7 @@
 
 
 /* ============================== WORKSPACE ============================= */
+/* Standard measurement is in vw for width and height of items on the workspace. */
 body{
     margin:0;
     padding:0;
@@ -35,7 +36,7 @@ body{
     flex-direction: row;
     padding: 0px;
 }
-
+/* .menu och .filemenu borde tas bort? */
 :global .menu {
     text-align: center;
     flex-grow: 1;
@@ -63,8 +64,8 @@ body{
 }
 
 :global #newObject {
-    height: 50px;
-    width: 50px;
+    height: 4vw;
+    width: 4vw;
     border-radius: 50%;
     position: fixed;
     right: 3%;
@@ -91,14 +92,14 @@ body{
 /* ============================== NODES ============================= */
 :global .startnode{
     background-color: var(--accent-color);
-    height: 50px;
-    width: 100px;
+    height: 3vw;
+    width: 8vw;
     position: absolute;
     border-radius: 20%;
     color: white;
-    padding: 10px;
+    padding: 0.25em;
     text-align: center;
-    font-size: 20px;
+    font-size: 1.5vw;
     z-index: 10;
     font-family: 'Roboto', sans-serif;
 }
@@ -113,29 +114,42 @@ body{
     background-color: var(--node-connector);
     pointer-events: none;
     position: absolute;
-    padding:0px; 
-    margin:0px;
-    height:10px;
+    padding:0vw; 
+    margin:0vw;
+    height:1vh;
     line-height:1px; 
+}
+
+/*border-radius is 1.1 times the height in the halfcircle*/
+
+/*Input circle*/
+.boxInput {
+    border-radius: 1.65vw 1.65vw 0vw 0vw;
+    width: 3vw;
+    height: 1.5vw;
+    margin-top: -1.5vw;
+    margin-left: 6vw;
+    background-color: var(--node-input);
+    cursor: pointer;
 }
 
 /*Output circle*/
 .boxOutput {
-    border-radius: 0px 0px 27.5px 27.5px;
-    height: 25px;
-    width: 50px;
-    margin-top: 250px;
-    margin-left: 125px;
+    border-radius: 0vw 0vw 1.65vw 1.65vw;
+    width: 3vw;
+    height: 1.5vw;
+    margin-top: 12.5vw;
+    margin-left: 6vw;
     background-color: var(--node-output);
     cursor: pointer;
 }
 /* Startnode Output */
 .boxStart {
-    border-radius: 0px 0px 27.5px 27.5px;
-    width: 50px;
-    height: 25px;
-    margin-top: 10px;
-    margin-left: 16px;
+    border-radius: 0vw 0vw 1.65vw 1.65vw;
+    width: 3vw;
+    height: 1.5vw;
+    margin-top: 0.43vw;
+    margin-left: 2.24vw;
     background-color: var(--node-output);
     cursor: pointer;
     z-index: 0;
@@ -143,28 +157,18 @@ body{
 /* Invisible Dummy Node */
 .boxStartDummy {
     visibility: hidden;
-    width: 0px;
-    height: 0px;
+    width: 0vw;
+    height: 0vw;
     z-index: -3;
 }
 
-/*Input circle*/
-.boxInput {
-    border-radius: 27.5px 27.5px 0px 0px;
-    height: 25px;
-    width: 50px;
-    margin-top: -25px;
-    margin-left: 125px;
-    background-color: var(--node-input);
-    cursor: pointer;
-}
+
 
 
 .flowchart_square {
     z-index: 9;
-    width: 300px;
-    height: 300px;
-    border-radius: 10px;
+    width: 15vw;
+    border-radius: 1vw;
     cursor: move;
     position: absolute;
     background-color: var(--node-background);
@@ -189,7 +193,7 @@ body{
 /* Modal Header */
 :global .modalHeader {
   margin: 15% auto 0;
-  margin-top: 100px;
+  margin-top: 10vh;
   width: 80%;
   display: flex;
   flex-direction: row;
