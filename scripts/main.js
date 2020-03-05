@@ -5,7 +5,6 @@ import Root from 'Base/root.js';
 import 'Styles/style.css';
 
 function main() {
-
     const workspaceObject = new Container();
     const root_container  = new Root(workspaceObject);
 
@@ -23,6 +22,7 @@ function main() {
     }
     document.querySelector("#newObject").addEventListener("click", createNewObject)
 }
+
 (function() {
    main();
 })();

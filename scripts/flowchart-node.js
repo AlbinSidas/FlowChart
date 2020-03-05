@@ -25,13 +25,13 @@ class FlowchartNode extends View {
         this.oldY    = this.posY;
         this.offsetX = 0;
         this.offsetY = 0;
-
+        this.idRef   = "";
         this._connectorUpdaters = [];
         //flow
         this.id    = id;
         this._name = "";
         this.functionDescription = "No function yet";
-        this.userMadeVariables = {};
+        this.functionVariables = [];
 
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output"); 
@@ -56,7 +56,7 @@ class FlowchartNode extends View {
         this.onScrolledCallbacks = []
     }
 
-    copyOther(other, mposX = other.posX, mposY = other.posY) {
+    copyOther(other, rid = other.id, mposX = other.posX, mposY = other.posY, cRef = other.output.connections) {
         this.posX = mposX + event.view.scrollX -50;
         this.posY = mposY + event.view.scrollY -50;
         this.oldX = this.posX;
@@ -65,14 +65,12 @@ class FlowchartNode extends View {
         this.offsetY = other.offsetY;
         this.height = other.height;
         //flow
+        this.idRef = rid;
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
-
-        //fullösning för att avreferera ist för this.userMadeVariables = other.userMadeVariables;
-        //om nån kommer på ett bätre alternativ kän er välkommna att fixa
-        const keys = Object.keys(other.userMadeVariables)
-        for (const key of keys){
-            this.userMadeVariables[key] = other.userMadeVariables[key];
+        this.output.connections = cRef;
+        for (let i = 0; i < other.functionVariables.length; i++){
+            this.functionVariables[i] = other.functionVariables[i];
         }
         
     }
@@ -87,7 +85,7 @@ class FlowchartNode extends View {
         this.height = other.height;
         //flow
         this.functionDescription = other.functionDescription;
-        this.userMadeVariables = other.extra;
+        this.functionVariables = other.extra;
     }
 
     registerConnectorUpdater(id, func) {
@@ -96,6 +94,22 @@ class FlowchartNode extends View {
 
     getName() {
         return this._name;
+    }
+    getInValue() {
+        for (let i = 0; i < this.functionVariables.length; i++){
+            if(this.functionVariables[i].type == "input"){
+                return this.functionVariables[i].value;
+            }
+        }
+        return "no input found";
+    }
+    getOutValue() {
+        for (let i = 0; i < this.functionVariables.length; i++){
+            if(this.functionVariables[i].type == "output"){
+                return this.functionVariables[i].value;
+            }
+        }
+        return "no output found";
     }
 
     setName(name) {
