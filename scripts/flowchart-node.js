@@ -25,7 +25,7 @@ class FlowchartNode extends View {
         this.oldY    = this.posY;
         this.offsetX = 0;
         this.offsetY = 0;
-
+        this.idRef   = "";
         this._connectorUpdaters = [];
         //flow
         this.id    = id;
@@ -56,7 +56,7 @@ class FlowchartNode extends View {
         this.onScrolledCallbacks = []
     }
 
-    copyOther(other, mposX = other.posX, mposY = other.posY) {
+    copyOther(other, rid = other.id, mposX = other.posX, mposY = other.posY, cRef = other.output.connections) {
         this.posX = mposX + event.view.scrollX -50;
         this.posY = mposY + event.view.scrollY -50;
         this.oldX = this.posX;
@@ -65,9 +65,10 @@ class FlowchartNode extends View {
         this.offsetY = other.offsetY;
         this.height = other.height;
         //flow
+        this.idRef = rid;
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
-
+        this.output.connections = cRef;
         for (let i = 0; i < other.functionVariables.length; i++){
             this.functionVariables[i] = other.functionVariables[i];
         }
