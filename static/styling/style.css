@@ -1,4 +1,20 @@
 
+@media(min-width: 1000px){
+    :global #workspace-root{
+      zoom: 1;
+    }
+}
+
+@media(min-width:1080px,){
+    :global #workspace-root{
+      zoom: 0.5;
+    }
+  } 
+
+
+
+
+
 /* ============================== COLORS ============================= */
 :root {
     /* General colors */
@@ -60,9 +76,6 @@ body{
     height: 1500px;
     padding: 0;
     margin: 0;
-    /* width: 4000px; */
-    zoom: 1; /* Sätt scale på hela sidan */
-   /* transform: scale(0.9); */
 }
 
 :global #newObject {
