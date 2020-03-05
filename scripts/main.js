@@ -6,9 +6,9 @@ import Root from 'Base/root.js';
 import 'Styles/style.css';
 
 function main() {
-
     const workspaceObject = new Container();
     const root_container  = new Root(workspaceObject);
+
     const startNode = new StartNode("start-node");
     workspaceObject.addBox(startNode);
 
@@ -24,9 +24,10 @@ function main() {
         workspaceObject.addBox(flowObj);
         flowObj.print();
     }
-    //workspaceObject.addBox(startNode);
+
     document.querySelector("#newObject").addEventListener("click", createNewObject)
 }
+
 (function() {
    main();
 })();
