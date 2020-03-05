@@ -75,7 +75,6 @@ async function main() {
     });
 
     app.get('/funcdef/all', async(req, res) => {
-        console.log("inne")
         const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
         res.json(Response("", databaseOps))
     });
