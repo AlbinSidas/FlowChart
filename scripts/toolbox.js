@@ -1,5 +1,5 @@
 
-import styleClasses from 'Styles/size_button.css'
+import styleClasses from 'Styles/toolbox.css'
 import Button from 'Base/button.js'
 import View from 'Base/view.js'
 import eventEmitter from 'Singletons/event-emitter.js'
@@ -7,7 +7,7 @@ import LoadButton from './load-button';
 import SaveButton from './save-button';
 
 
-class SizeButtons extends View
+class Toolbox extends View
 {
   constructor(){
     super();
@@ -24,21 +24,21 @@ class SizeButtons extends View
     this.saveButton = new SaveButton();
     this.attach(this.saveButton);
     //Vertical
-    this.increase_size_btn = new IncreaseSizeButton();
-    this.attach(this.increase_size_btn);
-    this.decrease_size_btn = new DecreaseSizeButton();
-    this.attach(this.decrease_size_btn);
+    this.increaseSizeBtn = new IncreaseSizeButton();
+    this.attach(this.increaseSizeBtn);
+    this.decreaseSizeBtn = new DecreaseSizeButton();
+    this.attach(this.decreaseSizeBtn);
     //Horizontal
-    this.increase_horizontal_size_btn = new IncreaseHorizontalSizeButton();
-    this.attach(this.increase_horizontal_size_btn);
-    this.decrease_horizontal_size_btn = new DecreaseHorizontalSizeButton();
-    this.attach(this.decrease_horizontal_size_btn);
+    this.increaseHorizontalSizeBtn = new IncreaseHorizontalSizeButton();
+    this.attach(this.increaseHorizontalSizeBtn);
+    this.decreaseHorizontalSizeBtn = new DecreaseHorizontalSizeButton();
+    this.attach(this.decreaseHorizontalSizeBtn);
 
   }
 
   render() {
     this.child_views.forEach(c => c.render());
-    this.element.classList.add(styleClasses.size_button);
+    this.element.classList.add(styleClasses.tool_box);
     return this.element;
   }
 }
@@ -54,7 +54,7 @@ class IncreaseSizeButton extends Button {
 
 
   onClick(e) {
-    eventEmitter.emit('increase_size');
+    eventEmitter.emit('increaseSize');
   }
 }
 
@@ -68,7 +68,7 @@ class DecreaseSizeButton extends Button {
   }
 
   onClick(e) {
-    eventEmitter.emit('decrease_size');
+    eventEmitter.emit('decreaseSize');
   }
 }
 
@@ -84,7 +84,7 @@ class IncreaseHorizontalSizeButton extends Button {
 
 
   onClick(e) {
-    eventEmitter.emit('increase_size_horizontal');
+    eventEmitter.emit('increaseSizeHorizontal');
   }
 }
 
@@ -99,9 +99,9 @@ class DecreaseHorizontalSizeButton extends Button {
   }
 
   onClick(e) {
-    eventEmitter.emit('decrease_size_horizonal');
+    eventEmitter.emit('decreaseSizeHorizonal');
   }
 }
 
 
-export default SizeButtons;
+export default Toolbox;

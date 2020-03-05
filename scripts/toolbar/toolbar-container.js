@@ -5,7 +5,7 @@ import toolbarStyle from 'Styles/toolbar.css';
 class ToolbarContainer extends View {
     constructor() {
         super(tagString);
-        this.increase_size_btn = null;
+        this.increaseSizeBtn = null;
     }
 
     didAttach(parent) {

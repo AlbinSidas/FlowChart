@@ -1,7 +1,5 @@
 
-import SizeButton from './size-button.js'
-/* import SaveButton from './save-button.js'
-import LoadButton from './load-button.js' */
+import Toolbox from './toolbox.js'
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
 import Modal from './modal.js'
@@ -60,7 +58,6 @@ class Container extends View {
                 console.log(this.flowchartList[n]);
             }*/
         })
-    
     }
 
     objectClicked(id, e) {
@@ -135,17 +132,11 @@ class Container extends View {
     
 
     didAttach(parent) {
-        const sizeButton = new SizeButton();
-        this.attach(sizeButton)
+        const toolbox = new Toolbox();
+        this.attach(toolbox)
 
         const showHideButton = new ShowHideButton();
         this.attach(showHideButton);
-
-        /* const save = new SaveButton();
-        this.attach(save);
-
-        const load = new LoadButton();
-        this.attach(load); */
 
         this.modal = new Modal();
         this.attach(this.modal);
@@ -162,16 +153,16 @@ class Container extends View {
             this.saveClass.loadFlow(this.objects, this)
         })
 
-        eventEmitter.on('increase_size', () =>  {
+        eventEmitter.on('increaseSize', () =>  {
             this.increaseSize();
         })
-        eventEmitter.on('decrease_size', () =>  {
+        eventEmitter.on('decreaseSize', () =>  {
             this.decreaseSize();
         })
-        eventEmitter.on('increase_size_horizontal', () =>  {
+        eventEmitter.on('increaseSizeHorizontal', () =>  {
             this.increaseSizeHorizontal();
         })
-        eventEmitter.on('decrease_size_horizonal', () =>  {
+        eventEmitter.on('decreaseSizeHorizonal', () =>  {
             this.decreaseSizeHorizontal();
         })
         eventEmitter.on('dragged', (pxm, pym, id) =>  {

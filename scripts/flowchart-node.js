@@ -122,10 +122,10 @@ class FlowchartNode extends View {
         let nextY = e.clientY-this.offsetY
         nextX = nextX < 0 ? 0 : nextX
         nextY = nextY < 0 ? 0 : nextY
-        const max_height_relative_to_window      = window.innerHeight - this.height
-        const box_position_relative_to_container = max_height_relative_to_window + window.scrollY
-        const box_position_relative_to_window    = nextY - window.scrollY
-        nextY = box_position_relative_to_window >= max_height_relative_to_window ? box_position_relative_to_container : nextY
+        const maxHeightRelativeToWindow      = window.innerHeight - this.height
+        const boxPositionRelativeToContainer = maxHeightRelativeToWindow + window.scrollY
+        const boxPositionRelativeToWindow    = nextY - window.scrollY
+        nextY = boxPositionRelativeToWindow >= maxHeightRelativeToWindow ? boxPositionRelativeToContainer : nextY
         this.element.style.top  = `${this.posY}px`
         this.element.style.left = `${nextX}px`
         eventEmitter.emit("dragged", nextX - this.posX ,  nextY - this.posY, this.id);
