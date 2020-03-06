@@ -10,7 +10,7 @@ import View from 'Base/view.js'
 import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
-import StartNode from './startNode.js';
+import StartNode from './start-node.js';
 
 class Container extends View {
     constructor() {
@@ -55,11 +55,6 @@ class Container extends View {
             this.flowchartList.length = 0;           
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
-            
-            /* console.log("Finished list:")
-            for(let n = 0; n < this.flowchartList.length; n++){
-                console.log(this.flowchartList[n]);
-            } */
         })
     
     }
@@ -112,7 +107,6 @@ class Container extends View {
             let connector = {};
             if (!currNode.input.connections.includes(this.markedOutput)) {
                 currNode.input.connections.push(this.markedOutput);
-                console.log(currNode.input.connections);
                 prevNode.output.connections.push(currNode.id);
 
                 connector = new Connector(currNode.id + prevNode.id, prevNode, currNode);

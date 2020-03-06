@@ -65,7 +65,6 @@ class StartNode extends View {
 
     onClick(e) {
         eventEmitter.emit("createRunnable", this.id, e);
-        console.log("EVENTEMITTER RAN ONCE");
     }
 
 }
