@@ -105,7 +105,16 @@ class Modal extends View
     })
 
     eventEmitter.on('addThings', () =>  {
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable(document.getElementById('nameInp').value, "var", document.getElementById('valInp').value);
+      let nameInput = document.getElementById('nameInp');
+      let typeInput = document.getElementById('valInp');
+      /*
+      this.obj.functionVariables.push(new FunctionVariable(nameInput.value, 
+                                                           typeInput.value,
+                                                           "not yet added"));
+
+      */
+      nameInput.value = '';
+      typeInput.value = '';
       this.updateList();
     })
   }
@@ -118,7 +127,6 @@ class Modal extends View
                             Name: <input type="text" id="name" value=""> </br>                       
                             Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
                             Variables: </br>
-                            add variable:
                             <input type="text" value ="Name" id="nameInp"><input type="text" value ="Type" id="valInp"> </br></br>
                             <ul id="cVarList"></ul>
                          `;
@@ -149,15 +157,16 @@ class Modal extends View
   updateList(){
     //uppdaterar listan med variabler baserat på objektet
     let ul = document.getElementById("cVarList");
-    ul.innerHTML = '';
     //while(ul.firstChild) ul.removeChild(ul.firstChild);
+    //console.log(ul.innerHTML)
 
     // Denna bör loopa över funtionsvariabler i funktionsdefinitionen, inte i obj som är noden
     // 
+
     for (let i = 0; i < this.obj.functionVariables.length; i++){
-      if(this.obj.functionVariables[i].type == "var"){
+      //if(this.obj.functionVariables[i].type == "var"){
         let li = document.createElement("li");
-        li.appendChild(document.createTextNode(this.obj.functionVariables[i].name + ': ' + this.obj.functionVariables[i].value));
+        li.appendChild(document.createTextNode(this.obj.functionVariables[i].type + ': ' + this.obj.functionVariables[i].name));
         
         // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
        
@@ -169,8 +178,16 @@ class Modal extends View
         */
 
         ul.appendChild(li);
-      }
+      //}
     }
+  }
+
+  _loadVariables() {
+    // Ta in en default parameter och bygg sedan upp cvarlist på type samma 
+    // sätt fast ha en if om det ska läggas till inputfält för att ändra värde på 
+    // variabeln, Detta ska endast kunna ske i node mode
+
+    // Denna bör användas av load Definitionmodal och av updateList
   }
 
   loadDefinitionToModal(def) {
@@ -229,8 +246,9 @@ class Modal extends View
                               Variables:
                               <ul id="cVarList"></ul>
                             </div>`);
-
-      this.updateList();      
+      
+      document.getElementById('cVarList').innerHTML = '';
+      this.updateList();
   }
 
   _updateFooterNode() {
@@ -309,7 +327,7 @@ class Modal extends View
 
   close() {
     if(this.mode == "node") { this._save(); }
-    document.getElementById('cVarList').innerHTML = '';
+    //document.getElementById('cVarList').innerHTML = '';
     this.element.style.display = "none";
   }
 
