@@ -1,13 +1,12 @@
 import elementString                          from '../static/views/modal.html';
 import Button                                 from 'Base/button.js';
-//import SaveObject                             from './saveObj.js';
 import View, {InlineView}                     from 'Base/view.js';
 import eventEmitter                           from 'Singletons/event-emitter.js';
 import styleClasses                           from 'Styles/modal-buttons.css';
 
-import FunctionVariable   from 'Model/function-variable.js'
-import FunctionDefinition from 'Model/function-definition.js'
-import NetworkAPIs         from 'Network/network.js'
+import FunctionVariable                       from 'Model/function-variable.js';
+import FunctionDefinition                     from 'Model/function-definition.js';
+import NetworkAPIs                            from 'Network/network.js';
 const funcDefAPI = NetworkAPIs.funcDefAPI;
 
 class Modal extends View
@@ -33,45 +32,7 @@ class Modal extends View
                                       <button class="btn" id="saveModalButton">Save function</button>
                                       <button class="btn" id="closeModalButton">Close</button>
                                   </div>`;
-
-    // hämta alla funktionstemplates
     this.setupDropdownList();
-
-  }
-
-  async setupDropdownList() {
-    const data = await funcDefAPI.getAll();
-    console.log("data", data)
-    data.forEach(funcdef => {
-      this.functionDefinitions.push(funcdef);
-      this.loadList.push(funcdef.name);
-    })
-
-  }
-
-  uppdateList(){
-    //uppdaterar listan med variabler baserat på objektet
-    var ul = document.getElementById("cVarList");
-    while(ul.firstChild) ul.removeChild(ul.firstChild);
-    for (let i = 0; i < this.obj.functionVariables.length; i++){
-      if(this.obj.functionVariables[i].type == "var"){
-        var li = document.createElement("li");
-        li.appendChild(document.createTextNode(this.obj.functionVariables[i].name));
-        let theBox = document.createElement("INPUT");
-        theBox.type = "text";
-        theBox.value = this.obj.functionVariables[i].value;
-        theBox.id = this.obj.functionVariables[i].name;
-        li.appendChild(theBox);
-        ul.appendChild(li);
-      }
-    }
-    
-  }
-  loadDefinitionToModal(def) {
-    document.getElementById("name").value = def.getName();
-    document.getElementById("inputBox").value = def.input.getValue();
-    document.getElementById("outputBox").value = this.obj.output.getValue();
-    document.getElementById("funcdescBox").value = this.obj.functionDescription;
   }
 
   didAttach(parent) {
@@ -79,6 +40,7 @@ class Modal extends View
     this.attach(this.modalContent)
     this.attach(this.modalFooter)
 
+    // This listener handles the load-dropdownlist on keypresses
     let input = document.getElementById('loadFunctionInput');
     input.addEventListener('keyup', () => {
       this.updateLoadList(input.value);
@@ -103,13 +65,9 @@ class Modal extends View
     this.addButton   = new AddButton()
     
     eventEmitter.on('listClick', (listObject) => {
-      console.log(listObject);
-      /*
-      fetch(`http://localhost:3000/funcdef/:id{}`, (clickedDefinition) => {
-        loadDefinitionToModal(clickedDefinition);
-        
-      })
-      */
+      this.loadDefinitionToModal(listObject);
+      this._save();
+      this.obj.changeFunctionName(listObject.textContent);
     })
 
     eventEmitter.on('closeModal', () => {
@@ -122,10 +80,9 @@ class Modal extends View
     })
     
   eventEmitter.on('loadModal', () => {
-      console.log("Hämta data från databasen och visa upp i dropdownmenyn");
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
       this.updateLoadList("");
-      this. updateLoadListDOM();
+      this.updateLoadListDOM();
     })
 
     eventEmitter.on('addThings', () =>  {
@@ -133,6 +90,42 @@ class Modal extends View
       this.uppdateList();
     })
   }
+
+  async setupDropdownList() {
+    const data = await funcDefAPI.getAll();
+    data.forEach(funcdef => {
+      this.functionDefinitions.push(funcdef);
+      this.loadList.push(funcdef.name);
+    })
+
+  }
+
+  uppdateList(){
+    //uppdaterar listan med variabler baserat på objektet
+    var ul = document.getElementById("cVarList");
+    while(ul.firstChild) ul.removeChild(ul.firstChild);
+    for (let i = 0; i < this.obj.functionVariables.length; i++){
+      if(this.obj.functionVariables[i].type == "var"){
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(this.obj.functionVariables[i].name));
+        let theBox = document.createElement("INPUT");
+        theBox.type = "text";
+        theBox.value = this.obj.functionVariables[i].value;
+        theBox.id = this.obj.functionVariables[i].name;
+        li.appendChild(theBox);
+        ul.appendChild(li);
+      }
+    }
+  }
+
+  loadDefinitionToModal(def) {
+    document.getElementById("name").value = def.name;
+    document.getElementById("funcdescBox").value = def.description;
+    // Nedanstående är kvar endast för demo, kommer behöva förändras då funktionsdefinitionen förändras
+    document.getElementById("inputBox").value = def.input;
+    document.getElementById("outputBox").value = this.obj.output;
+  }
+
 
   updateLoadList(searchString) {
     this.loadList = [];
@@ -151,7 +144,7 @@ class Modal extends View
     }
 
     for (let i = 0; i < this.loadList.length; i++) {
-      let listItem = new ListItem(this.loadList[i].name);
+      let listItem = new ListItem(this.loadList[i].name, this.loadList[i]);
       dropdown.appendChild(listItem.render());
     }
 
@@ -191,7 +184,6 @@ class Modal extends View
   }
 
   _save() {
-    
     this.obj.setName(document.getElementById("name").value);
     
     this.obj.functionDescription = document.getElementById("funcdescBox").value;
@@ -293,14 +285,16 @@ class AddButton extends Button {
 }
 
 class ListItem extends View {
-  constructor(innerValue) { 
+  constructor(innerValue, object = {}) { 
       super();
       this.setHtml(`<li class='loadDropdownItem'>${innerValue}</li>`);
+      this.object          = object;
+      this.onClick         = this.onClick.bind(this)
       this.element.onclick = this.onClick;
   }
 
   onClick() {
-    eventEmitter.emit('listClick', this);
+    eventEmitter.emit('listClick', this.object);
   }
 }
 

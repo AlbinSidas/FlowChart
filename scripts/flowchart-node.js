@@ -4,6 +4,7 @@ import style from 'Styles/style.css';
 import eventEmitter from 'Singletons/event-emitter.js';
 import NodeIO from './nodeIO.js';
 import NodeMetaInfo from 'Model/node-meta-info.js'
+import { InlineView } from './base/view.js';
 
 class FlowchartNode extends View {
     constructor(id){
@@ -23,7 +24,7 @@ class FlowchartNode extends View {
         this.height  = 100;
         this.offsetX = 0;
         this.offsetY = 0;
-
+        this.idRef   = "";
         this._connectorUpdaters = [];
         //flow
         this.id    = id;
@@ -36,10 +37,20 @@ class FlowchartNode extends View {
         */
 
         this.input  = new NodeIO(this, "box-input");
-        this.output = new NodeIO(this, "box-output"); 
-        
+        this.output = new NodeIO(this, "box-output");
+        this.functionName = "";
+
+        // RUBEN FIXA DEN HÄR NÄR MAN LADDAR TILLBAKA EN NODE ÄR DU SNÄLL
+        this.functionNameView = InlineView(`<p id='${this.id}_function'>-no function-</p>`);
+
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
+        
+    }
+
+    changeFunctionName(name){
+        this.functionName = name;
+        document.getElementById(`${this.id}_function`).innerHTML = name;
     }
 
     // run(){
@@ -51,6 +62,7 @@ class FlowchartNode extends View {
 
 
     didAttach(parent) {
+        this.attach(this.functionNameView);
         this.attach(this.input);
         this.attach(this.output);
         this.element.onclick     = this.onClick;
@@ -58,16 +70,17 @@ class FlowchartNode extends View {
         this.onScrolledCallbacks = []
     }
 
-    copyOther(other, mposX = other.posX, mposY = other.posY) {
+    copyOther(other, rid = other.id, mposX = other.posX, mposY = other.posY, cRef = other.output.connections) {
         this.posX = mposX + event.view.scrollX -50;
         this.posY = mposY + event.view.scrollY -50;
         this.offsetX = other.offsetX;
         this.offsetY = other.offsetY;
         this.height = other.height;
         //flow
+        this.idRef = rid;
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
-
+        this.output.connections = cRef;
         for (let i = 0; i < other.functionVariables.length; i++){
             this.functionVariables[i] = other.functionVariables[i];
         }
@@ -75,12 +88,17 @@ class FlowchartNode extends View {
     }
     fillNode(other) {
         //fyller i data för en node baserat på ett metaobjekt från servern
-        this.posX                = other.pX;
-        this.posY                = other.pY;
-        this.id                  = other.id;
-        this.functionVariables   = other.functionVariables
-        this.funcDefId           = other.funDefId;
-        this.nodeDescription     = other.nodeDescription;
+        this.posX              = other.pX;
+        this.posY              = other.pY;
+        this.id                = other.id;
+        this.functionVariables = other.functionVariables
+        this.funcDefId         = other.funDefId;
+        this.nodeDescription   = other.nodeDescription;
+
+        this.offsetX           = other.offsetX;
+        this.offsetY           = other.offsetY;
+        this.height            = other.height;
+        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${other.funName}</p>`);
         //this.functionDescription = other.funDefId;
     }
 
