@@ -13,6 +13,7 @@ const apiAux          = require('./api/api_auxiliary')
 const Response        = apiAux.Response
 const apiHandlers     = require('./api/api-handlers');
 
+
 async function main() {
 
     const app          = express()
@@ -37,13 +38,35 @@ async function main() {
     console.log("Back to main generated function")
     app.get('/', (req, res) => res.json({'apa':'Hello World!'}))
 
-    app.put('/saved', function (req, res){
-        fs.writeFile("./saved/"+req.body.filename+".json", JSON.stringify(req.body.data),function (err) {
-            if (err) throw err;
-            console.log('File is created successfully.');
-          }); 
-        res.send("slurp");
-    })
+    app.post('/flowchart/save', async function (req, res) {
+        console.log(req.body);
+       
+        const databaseOps = await mongoController.flowchartHandler.save(req.body)
+        res.status(200)
+        res.json(Response("Save function definition", databaseOps));
+
+    });
+
+    app.get('/flowchart/all', async function (req, res) {
+        const databaseOps = await mongoController.flowchartHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
+        res.json(Response("", databaseOps))
+
+    });
+
+
+    app.get('/flowchart/view', async function(req, res) {
+        const databaseOps = await mongoController.flowchartHandler.getView();
+        res.json(Response("", databaseOps))
+    });
+    app.get('/flowchart/:id', async function (req, res) {
+        console.log(req.body);
+       
+        const databaseOps = await mongoController.flowchartHandler.getById(req.params.id)
+        res.status(200)
+        res.json(Response("Save function definition", databaseOps));
+
+    });
+
 
     app.get('/loadfile/:fileName', function (req, res){
         fs.readFile("./saved/"+req.params.fileName,function (err, data) {
