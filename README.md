@@ -34,5 +34,7 @@ Then open your browser and go to http://localhost:9000/.
 `chmod +x start_server_and_client.sh` 
 
 
-* To run
-`./start_server_and_client.sh`
+* Run the below command, specify `<PORTNUMBER>` as `27018` or whatever number you want, the defualt is `27017`
+```sh
+./start_server_and_client.sh <PORTNUMBER>
+```
