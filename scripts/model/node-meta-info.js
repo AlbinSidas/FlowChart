@@ -14,6 +14,7 @@ class NodeMetaInfo
         this.outputConnectionList = outputConnectionList;
         this.inputConnectionList = inputConnectionList;
         this.functionVariables = functionVariables;
+        this.funName = funDefId;
     }
 
 }

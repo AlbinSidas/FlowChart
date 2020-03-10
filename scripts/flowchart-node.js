@@ -82,12 +82,11 @@ class FlowchartNode extends View {
         this.functionVariables = other.functionVariables
         this.funcDefId         = other.funDefId;
         this.nodeDescription   = other.nodeDescription;
-
+        this.element.classList.add(style.flowchart_square);
         this.offsetX           = other.offsetX;
         this.offsetY           = other.offsetY;
-        this.height            = other.height;
-        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${other.funName}</p>`);
-        //this.functionDescription = other.funDefId;
+        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${this.id}\n has ${this.funcDefId}</p>`);
+        this.functionDescription = other.funDefId;
     }
 
     registerConnectorUpdater(id, func) {
@@ -199,8 +198,8 @@ class FlowchartNode extends View {
                 this.posX, 
                 this.posY, 
                 this.id, 
+                this.input.connections, 
                 this.output.connections, 
-                this.input.connections,   
                 this.functionVariables);
     }
 
