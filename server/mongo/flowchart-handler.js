@@ -5,14 +5,6 @@ const MongoHandler  = require('./mongo-handler');
 class FlowchartHandler extends MongoHandler {
     constructor(db, collectionName) {
         super(db, collectionName)
-        //this.collectionName = collectionName;
-        //this.db = db;
-        //protocolAssign(this)
-    }
-
-    async prepareData(data) {
-       //const name    = data.name;
-        //const nodeIds = data.nodes.map(node => node.id);
     }
 
     async getView() {
