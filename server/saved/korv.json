@@ -1,1 +1,62 @@
-[{"pX":581,"pY":235,"id":"60fcd960-531a-11ea-97b9-a78328f49ddc","iCon":[],"oCon":["65760570-531a-11ea-97b9-a78328f49ddc"]},{"pX":1513,"pY":461,"id":"627ff6f0-531a-11ea-97b9-a78328f49ddc","iCon":["65760570-531a-11ea-97b9-a78328f49ddc"],"oCon":["64ab6270-531a-11ea-97b9-a78328f49ddc"]},{"pX":966,"pY":755,"id":"6475ac70-531a-11ea-97b9-a78328f49ddc","iCon":["65760570-531a-11ea-97b9-a78328f49ddc"],"oCon":["64ab6270-531a-11ea-97b9-a78328f49ddc"]},{"pX":987,"pY":965,"id":"64ab6270-531a-11ea-97b9-a78328f49ddc","iCon":["627ff6f0-531a-11ea-97b9-a78328f49ddc","6475ac70-531a-11ea-97b9-a78328f49ddc","65193f70-531a-11ea-97b9-a78328f49ddc"],"oCon":[]},{"pX":565,"pY":575,"id":"65193f70-531a-11ea-97b9-a78328f49ddc","iCon":["65760570-531a-11ea-97b9-a78328f49ddc"],"oCon":["64ab6270-531a-11ea-97b9-a78328f49ddc"]},{"pX":985,"pY":254,"id":"65760570-531a-11ea-97b9-a78328f49ddc","iCon":["60fcd960-531a-11ea-97b9-a78328f49ddc"],"oCon":["65193f70-531a-11ea-97b9-a78328f49ddc","6475ac70-531a-11ea-97b9-a78328f49ddc","627ff6f0-531a-11ea-97b9-a78328f49ddc"]}]
+
+{
+id:123,
+floname:korv,
+c:5
+nodes:[60234354234,574234234,]
+
+}
+
+{
+id:123,
+floname:korv,
+c:4
+nodes{flow:123,
+cx: [60234354234,574234234,3423432432,345345435,435435.654654]}
+
+}
+
+[,"pX":581,"pY":235,"id":"60fcd960-531a-11ea-97b9-a78328f49ddc","iCon":[],"oCon":["65760570-531a-11ea-97b9-a78328f49ddc"]},{"pX":1513,"pY":461,"id":"627ff6f0-531a-11ea-97b9-a78328f49ddc","iCon":["65760570-531a-11ea-97b9-a78328f49ddc"],"oCon":["64ab6270-531a-11ea-97b9-a78328f49ddc"]},{"pX":966,"pY":755,"id":"6475ac70-531a-11ea-97b9-a78328f49ddc","iCon":["65760570-531a-11ea-97b9-a78328f49ddc"],"oCon":["64ab6270-531a-11ea-97b9-a78328f49ddc"]},{"pX":987,"pY":965,"id":"64ab6270-531a-11ea-97b9-a78328f49ddc","iCon":["627ff6f0-531a-11ea-97b9-a78328f49ddc","6475ac70-531a-11ea-97b9-a78328f49ddc","65193f70-531a-11ea-97b9-a78328f49ddc"],"oCon":[]},{"pX":565,"pY":575,"id":"65193f70-531a-11ea-97b9-a78328f49ddc","iCon":["65760570-531a-11ea-97b9-a78328f49ddc"],"oCon":["64ab6270-531a-11ea-97b9-a78328f49ddc"]},{"pX":985,"pY":254,"id":"65760570-531a-11ea-97b9-a78328f49ddc","iCon":["60fcd960-531a-11ea-97b9-a78328f49ddc"],"oCon":["65193f70-531a-11ea-97b9-a78328f49ddc","6475ac70-531a-11ea-97b9-a78328f49ddc","627ff6f0-531a-11ea-97b9-a78328f49ddc"]}]
+
+
+
+
+// Modal ska page:as när det skapas som e controller
+ 
+save -> create new
+fyll -> från templaten
+
+// 
+NodeMetaInfo ska ha en funcdefid
+
+extra är
+functionVariables: {
+    TYPE:ÄR KEY
+    
+    input: [{value:"asd sa" name:"sdfsf" }, {value:"asd sa" name:"sdfsf" }]
+    ..
+    ..
+    FLAGGOR: []
+
+}
+
+functionvariables api
+
+
+//  Backup
+    //relational collection
+    {
+        nodeId : funcVariableFillId, 
+    }
+
+    // FuncvariableFillcollection
+    {
+        funcVariableFillId: {variabler....}
+    }
+
+
+
+
+// NOTE 
+functionvariables är inte med
+connectors är inte med

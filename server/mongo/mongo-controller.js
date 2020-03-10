@@ -1,10 +1,14 @@
-const FuncDefHandler = require("./func-def-handler");
-const MongoClient    = require('mongodb').MongoClient;
-const assert         = require('assert');
+const FuncDefHandler   = require("./func-def-handler");
+const FlowchartHandler = require('./flowchart-handler') 
+const NodeHandler      = require('./node-handler') 
+const MongoClient      = require('mongodb').MongoClient;
+const assert           = require('assert');
 
 class MongoController {
     constructor(db) {
-        this.funcDefHandler = new FuncDefHandler(db, "function_definition");
+        this.funcDefHandler   = new FuncDefHandler  (db, "function_definition");
+        this.flowchartHandler = new FlowchartHandler(db, "flowchart");
+        this.nodeHandler      = new NodeHandler     (db, "node");
         /*
         this.AndraHandlers..
         ...

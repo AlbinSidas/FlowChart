@@ -16,14 +16,14 @@ class MongoHandler {
     async save (data)  {
         const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
         const result     =  await insertOne(data).then(a  => a)
-                                                 .catch(e => console.log(e))
+                                                 .catch(e => console.log("SAVE ERRROOORO", e))
         return result.ops
     }
     
     async getById (id) {
         const collectionFunc  = _promisify((...args) => { this.collection.findOne(...args) });
         const result          =  await collectionFunc({_id: ObjectID(id)}).then(a  => a)
-                                                                .catch(e => console.log(e))
+                                                                          .catch(e => console.log(e))
         return result
     }
 

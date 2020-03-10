@@ -20,10 +20,19 @@ webpack
 * Navigate to directory-root.
 * Run 
 ```
-npm run start:dev
+npm run start:dev or npm run webpack
 ```
 Then open your browser and go to http://localhost:9000/.
 
 ### General codeguidelines:
 * Underscore( _ ) at the start of a variable name marks an private variable.
 * Tabs are two spaces.
+
+
+## If you want to start everything (client & server)
+* make it executable the first time
+`chmod +x start_server_and_client.sh` 
+
+
+* To run
+`./start_server_and_client.sh`
