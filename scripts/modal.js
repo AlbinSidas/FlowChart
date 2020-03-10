@@ -292,7 +292,7 @@ class Modal extends View
       );
     }
 
-    let funcDef = new FunctionDefinition(null, document.getElementById("name").value,
+    let funcDef = FunctionDefinition.CreateLocal(document.getElementById("name").value,
                                      document.getElementById("funcdescBox").value,
                                      variableList);
     return funcDef;
