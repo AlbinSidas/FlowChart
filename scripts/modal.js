@@ -276,7 +276,7 @@ class Modal extends View
               saveObject
           );
       } catch(e) {
-        throw e;
+        throw new Error('Failed to save');
       }
   }
 
