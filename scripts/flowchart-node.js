@@ -36,7 +36,8 @@ class FlowchartNode extends View {
 
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output");
-        this.functionName = "";
+        //this.functionName = "";
+        this.funcitionDefinition = {};
         this.functionNameView = InlineView(`<p id='${this.id}_function'>-no function-</p>`);
 
         this.element.classList.add(style.flowchart_square);
@@ -45,7 +46,7 @@ class FlowchartNode extends View {
     }
 
     changeFunctionName(name){
-        this.functionName = name;
+        //this.functionName = name;
         document.getElementById(`${this.id}_function`).innerHTML = name;
     }
 

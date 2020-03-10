@@ -17,10 +17,10 @@ class Modal extends View
     this.obj = {};
     this.functionDefinitions = [];
     this.loadList = [];
-    this.mode = "node";
+    this.mode = "Node";
     this.render = this.render.bind(this);
 
-    this.modalTitle   = InlineView`<div class="modalHeader"><h5 id="modalTitle"></h5>
+    this.modalTitle   = InlineView`<div class="modalHeader"><h5 id="modalTitle" style="padding: 0 0 0 1%;"></h5>
                                       <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
                                       <ul id='modalDropdown' class='dropdown-content' style="max-height: 500px; ">
                                         <li style="border-bottom:1px solid black"><a href="#!"><input id="loadFunctionInput"> </input></a></li>
@@ -64,8 +64,6 @@ class Modal extends View
     this.createButton = new CreateFunctionButton();
     
     eventEmitter.on('listClick', (listObject) => {
-      console.log(listObject);
-
       this.loadDefinitionToModal(listObject);
       this._save();
       this.obj.changeFunctionName(listObject.name);
@@ -91,12 +89,21 @@ class Modal extends View
       try {
         await this._saveFuncDef(funcDef);
         this.functionDefinitions.push(funcDef);
+        this.loadList.push(funcDef);
+        this.updateLoadListDOM();
       }
       catch(e){
         console.log(`Save failed due to ${e}`);
       }
-
     })
+  
+  eventEmitter.on('backToNode', () => {
+    /*
+      Gör koll här och konfirma att personen vill lämna sidan och gå tillbaka till noden?
+    */
+    this.close();
+    this.show(this.obj);
+  })
     
   eventEmitter.on('loadFunction', () => {
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
@@ -104,15 +111,15 @@ class Modal extends View
       this.updateLoadListDOM();
     })
 
-    eventEmitter.on('addThings', () =>  {
+    eventEmitter.on('addVariable', () =>  {
       let nameInput = document.getElementById('nameInp');
       let typeInput = document.getElementById('valInp');
-      /*
-      this.obj.functionVariables.push(new FunctionVariable(nameInput.value, 
-                                                           typeInput.value,
-                                                           "not yet added"));
+      if(nameInput.length != 0 && typeInput.length != 0) {
+        this._addVariable(document.getElementById('cVarList'), new FunctionVariable(nameInput.value, 
+                                                                                    typeInput.value, 
+                                                                                    "not yet added"));
+      }
 
-      */
       nameInput.value = '';
       typeInput.value = '';
       this.updateList();
@@ -120,7 +127,11 @@ class Modal extends View
   }
 
   _changeHeader(header) {
-    header.textContent = 'Create function';
+      let backButton = '<button id="backModalButton" class="btn"> Back </button>';
+
+      header.insertAdjacentHTML('beforebegin', backButton);
+      this.saveButton    = new BackButton();
+      header.textContent = 'Create function';
   }
   _emptyInnerContent(content) {
     content.innerHTML = `
@@ -151,36 +162,28 @@ class Modal extends View
       this.functionDefinitions.push(funcdef);
       this.loadList.push(funcdef);
     })
-    this.updateLoadListDOM()
+    this.updateLoadListDOM();
   }
 
   updateList(){
-    //uppdaterar listan med variabler baserat på objektet
     let ul = document.getElementById("cVarList");
-    //while(ul.firstChild) ul.removeChild(ul.firstChild);
-    //console.log(ul.innerHTML)
-
-    // Denna bör loopa över funtionsvariabler i funktionsdefinitionen, inte i obj som är noden
-    // 
 
     for (let i = 0; i < this.obj.functionVariables.length; i++){
-      //if(this.obj.functionVariables[i].type == "var"){
-        let li = document.createElement("li");
-        li.appendChild(document.createTextNode(this.obj.functionVariables[i].type + ': ' + this.obj.functionVariables[i].name));
-        
-        // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
-       
-        /*let theBox = document.createElement("INPUT");
-        theBox.type = "text";
-        theBox.value = this.obj.functionVariables[i].value;
-        theBox.id = this.obj.functionVariables[i].name;
-        li.appendChild(theBox);
-        */
-
-        ul.appendChild(li);
-      //}
+      this._addVariable(ul, this.obj.functionVariables[i]);
+      // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
+      // Lägg till dessa varianter till funktionen ovan isåfall.  
     }
   }
+
+  _addVariable(list, variableObject) {
+      let li = document.createElement("li");
+      li.appendChild(document.createTextNode(variableObject.type + ': ' + variableObject.name));
+      list.appendChild(li);
+  }
+
+  /*
+  Denna finns för att implementeras och kunna bygga både node mode modal samt functiondef modal, kanske går att lösa med
+  addvariable funktionen istället genom att kolla på modes, kolla näramare på detta! 
 
   _loadVariables() {
     // Ta in en default parameter och bygg sedan upp cvarlist på type samma 
@@ -189,18 +192,16 @@ class Modal extends View
 
     // Denna bör användas av load Definitionmodal och av updateList
   }
+  */
 
   loadDefinitionToModal(def) {
     document.getElementById("name").value = def.name;
     document.getElementById("funcdescBox").value = def.description;
 
-    // Lägg till konditions för ifall värden för saker ska ändras, kolla på this.mode för att se ifall det är node eller funktion mode som är aktivt.
     let varList = document.getElementById('cVarList');
     varList.innerHTML = '';
     def.functionVariables.forEach(variable => {
-      let listItem = document.createElement('li');
-      listItem.innerHTML = variable.type + ': ' + variable.name;
-      varList.appendChild(listItem);
+      this._addVariable(varList, variable)
     })
   }
 
@@ -229,8 +230,7 @@ class Modal extends View
   }
 
   show(object) {
-      this.mode = "node";
-      this._updateFooterNode();
+      this.mode = "Node";
       this.obj = object;
       this.element.style.display = "block";
       let idField = document.getElementById("modalTitle");
@@ -252,7 +252,6 @@ class Modal extends View
   }
 
   _updateFooterNode() {
-    let header = document.getElementsByClassName("modalHeader")[0];
     let footer = document.getElementsByClassName("modalFooter")[0];
     if(footer.innerHTML.includes("Add variable")) {
       footer.removeChild(footer.children[0]);
@@ -263,15 +262,17 @@ class Modal extends View
     }
   }
 
+  _updateHeaderNode() {
+    let header = document.getElementsByClassName("modalHeader")[0];
+    if(header.innerHTML.includes("Back")) {
+      header.removeChild(header.children[0]);
+    }
+  }
+
   async _saveFuncDef(saveObject) {
       try {
           await funcDefAPI.save(
-            /*
-            new FunctionDefinition(this.obj.getName(), this.obj.functionDescription, [
-              new FunctionVariable("MockInput",  "Input",  "Value rm-rf * Mock"),
-              new FunctionVariable("MockOutput", "Output", "Value rm-rf * Mock"),
-          ])*/
-          saveObject
+              saveObject
           );
       } catch(e) {
         throw e;
@@ -279,34 +280,6 @@ class Modal extends View
   }
 
   _save() {
-    /*
-    this.obj.setName(document.getElementById("name").value);
-    
-    this.obj.functionDescription = document.getElementById("funcdescBox").value;
-    let setDefaultInput = true;
-    let setDefaultOutput = true;
-    for (let i = 0; i < this.obj.functionVariables.length; i++){
-      if(this.obj.functionVariables[i].type == "var"){
-        this.obj.functionVariables[i].value = document.getElementById(this.obj.functionVariables[i].name).value;
-      }
-      else if(this.obj.functionVariables[i].type == "input"){
-        this.obj.functionVariables[i].value = document.getElementById("inputBox").value;
-        setDefaultInput = false;
-      }
-      else if(this.obj.functionVariables[i].type == "output"){
-        this.obj.functionVariables[i].value = document.getElementById("outputBox").value;
-        setDefaultOutput = false;
-      }
-    }
-    if (setDefaultInput){
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultInput", "input", document.getElementById("inputBox").value);
-    }
-    if (setDefaultOutput){
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultOutput", "output", document.getElementById("outputBox").value);
-    }
-    */
-    /* NY SAVE STARTAR HÄR*/
-
     let variableList = [];
     const variables = document.getElementById('cVarList').children;
     for(let i=0; i < variables.length ; i++) {
@@ -322,12 +295,16 @@ class Modal extends View
                                      document.getElementById("funcdescBox").value,
                                      variableList);
 
+
     return funcDef;
   }
 
   close() {
-    if(this.mode == "node") { this._save(); }
-    //document.getElementById('cVarList').innerHTML = '';
+    if(this.mode == "Node") { 
+      // Logik för att se om det finns ickesparade förändringar? 
+    }
+    this._updateFooterNode();
+    this._updateHeaderNode();
     this.element.style.display = "none";
   }
 
@@ -412,7 +389,23 @@ class AddButton extends Button {
   }
 
   onClick() {
-    eventEmitter.emit('addThings');
+    eventEmitter.emit('addVariable');
+  }
+}
+
+class BackButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementById('backModalButton'));
+      this.element = document.getElementById('backModalButton');
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.backButton);
+  }
+
+  onClick() {
+    eventEmitter.emit('backToNode');
   }
 }
 
