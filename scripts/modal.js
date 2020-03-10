@@ -17,11 +17,12 @@ class Modal extends View
     this.obj = {};
     this.functionDefinitions = [];
     this.loadList = [];
+    this.mode = "Node";
     this.render = this.render.bind(this);
 
-    this.modalTitle   = InlineView`<div class="modalHeader"><span id="nodeid"></span>
-                                      <a class='dropdown-trigger btn' style="
-                                      background-color: var(--button-color);"  id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
+    this.modalTitle   = InlineView`<div class="modalHeader"><h5 id="modalTitle" style="padding: 0 0 0 1%;"></h5>
+                                      <a class='dropdown-trigger btn' style="background-color: var(--button-color)" 
+                                      id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
                                       <ul id='modalDropdown' class='dropdown-content' style="max-height: 500px; ">
                                         <li style="border-bottom:1px solid black"><a href="#!"><input id="loadFunctionInput"> </input></a></li>
                                       </ul>
@@ -29,17 +30,16 @@ class Modal extends View
 
     this.modalContent = InlineView`<div class="modalContent"></div>`;
     this.modalFooter  = InlineView`<div class="modalFooter">
-                                    <button class="btn" style="background-color: var(--button-color)" id="addModalButton">Add</button>
-                                    <button class="btn" style="background-color: var(--button-color)"id="saveModalButton">Save function</button>
-                                    <button class="btn" style="background-color: var(--button-color)"id="closeModalButton">Close</button>
+                                    <button class="btn" id="createFunctionButton" style="background-color: var(--button-color)"> Create function </button>
+                                    <button class="btn" id="closeModalButton" style="background-color: var(--button-color)">Close</button>
                                   </div>`;
     this.setupDropdownList();
   }
 
   didAttach(parent) {
-    this.attach(this.modalTitle)
-    this.attach(this.modalContent)
-    this.attach(this.modalFooter)
+    this.attach(this.modalTitle);
+    this.attach(this.modalContent);
+    this.attach(this.modalFooter);
 
     // This listener handles the load-dropdownlist on keypresses
     let input = document.getElementById('loadFunctionInput');
@@ -60,73 +60,151 @@ class Modal extends View
       M.Dropdown.init(elems, options);
     });
 
-    this.closeButton = new CloseButton();
-    this.saveButton  = new SaveButton();
-    this.loadButton  = new LoadButton();
-    this.addButton   = new AddButton()
+    this.closeButton  = new CloseButton();
+    this.loadButton   = new LoadButton();
+    this.createButton = new CreateFunctionButton();
     
     eventEmitter.on('listClick', (listObject) => {
       this.loadDefinitionToModal(listObject);
       this._save();
-      this.obj.changeFunctionName(listObject.textContent);
+      this.obj.changeFunctionName(listObject.name);
+    })
+
+    eventEmitter.on('createFunction', () => {
+      let header   = document.getElementById("modalTitle");
+      let content = document.getElementsByClassName("modalContent")[0];
+      let footer  = document.getElementsByClassName("modalFooter")[0];
+      this.mode = "Function";
+
+      this._changeHeader(header);
+      this._emptyInnerContent(content);
+      this._changeAndAddButtonsFooter(footer);
     })
 
     eventEmitter.on('closeModal', () => {
       this.close();
     })
 
-    eventEmitter.on('saveModal', () => {
-      this._save();
-      this._saveFuncDef();  
+    eventEmitter.on('saveFunction', async () => {
+      let funcDef = await this._save();
+      try {
+        await this._saveFuncDef(funcDef);
+        this.functionDefinitions.push(funcDef);
+        this.loadList.push(funcDef);
+        this.updateLoadListDOM();
+      }
+      catch(e){
+        console.log(`Save failed due to ${e}`);
+      }
     })
+  
+  eventEmitter.on('backToNode', () => {
+    /*
+      Gör koll här och konfirma att personen vill lämna sidan och gå tillbaka till noden?
+    */
+    this.close();
+    this.show(this.obj);
+  })
     
-  eventEmitter.on('loadModal', () => {
+  eventEmitter.on('loadFunction', () => {
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
       this.updateLoadList("");
       this.updateLoadListDOM();
     })
 
-    eventEmitter.on('addThings', () =>  {
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable(document.getElementById('nameInp').value, "var", document.getElementById('valInp').value);
-      this.uppdateList();
+    eventEmitter.on('addVariable', () =>  {
+      let nameInput = document.getElementById('nameInp');
+      let typeInput = document.getElementById('valInp');
+      if(nameInput.length != 0 && typeInput.length != 0) {
+        this._addVariable(document.getElementById('cVarList'), new FunctionVariable(nameInput.value, 
+                                                                                    typeInput.value, 
+                                                                                    "not yet added"));
+      }
+
+      nameInput.value = '';
+      typeInput.value = '';
+      this.updateList();
     })
+  }
+
+  _changeHeader(header) {
+      let backButton = '<button style="background-color: var(--button-color)" id="backModalButton" class="btn"> Back </button>';
+
+      header.insertAdjacentHTML('beforebegin', backButton);
+      this.saveButton    = new BackButton();
+      header.textContent = 'Create function';
+  }
+  _emptyInnerContent(content) {
+    content.innerHTML = `
+                            Name: <input type="text" id="name" value=""> </br>                       
+                            Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
+                            Variables: </br>
+                            <input type="text" value ="Name" id="nameInp"><input type="text" value ="Type" id="valInp"> </br></br>
+                            <ul id="cVarList"></ul>
+                         `;
+  }
+  _changeAndAddButtonsFooter(footer) {    
+    let saveButton = '<button style="background-color: var(--button-color)" class="saveModalButton btn"> Save function </button>';
+    let addButton  = '<button style="background-color: var(--button-color)" class="addModalButton btn"> Add variable </button>';
+
+    // Denna line tar bort Create Function knappen
+    footer.removeChild(footer.children[0]);
+    
+    footer.insertAdjacentHTML('afterbegin', saveButton);
+    this.saveButton   = new SaveButton();
+
+    footer.insertAdjacentHTML('afterbegin', addButton);
+    this.addButton    = new AddButton();
   }
 
   async setupDropdownList() {
     const data = await funcDefAPI.getAll();
     data.forEach(funcdef => {
       this.functionDefinitions.push(funcdef);
-      this.loadList.push(funcdef.name);
+      this.loadList.push(funcdef);
     })
-
+    this.updateLoadListDOM();
   }
 
-  uppdateList(){
-    //uppdaterar listan med variabler baserat på objektet
-    var ul = document.getElementById("cVarList");
-    while(ul.firstChild) ul.removeChild(ul.firstChild);
+  updateList(){
+    let ul = document.getElementById("cVarList");
+
     for (let i = 0; i < this.obj.functionVariables.length; i++){
-      if(this.obj.functionVariables[i].type == "var"){
-        var li = document.createElement("li");
-        li.appendChild(document.createTextNode(this.obj.functionVariables[i].name));
-        let theBox = document.createElement("INPUT");
-        theBox.type = "text";
-        theBox.value = this.obj.functionVariables[i].value;
-        theBox.id = this.obj.functionVariables[i].name;
-        li.appendChild(theBox);
-        ul.appendChild(li);
-      }
+      this._addVariable(ul, this.obj.functionVariables[i]);
+      // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
+      // Lägg till dessa varianter till funktionen ovan isåfall.  
     }
   }
+
+  _addVariable(list, variableObject) {
+      let li = document.createElement("li");
+      li.appendChild(document.createTextNode(variableObject.type + ': ' + variableObject.name));
+      list.appendChild(li);
+  }
+
+  /*
+  Denna finns för att implementeras och kunna bygga både node mode modal samt functiondef modal, kanske går att lösa med
+  addvariable funktionen istället genom att kolla på modes, kolla näramare på detta! 
+
+  _loadVariables() {
+    // Ta in en default parameter och bygg sedan upp cvarlist på type samma 
+    // sätt fast ha en if om det ska läggas till inputfält för att ändra värde på 
+    // variabeln, Detta ska endast kunna ske i node mode
+
+    // Denna bör användas av load Definitionmodal och av updateList
+  }
+  */
 
   loadDefinitionToModal(def) {
     document.getElementById("name").value = def.name;
     document.getElementById("funcdescBox").value = def.description;
-    // Nedanstående är kvar endast för demo, kommer behöva förändras då funktionsdefinitionen förändras
-    document.getElementById("inputBox").value = def.input;
-    document.getElementById("outputBox").value = this.obj.output;
-  }
 
+    let varList = document.getElementById('cVarList');
+    varList.innerHTML = '';
+    def.functionVariables.forEach(variable => {
+      this._addVariable(varList, variable)
+    })
+  }
 
   updateLoadList(searchString) {
     this.loadList = [];
@@ -153,9 +231,10 @@ class Modal extends View
   }
 
   show(object) {
+      this.mode = "Node";
       this.obj = object;
       this.element.style.display = "block";
-      let idField = document.getElementById("nodeid");
+      let idField = document.getElementById("modalTitle");
       idField.classList.add(styleClasses.idText);
       idField.textContent = "ID: " + this.obj.id.toString();
 	    this.modalContent.changeHtml(`
@@ -168,51 +247,65 @@ class Modal extends View
                               Variables:
                               <ul id="cVarList"></ul>
                             </div>`);
-
-      this.uppdateList();      
+      
+      document.getElementById('cVarList').innerHTML = '';
+      this.updateList();
   }
 
-  async _saveFuncDef() {
+  _updateFooterNode() {
+    let footer = document.getElementsByClassName("modalFooter")[0];
+    if(footer.innerHTML.includes("Add variable")) {
+      footer.removeChild(footer.children[0]);
+      footer.removeChild(footer.children[0]);
+      let createButton = '<button id ="createFunctionButton" style="background-color: var(--button-color)" class="btn"> Create function </button>';
+      footer.insertAdjacentHTML('afterbegin', createButton);
+      this.createButton = new CreateFunctionButton();
+    }
+  }
+
+  _updateHeaderNode() {
+    let header = document.getElementsByClassName("modalHeader")[0];
+    if(header.innerHTML.includes("Back")) {
+      header.removeChild(header.children[0]);
+    }
+  }
+
+  async _saveFuncDef(saveObject) {
       try {
           await funcDefAPI.save(
-            new FunctionDefinition(this.obj.getName(), this.obj.functionDescription, [
-              new FunctionVariable("MockInput",  "Input",  "Value rm-rf * Mock"),
-              new FunctionVariable("MockOutput", "Output", "Value rm-rf * Mock"),
-          ]));
+              saveObject
+          );
       } catch(e) {
         throw e;
       }
   }
 
   _save() {
-    this.obj.setName(document.getElementById("name").value);
-    
-    this.obj.functionDescription = document.getElementById("funcdescBox").value;
-    let setDefaultInput = true;
-    let setDefaultOutput = true;
-    for (let i = 0; i < this.obj.functionVariables.length; i++){
-      if(this.obj.functionVariables[i].type == "var"){
-        this.obj.functionVariables[i].value = document.getElementById(this.obj.functionVariables[i].name).value;
-      }
-      else if(this.obj.functionVariables[i].type == "input"){
-        this.obj.functionVariables[i].value = document.getElementById("inputBox").value;
-        setDefaultInput = false;
-      }
-      else if(this.obj.functionVariables[i].type == "output"){
-        this.obj.functionVariables[i].value = document.getElementById("outputBox").value;
-        setDefaultOutput = false;
-      }
+    let variableList = [];
+    const variables = document.getElementById('cVarList').children;
+    for(let i=0; i < variables.length ; i++) {
+      let nameAndType = variables[i].textContent.split(": ");
+      let name = nameAndType[0];
+      let type = nameAndType[1];
+      variableList.push( 
+        new FunctionVariable(name, type, 'Not yet added')
+      );
     }
-    if (setDefaultInput){
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultInput", "input", document.getElementById("inputBox").value);
-    }
-    if (setDefaultOutput){
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultOutput", "output", document.getElementById("outputBox").value);
-    }
+
+    let funcDef = new FunctionDefinition(document.getElementById("name").value,
+                                     document.getElementById("funcdescBox").value,
+                                     variableList);
+
+
+    return funcDef;
   }
 
   close() {
-    this._save();
+    if(this.mode == "Node") { 
+      // Logik för att se om det finns ickesparade förändringar? 
+    }
+    this._updateFooterNode();
+    this._updateHeaderNode();
     this.element.style.display = "none";
   }
 
@@ -237,11 +330,11 @@ class CloseButton extends Button {
   }
 }
 
-class SaveButton extends Button {
+class CreateFunctionButton extends Button {
   constructor() {
       super();
-      this.setHtml(document.getElementById('saveModalButton'));
-      this.element = document.getElementById('saveModalButton');
+      this.setHtml(document.getElementById('createFunctionButton'));
+      this.element = document.getElementById('createFunctionButton');
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
@@ -249,7 +342,23 @@ class SaveButton extends Button {
     }
 
   onClick() {
-    eventEmitter.emit('saveModal');
+    eventEmitter.emit('createFunction');
+  }
+}
+
+class SaveButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementsByClassName('saveModalButton')[0]);
+      this.element = document.getElementsByClassName('saveModalButton')[0];
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.buttonFooter);
+    }
+
+  onClick() {
+    eventEmitter.emit('saveFunction');
   }
 }
 
@@ -265,15 +374,15 @@ class LoadButton extends Button {
     }
 
   onClick() {
-    eventEmitter.emit('loadModal');
+    eventEmitter.emit('loadFunciton');
   }
 }
 
 class AddButton extends Button {
   constructor() {
       super();
-      this.setHtml(document.getElementById('addModalButton'));
-      this.element = document.getElementById('addModalButton');
+      this.setHtml(document.getElementsByClassName('addModalButton')[0]);
+      this.element = document.getElementsByClassName('addModalButton')[0];
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
@@ -281,7 +390,23 @@ class AddButton extends Button {
   }
 
   onClick() {
-    eventEmitter.emit('addThings');
+    eventEmitter.emit('addVariable');
+  }
+}
+
+class BackButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementById('backModalButton'));
+      this.element = document.getElementById('backModalButton');
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.backButton);
+  }
+
+  onClick() {
+    eventEmitter.emit('backToNode');
   }
 }
 
