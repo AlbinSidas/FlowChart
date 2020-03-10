@@ -21,7 +21,8 @@ class Modal extends View
     this.render = this.render.bind(this);
 
     this.modalTitle   = InlineView`<div class="modalHeader"><h5 id="modalTitle" style="padding: 0 0 0 1%;"></h5>
-                                      <a class='dropdown-trigger btn' id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
+                                      <a class='dropdown-trigger btn' style="background-color: var(--button-color)" 
+                                      id="loadModalButton" href='#' data-target='modalDropdown'>Load function</a>
                                       <ul id='modalDropdown' class='dropdown-content' style="max-height: 500px; ">
                                         <li style="border-bottom:1px solid black"><a href="#!"><input id="loadFunctionInput"> </input></a></li>
                                       </ul>
@@ -29,8 +30,8 @@ class Modal extends View
 
     this.modalContent = InlineView`<div class="modalContent"></div>`;
     this.modalFooter  = InlineView`<div class="modalFooter">
-                                    <button class="btn" id="createFunctionButton"> Create function </button>
-                                    <button class="btn" id="closeModalButton">Close</button>
+                                    <button class="btn" id="createFunctionButton" style="background-color: var(--button-color)"> Create function </button>
+                                    <button class="btn" id="closeModalButton" style="background-color: var(--button-color)">Close</button>
                                   </div>`;
     this.setupDropdownList();
   }
@@ -127,7 +128,7 @@ class Modal extends View
   }
 
   _changeHeader(header) {
-      let backButton = '<button id="backModalButton" class="btn"> Back </button>';
+      let backButton = '<button style="background-color: var(--button-color)" id="backModalButton" class="btn"> Back </button>';
 
       header.insertAdjacentHTML('beforebegin', backButton);
       this.saveButton    = new BackButton();
@@ -143,8 +144,8 @@ class Modal extends View
                          `;
   }
   _changeAndAddButtonsFooter(footer) {    
-    let saveButton = '<button class="saveModalButton btn"> Save function </button>';
-    let addButton  = '<button class="addModalButton btn"> Add variable </button>';
+    let saveButton = '<button style="background-color: var(--button-color)" class="saveModalButton btn"> Save function </button>';
+    let addButton  = '<button style="background-color: var(--button-color)" class="addModalButton btn"> Add variable </button>';
 
     // Denna line tar bort Create Function knappen
     footer.removeChild(footer.children[0]);
@@ -256,7 +257,7 @@ class Modal extends View
     if(footer.innerHTML.includes("Add variable")) {
       footer.removeChild(footer.children[0]);
       footer.removeChild(footer.children[0]);
-      let createButton = '<button id ="createFunctionButton" class="btn"> Create function </button>';
+      let createButton = '<button id ="createFunctionButton" style="background-color: var(--button-color)" class="btn"> Create function </button>';
       footer.insertAdjacentHTML('afterbegin', createButton);
       this.createButton = new CreateFunctionButton();
     }
