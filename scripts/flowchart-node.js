@@ -31,6 +31,7 @@ class FlowchartNode extends View {
         this._name = "";
         this.functionDescription = "No function yet";
         this.functionVariables = [];
+        this.funcDefId = null;
 
 
         this.input  = new NodeIO(this, "box-input");
@@ -194,11 +195,13 @@ class FlowchartNode extends View {
     getMetaInfo() {
         console.log("i noden", this.input.connections)
         return new NodeMetaInfo(
-                this.type, 
+                this.type,
+                this.getName(), 
                 this.functionDescription,
+                this.id, 
                 this.posX, 
                 this.posY, 
-                this.id, 
+                this.funcDefId,
                 this.input.connections, 
                 this.output.connections, 
                 this.functionVariables);
