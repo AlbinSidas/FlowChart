@@ -11,12 +11,12 @@
 
 .idText {
     margin-right: auto;
-    color: blue;
+    color: rgb(43, 47, 61);
 }
 
 .buttonFooterAdd {
     color: black;
     position: absolute;
     margin: 0.82%;
-    left: 10%;
+    left: 11%;
 }

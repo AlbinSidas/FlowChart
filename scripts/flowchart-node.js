@@ -21,7 +21,7 @@ class FlowchartNode extends View {
         //ui
         this.posX    = 100;
         this.posY    = 100;
-        this.height  = 100;
+        this.height  = 250;
         this.offsetX = 0;
         this.offsetY = 0;
         this.idRef   = "";
@@ -36,9 +36,7 @@ class FlowchartNode extends View {
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output");
         this.functionName = "";
-
-        // RUBEN FIXA DEN HÄR NÄR MAN LADDAR TILLBAKA EN NODE ÄR DU SNÄLL
-        this.functionNameView = InlineView(`<p id='${this.id}_function'>-no function-</p>`);
+        this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id} \n has no function</p>`);
 
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
@@ -140,10 +138,10 @@ class FlowchartNode extends View {
         let nextY = e.clientY-this.offsetY
         nextX = nextX < 0 ? 0 : nextX
         nextY = nextY < 0 ? 0 : nextY
-        const max_height_relative_to_window      = window.innerHeight - this.height
-        const box_position_relative_to_container = max_height_relative_to_window + window.scrollY
-        const box_position_relative_to_window    = nextY - window.scrollY
-        nextY = box_position_relative_to_window >= max_height_relative_to_window ? box_position_relative_to_container : nextY
+        const maxHeightRelativeToWindow      = window.innerHeight - this.height
+        const boxPositionRelativeToContainer = maxHeightRelativeToWindow + window.scrollY
+        const boxPositionRelativeToWindow    = nextY - window.scrollY
+        nextY = boxPositionRelativeToWindow >= maxHeightRelativeToWindow ? boxPositionRelativeToContainer : nextY
         this.element.style.top  = `${this.posY}px`
         this.element.style.left = `${nextX}px`
         eventEmitter.emit("dragged", nextX - this.posX ,  nextY - this.posY, this.id);
@@ -187,7 +185,7 @@ class FlowchartNode extends View {
         document.onmousemove = (e) => {  this.elementDrag(e)   };
         let x = 0
         let y = 0
-        let shadow = ` box-shadow: ${x}px ${y}px 40px 20px #0ff;`;
+        let shadow = ` box-shadow: ${x}px ${y}px 40px 20px var(--node-highlight)`;
         let elementStyle = document.getElementById(this.id).style.cssText;
         document.getElementById(this.id).setAttribute("style", elementStyle + shadow);
         //eventEmitter.emit("dragged", e);
