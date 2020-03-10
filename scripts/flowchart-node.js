@@ -31,7 +31,7 @@ class FlowchartNode extends View {
         this._name = "";
         this.functionDescription = "No function yet";
         this.functionVariables = [];
-
+        this.funcDefId = null;
 
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output");
@@ -83,12 +83,11 @@ class FlowchartNode extends View {
         this.functionVariables = other.functionVariables
         this.funcDefId         = other.funDefId;
         this.nodeDescription   = other.nodeDescription;
-
+        this.element.classList.add(style.flowchart_square);
         this.offsetX           = other.offsetX;
         this.offsetY           = other.offsetY;
-        this.height            = other.height;
-        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${other.funName}</p>`);
-        //this.functionDescription = other.funDefId;
+        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${this.id}\n has ${this.funcDefId}</p>`);
+        this.functionDescription = other.funDefId;
     }
 
     registerConnectorUpdater(id, func) {
@@ -195,13 +194,15 @@ class FlowchartNode extends View {
     getMetaInfo() {
         console.log("i noden", this.input.connections)
         return new NodeMetaInfo(
-                this.type, 
+                this.type,
+                this.getName(), 
                 this.functionDescription,
+                this.id, 
                 this.posX, 
                 this.posY, 
-                this.id, 
+                this.funcDefId,
+                this.input.connections, 
                 this.output.connections, 
-                this.input.connections,   
                 this.functionVariables);
     }
 

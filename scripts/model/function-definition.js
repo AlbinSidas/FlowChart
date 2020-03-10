@@ -9,6 +9,10 @@ class FunctionDefinition
         this.description       = description;
         this.functionVariables = functionVariables;
     }
+    
+    static CreateLocal(name, description, functionVariable) {
+        return new FunctionDefinition(null, name, description, functionVariable)
+    }
 }
 
 export default FunctionDefinition;

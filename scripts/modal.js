@@ -292,20 +292,20 @@ class Modal extends View
       );
     }
 
-    let funcDef = new FunctionDefinition(document.getElementById("name").value,
+    let funcDef = FunctionDefinition.CreateLocal(document.getElementById("name").value,
                                      document.getElementById("funcdescBox").value,
                                      variableList);
-
-
     return funcDef;
   }
 
   close() {
     if(this.mode == "Node") { 
       // Logik för att se om det finns ickesparade förändringar? 
+      this.save();
     }
     this._updateFooterNode();
     this._updateHeaderNode();
+
     this.element.style.display = "none";
   }
 
