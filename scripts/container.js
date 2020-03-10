@@ -186,7 +186,6 @@ class Container extends View {
             let css = document.getElementById(this.markedObject[i].id).style.cssText;
             css = css.split(" box-shadow")[0];
             document.getElementById(this.markedObject[i].id).style.cssText = css;
-            //delete this.markedObject[i-1];
         }
         this.markedObject = [];
     }

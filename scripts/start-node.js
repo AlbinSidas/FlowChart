@@ -17,7 +17,6 @@ class StartNode extends View {
 
         this.element.classList.add("startnode");
         this.element.setAttribute("style", 'margin-top:'+this.posY+'px; margin-left:'+this.posX+'px;');
-        //this.element.setAttribute("style", 'background-color:blue')
         
         this.id = id;
         this.element.id = id;
@@ -26,7 +25,6 @@ class StartNode extends View {
         this.functionDescription = "STARTNODE FTW"
 
         this.output = new NodeIO(this, "box-start");
-        //this.input  = new NodeIO(this, "box-dummy");
         
 
         this.onScrolledCallbacks = [];
