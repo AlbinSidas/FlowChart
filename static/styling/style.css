@@ -1,15 +1,14 @@
+/* ======================== ZOOM LEVELS ==========================  */
 @media (min-width: 0px) and (max-width: 550px){
     body {
         zoom: 0.5;
     }
 }
-
 @media (min-width: 501px) and (max-width: 1200px){
     body {
         zoom: 0.7;
     }
 }
-
 @media (min-width: 1201px) and (max-width: 2500px){
     body {
         zoom: 1;
@@ -23,9 +22,7 @@
 
 
 
-
-
-/* ========================= COLORS =============================  */
+/* ============================= COLORS =============================  */
 :root {
     /* General colors */
     --background-color: rgb(71, 110, 119);
@@ -60,23 +57,6 @@ body{
     height: 100%;
     flex-direction: row;
     padding: 0px;
-}
-/* .menu och .filemenu borde tas bort? */
-:global .menu {
-    text-align: center;
-    flex-grow: 1;
-    /*background-color: blue;*/
-    max-width: 20%;
-    height: 100vh;
-    padding: 0;
-    margin: 0;
-    border-right: solid;
-    border-color: black;
-}
-
-:global .filemenu {
-    margin-top: 20vh;
-    /*background-color: mediumturquoise;*/
 }
 
 :global #workspace-root {
@@ -145,8 +125,6 @@ body{
     line-height:1px; 
 }
 
-/*border-radius is 1.1 times the height in the halfcircle*/
-
 /*Input circle*/
 .boxInput {
     border-radius: 50px 50px 0 0;
@@ -170,6 +148,7 @@ body{
     cursor: pointer;
     position: absolute;
 }
+
 /* Startnode Output */
 .boxStart {
     border-radius: 0 0 50px 50px;
@@ -182,7 +161,8 @@ body{
     z-index: 5;
     position: absolute;
 }
-/* Invisible Dummy Node */
+
+/* Invisible Dummy Output */
 .boxStartDummy {
     visibility: hidden;
     width: 0vw;
@@ -190,6 +170,7 @@ body{
     z-index: -3;
 }
 
+/* Main Flowchart Node Div */
 .flowchart_square {
     z-index: 9;
     width: 300px;
