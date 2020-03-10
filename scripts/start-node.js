@@ -36,7 +36,7 @@ class StartNode extends View {
     }   
 
     // createRunable(){
-    //     //Should the commandrows after each other depending on the connections in the flowchart.
+    //     //Should run the commandrows after each other depending on the connections in the flowchart.
     //     //gör någotmed data
     //     for (output in this.output.connections) {
     //         console.log(output)
@@ -65,7 +65,6 @@ class StartNode extends View {
 
     onClick(e) {
         eventEmitter.emit("createRunnable", this.id, e);
-        console.log("EVENTEMITTER RAN ONCE");
     }
 
 }

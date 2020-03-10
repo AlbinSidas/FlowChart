@@ -62,7 +62,7 @@ body{
     width: 15vw;
 }
 
-.startnode{
+:global .startnode{
     background-color: purple;
     height: 50px;
     width: 100px;
