@@ -14,19 +14,6 @@ const Response        = apiAux.Response
 const apiHandlers     = require('./api/api-handlers');
 
 
-
-    /*  
-          {
-        id : {functionvariable}, 
-    }
-    */
-        // fs.writeFile("./saved/"+req.body.filename+".json", JSON.stringify(req.body.data),function (err) {
-        //     if (err) throw err;
-        //     console.log('File is created successfully.');
-        //   }); 
-        // res.send("slurp");
-
-
 async function main() {
 
     const app          = express()
@@ -79,8 +66,6 @@ async function main() {
         res.json(Response("Save function definition", databaseOps));
 
     });
-
-
 
 
     app.get('/loadfile/:fileName', function (req, res){

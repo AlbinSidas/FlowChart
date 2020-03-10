@@ -67,38 +67,7 @@ class NodeAPI extends Network {
         super(host, port, apiRoute)
     }
 
-//     async updateVariableTemplate(nodeId, variables) {
-//         return fetch(`${this.baseURL}/variables/${nodeId}`, 
-//         {
-//             method:   'PUT',
-//             headers:  {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(variables)
-//         }).then(response => response.json())
-//           .then(response => response.data)
-//           .catch((error) => {
-//             // Handle error
-//             console.log("Fail", error);
-//         });
-//     } 
 
-//    async getVariables(nodeId) {
-//        return fetch(`${this.baseURL}/variables/${nodeId}`, 
-//         {
-//             method:   'GET',
-//             headers:  {
-//                 'Content-Type': 'application/json'
-//             }
-//         }).then((response) => {
-//             // Confirm save
-//             console.log("success", response.json().data);
-            
-//         }).catch((error) => {
-//             // Handle error
-//             console.log("Fail", error);
-//         });
-//     }
 }
 
 
@@ -112,31 +81,4 @@ const nodeAPI      = new NodeAPI('localhost', '3000', 'node')
 // ... Fyll i
 
 
-
-    //   console.log("Spara ner all data på ett snyggt sätt och skicka till databasen");
-    //   // Ha en failsafe för att se vilka object som finns i listan över sedan tidigare sparade objekt föra tt inte spara samma flera gånger? Hur ska vi göra versionhanteringen?
-      
-    //   let saveObject = new SaveObject( this.obj.name, 
-    //                                    this.obj.functionDescription, 
-    //                                    /* Vet ej hur vi vill göra vid denna delen av spara nod, kanske ha en spara funktionsdefinition som ärver från saveObject? eller bara annan funktion?*/
-    //                                    100,
-    //                                    100,
-    //                                    0,
-    //                                    {}, 
-    //                                    {} );
-    //                                    console.log("SAVED SAKER", JSON.parse
-
-
-    /*
-    {
-        id : {functionvariable}, 
-    }
-
-
-
-
-    */
-    //(JSON.stringify(saveObject)))
-
-    //   this.functionDefinitions.push(saveObject);
 export default { funcDefAPI, flowchartAPI }

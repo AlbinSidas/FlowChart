@@ -7,9 +7,7 @@ const MongoHandler  = require('./mongo-handler');
 class NodeHandler extends MongoHandler {
     constructor(db, collectionName) {
         super(db, collectionName)
-        //this.collectionName = collectionName;
-        //this.db = db;
-        //protocolAssign(this)
+
     }
 }
 

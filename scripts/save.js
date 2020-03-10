@@ -14,41 +14,31 @@ class Save
 		let filename = prompt("Please enter the name for your save file")
 		let saveObjectList = [];
 		let i = 0;
-		for (i = 1; i < obj.length; i++){
+		for (i = 1; i < obj.length; i++) {
 			let saveObj = obj[i].getMetaInfo();
 			saveObjectList.push(saveObj);
-			console.log(obj[i])
 		}
 		const data = {
 			"nodes": saveObjectList,
 			"name": filename,
 		};
-		console.log(data)
+
 		API.flowchartAPI.save(data);
-		// fetch('http://localhost:3000/saved', 
-		// {
-		// 	method: 'PUT',
-		// 	headers: {
-		// 	  'Content-Type': 'application/json',
-		// 	},
-		// 	body: JSON.stringify(data),
-		//   })
 	}
 	
     async loadFlow(obj, that){	
-		//const resp     = //await fetch('http://localhost:3000/loadfilenames');
-		const jsonData = await API.flowchartAPI.getNameList() // {id, name}
+		const jsonData = await API.flowchartAPI.getNameList();
 		let a = 0;
 		let trash ="";
 		for (a = 0; a < jsonData.length; a++){
 			trash += jsonData[a].name + "\n"
 		}
+
 		let filename = prompt("skriv in namnet på filen du vill ladda\n" +trash)
-		//const respun =  await fetch('http://localhost:3000/loadfile/'+filename);
 		let foundId  = jsonData.find(element => element.name == filename)._id;
-		const loadtxt = await API.flowchartAPI.getById(foundId); //await respun.json()
+		const loadtxt = await API.flowchartAPI.getById(foundId);
 		let object = loadtxt.nodes;
-		console.log("SADASDF", object)
+
 		let i = 0;
 		for (i=0; i < object.length; i++){
 

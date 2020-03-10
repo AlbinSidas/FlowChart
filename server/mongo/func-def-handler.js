@@ -5,9 +5,6 @@ const MongoHandler  = require('./mongo-handler');
 class FuncDefHandler extends MongoHandler {
     constructor(db, collectionName) {
         super(db, collectionName)
-        //this.collectionName = collectionName;
-        //this.db = db;
-        //protocolAssign(this)
     }
 }
 

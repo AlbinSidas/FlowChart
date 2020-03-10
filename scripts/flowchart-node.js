@@ -30,11 +30,8 @@ class FlowchartNode extends View {
         this.id    = id;
         this._name = "";
         this.functionDescription = "No function yet";
-        this.functionVariables = []; // Helt ok
-        /* 
-            men det är INTE en del av NodeMetaInfo!
-            tänk this.functionVariables = funcdefAPI.getTemplateFill(this.id); då hämtas funktionsdefinition variabelfyllningen för den här nodens id
-        */
+        this.functionVariables = [];
+
 
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output");
@@ -52,13 +49,6 @@ class FlowchartNode extends View {
         this.functionName = name;
         document.getElementById(`${this.id}_function`).innerHTML = name;
     }
-
-    // run(){
-    //     console.log(this.functionDescription);
-    //     for (output in this.output.connections){
-    //         output.run();
-    //     }
-    // }
 
 
     didAttach(parent) {
