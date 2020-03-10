@@ -1,5 +1,6 @@
 
 import Toolbox from './toolbox.js'
+import StartNode from './start-node.js'
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
 import Modal from './modal.js'
@@ -42,6 +43,7 @@ class Container extends View {
         this.inputClicked  = this.inputClicked.bind(this)
 
         this.flowchartList = [];
+        this.idsbeforepaste = [];
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", this.objectClicked);
@@ -53,11 +55,6 @@ class Container extends View {
             this.flowchartList.length = 0;           
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
-            /*
-            console.log("Finished list:")
-            for(let n = 0; n < this.flowchartList.length; n++){
-                console.log(this.flowchartList[n]);
-            }*/
         })
     }
 
@@ -74,8 +71,9 @@ class Container extends View {
         });
 
         // If the click is on the marked object it's a doubleclick and will open the modal.
-        if (this.markedObject.includes(obj)) {
+        if (this.markedObject.includes(obj) ) {
             // Prevents further draging after doubleclick.
+
             obj.closeDragElement();
             this.modal.show(obj);
             window.onclick = function (event) {
@@ -92,7 +90,6 @@ class Container extends View {
     }
 
     inputClicked(id) {
-
         if (id == this.markedOutput) {
             return;
         }
@@ -127,10 +124,6 @@ class Container extends View {
             connector.updateConnections();
         } 
     }
-
-
-
-    
 
     didAttach(parent) {
         this.toolbox = new Toolbox();
@@ -224,26 +217,48 @@ class Container extends View {
         if (this.markedObject.length != 0) {
             // Save a copy list without a reference to the original objects.
             this.copyObject = [];
+            this.idsbeforepaste = [];
+            
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
             for(let i = 0; i < this.markedObject.length; i++){
                 this.copyObject[i] = new FlowchartNode(uuidv1());
-                this.copyObject[i].copyOther(this.markedObject[i]);
+                this.copyObject[i].copyOther(this.markedObject[i], this.markedObject[i].id);
+                this.idsbeforepaste[i] = this.markedObject[i].id; 
             }
+            
         }
     }
 
     pasteNode() {
         if (this.copyObject.length != 0) {
             //Create new objects based on the copies and add them to the workspace
+            let tempRef = [];
             for(let i = 0; i < this.copyObject.length; i++){
                 let pasteObject = new FlowchartNode(uuidv1());
                 if(i == 0){
-                    pasteObject.copyOther(this.copyObject[i], this.mouseX, this.mouseY);
+                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX, this.mouseY, []);
                 }
                 else {
-                    pasteObject.copyOther(this.copyObject[i], this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY));
+                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY), []);
                 }
                 this.addBox(pasteObject);
+                tempRef[i] = pasteObject;
+                
+            }
+            if(tempRef.length > 1){
+                for(let i = 0; i < this.copyObject.length; i++){
+                    for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
+                        if(this.idsbeforepaste.includes(this.copyObject[i].output.connections[j])){                           
+                            for(let k = 0; k < tempRef.length; k++){
+                                if(tempRef[k].idRef == this.copyObject[i].output.connections[j]){
+                                    eventEmitter.emit("outputClicked", tempRef[i].id);
+                                    eventEmitter.emit("inputClicked", tempRef[k].id);
+                                }
+                            }
+                            
+                        }
+                    }
+                }
             }
             
         }

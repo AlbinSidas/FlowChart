@@ -17,7 +17,9 @@ module.exports = {
           Views:      path.resolve(__dirname,  'static/views'),
           Singletons: path.resolve(__dirname,  'scripts/singletons'),
           Styles:     path.resolve(__dirname,  'static/styling'),
-          Scripts:    path.resolve(__dirname, 'scripts/')
+          Model:      path.resolve(__dirname,  'scripts/model'),
+          Network:    path.resolve(__dirname,  'scripts/network'),
+          Scripts:    path.resolve(__dirname,  'scripts/')
         }
     },
     module: {

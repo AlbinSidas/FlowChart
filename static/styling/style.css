@@ -1,21 +1,4 @@
-
-@media(min-width: 1000px){
-    :global #workspace-root{
-      zoom: 1;
-    }
-}
-
-@media(min-width:1080px,){
-    :global #workspace-root{
-      zoom: 0.5;
-    }
-  } 
-
-
-
-
-
-/* ============================== COLORS ============================= */
+/* ========================= COLORS =============================  */
 :root {
     /* General colors */
     --background-color: rgb(71, 110, 119);
@@ -37,7 +20,6 @@
 
 
 /* ============================== WORKSPACE ============================= */
-/* Standard measurement is in vw for width and height of items on the workspace. */
 body{
     margin:0;
     padding:0;
@@ -146,6 +128,7 @@ body{
     margin-left: 125px;
     background-color: var(--node-input);
     cursor: pointer;
+    position: absolute;
 }
 
 /*Output circle*/
@@ -157,6 +140,7 @@ body{
     margin-left: 125px;
     background-color: var(--node-output);
     cursor: pointer;
+    position: absolute;
 }
 /* Startnode Output */
 .boxStart {
@@ -168,6 +152,7 @@ body{
     background-color: var(--node-output);
     cursor: pointer;
     z-index: 5;
+    position: absolute;
 }
 /* Invisible Dummy Node */
 .boxStartDummy {
@@ -177,9 +162,6 @@ body{
     z-index: -3;
 }
 
-
-
-
 .flowchart_square {
     z-index: 9;
     width: 300px;
@@ -187,6 +169,12 @@ body{
     cursor: move;
     position: absolute;
     background-color: var(--node-background);
+}
+
+.flowchart_square p {
+    position: absolute;
+    text-align: center;
+    width: 100%;
 }
 
 
