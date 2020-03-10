@@ -301,9 +301,11 @@ class Modal extends View
   close() {
     if(this.mode == "Node") { 
       // Logik för att se om det finns ickesparade förändringar? 
+      this.save();
     }
     this._updateFooterNode();
     this._updateHeaderNode();
+
     this.element.style.display = "none";
   }
 

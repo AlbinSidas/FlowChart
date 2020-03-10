@@ -5,7 +5,7 @@ import FlowchartNode from "../flowchart-node";
 
 class NodeMetaInfo
 {
-    constructor(type, funDefId, pX, pY, id, inputConnectionList, outputConnectionList, functionVariables) {
+    constructor(type, nodeName, nodeDescription, id, pX, pY, funDefId, inputConnectionList, outputConnectionList, functionVariables) {
         this.type     = type
         this.funDefId = funDefId;
         this.pX       = pX;
@@ -14,6 +14,8 @@ class NodeMetaInfo
         this.outputConnectionList = outputConnectionList;
         this.inputConnectionList = inputConnectionList;
         this.functionVariables = functionVariables;
+        this.nodeName = nodeName;
+        this.nodeDescription = nodeDescription;
     }
 
 }
