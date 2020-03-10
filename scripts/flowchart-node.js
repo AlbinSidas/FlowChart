@@ -32,7 +32,6 @@ class FlowchartNode extends View {
         this.functionDescription = "No function yet";
         this.functionVariables = [];
 
-
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output");
         //this.functionName = "";
