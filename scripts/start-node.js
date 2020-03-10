@@ -8,11 +8,11 @@ class StartNode extends View {
 
     constructor(id){
         super();
-        this.setHtml('<div>Start :]</div>');
+        this.setHtml('<div>Start</div>');
 
         this.onClick = this.onClick.bind(this);
         
-        this.posX = 910;
+        this.posX = 880;
         this.posY = 30;
 
         this.element.classList.add("startnode");
@@ -25,7 +25,6 @@ class StartNode extends View {
         this.functionDescription = "STARTNODE FTW"
 
         this.output = new NodeIO(this, "box-start");
-        //this.input  = new NodeIO(this, "box-dummy");
         
 
         this.onScrolledCallbacks = [];
@@ -35,16 +34,6 @@ class StartNode extends View {
         this.element.onclick = this.onClick;
     }   
 
-    // createRunable(){
-    //     //Should run the commandrows after each other depending on the connections in the flowchart.
-    //     //gör någotmed data
-    //     for (output in this.output.connections) {
-    //         console.log(output)
-            
-    //         output.run();
-    //     } 
-    // }
-    
 
     onScrolled(callback) {
         this.onScrolledCallbacks.push(callback);

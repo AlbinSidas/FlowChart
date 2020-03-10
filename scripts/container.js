@@ -1,7 +1,6 @@
 
-import SizeButton from './size-button.js'
-import SaveButton from './save-button.js'
-import LoadButton from './load-button.js'
+import Toolbox from './toolbox.js'
+import StartNode from './start-node.js'
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
 import Modal from './modal.js'
@@ -10,7 +9,7 @@ import View from 'Base/view.js'
 import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
-import StartNode from './start-node.js';
+import ShowHideButton from './showHideButton.js';
 
 class Container extends View {
     constructor() {
@@ -31,6 +30,7 @@ class Container extends View {
         this.connectorList = [];
         this.objectClick   = {};
         this.copyObject    = [];
+        this.toolboxVisible = false;
         
         this.mouseX     = 0;
         this.mouseY     = 0;
@@ -56,7 +56,6 @@ class Container extends View {
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
         })
-    
     }
 
     objectClicked(id, e) {
@@ -127,22 +126,18 @@ class Container extends View {
     }
 
     didAttach(parent) {
-        const startNode = new StartNode("start-node");
-        this.objects.push(startNode);
-        this.attach(startNode);
-        startNode.onScrolled(this.childScrolled);
+        this.toolbox = new Toolbox();
+        this.attach(this.toolbox)
 
-        const sizeButton = new SizeButton();
-        this.attach(sizeButton)
-
-        const save = new SaveButton();
-        this.attach(save);
-
-        const load = new LoadButton();
-        this.attach(load);
+        const showHideButton = new ShowHideButton();
+        this.attach(showHideButton);
 
         this.modal = new Modal();
         this.attach(this.modal);
+        
+        eventEmitter.on('showHide', () => {
+            this.showHide();
+        })
 
         eventEmitter.on('save', () =>  {
             this.saveClass.saveFlow(this.objects)
@@ -152,16 +147,16 @@ class Container extends View {
             this.saveClass.loadFlow(this.objects, this)
         })
 
-        eventEmitter.on('increase_size', () =>  {
+        eventEmitter.on('increaseSize', () =>  {
             this.increaseSize();
         })
-        eventEmitter.on('decrease_size', () =>  {
+        eventEmitter.on('decreaseSize', () =>  {
             this.decreaseSize();
         })
-        eventEmitter.on('increase_size_horizontal', () =>  {
+        eventEmitter.on('increaseSizeHorizontal', () =>  {
             this.increaseSizeHorizontal();
         })
-        eventEmitter.on('decrease_size_horizonal', () =>  {
+        eventEmitter.on('decreaseSizeHorizonal', () =>  {
             this.decreaseSizeHorizontal();
         })
         eventEmitter.on('dragged', (pxm, pym, id) =>  {
@@ -191,7 +186,6 @@ class Container extends View {
             let css = document.getElementById(this.markedObject[i].id).style.cssText;
             css = css.split(" box-shadow")[0];
             document.getElementById(this.markedObject[i].id).style.cssText = css;
-            //delete this.markedObject[i-1];
         }
         this.markedObject = [];
     }
@@ -330,6 +324,17 @@ class Container extends View {
             }
             this.setWidth(this.width - this.sizeDelta);
         }
+    }
+
+    showHide() {
+        if (this.toolboxVisible) {
+            this.toolbox.hide();
+            this.toolboxVisible = false;
+        }
+        else {
+            this.toolbox.show();
+            this.toolboxVisible = true;
+        }    
     }
 
     setHeight(height) {
