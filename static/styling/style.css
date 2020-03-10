@@ -87,7 +87,6 @@ body{
     z-index: 1;
     /* background: transparent; */
     background-color: blue;
-    pointer-events: none;
     position: absolute;
     padding:0px; 
     margin:0px;

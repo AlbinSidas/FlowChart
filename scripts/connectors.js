@@ -1,16 +1,24 @@
 import View from 'Base/view.js';
+import eventEmitter from 'Singletons/event-emitter.js';
+
 
 class Connector extends View
 {
   constructor(id, prevNode, currNode) {
     super();
-    this.setHtml("<div></div>")
+    this.setHtml("<div tabindex='1' onClick='alert()'></div>");
     this.render = this.render.bind(this);
+    this.onClick = this.onClick.bind(this);
     this.id = id;
     this.element.id = id;
     this.currNode = currNode;
     this.prevNode = prevNode;
     this.updateConnections = this.updateConnections.bind(this)
+  }
+
+  didAttach(parent) {
+    this.element.onclick = this.onClick;
+    console.log(this.element.onclick);
   }
 
   updateConnections(){//prevNode, currNode){
@@ -22,7 +30,7 @@ class Connector extends View
     
     // line contains the length, position x and y, and the angle
     let line = this._calculateLine(outX, outY, inX, inY);
-    this.element.setAttribute("style", `width:${line[0]}px; left:${line[1]}px; top:${line[2]}px; transform:rotate(${line[3]}deg);`);
+    this.element.setAttribute("style", `width:${line[0]}px; left:${line[1]}px; top:${line[2]}px; transform:rotate(${line[3]}deg); `);
   }
 
   _calculateLine(outX,outY,inX,inY){
@@ -57,10 +65,15 @@ class Connector extends View
 
     hypCenterPosX = hypCenterPosX - hypothenuse/2;
     return [hypothenuse, hypCenterPosX, hypCenterPosY, angle];
-}
+  }
 
   render() {
     return this.element; 
+  }
+
+  onClick(e){
+    console.log("CONNECTOR Klickad");
+    eventEmitter.emit("clicked", this.id, e);
   }
 
 }

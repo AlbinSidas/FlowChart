@@ -14,35 +14,38 @@ import Connector from "./connectors.js";
 class Container extends View {
     constructor() {
         super()
-
+        
         this.setHtml(elementString)
+
+        //FIXA ADDEVENTLISTENER HÄR OSKAR!!! gogogogo
         this.onClick    = this.onClick.bind(this);
         this.onKeyPress = this.onKeyPress.bind(this);
 
         this.height = 3000;
-        this.width = window.innerWidth;
-        this.childScrolled = this.childScrolled.bind(this)
+        this.width  = window.innerWidth;
+        this.childScrolled = this.childScrolled.bind(this);
 
-	    this.saveClass     = new Saving();
-        this.objects       = [];
-        this.markedObject  = [];
-        this.markedOutput  = "";
-        this.connectorList = [];
-        this.objectClick   = {};
-        this.copyObject    = [];
+	    this.saveClass      = new Saving();
+        this.objects        = [];
+        this.markedObject   = [];
+        this.markedOutput   = "";
+        this.connectorList  = [];
+        this.objectClick    = {};
+        this.copyObject     = [];
+        this.flowchartList  = [];
+        this.idsbeforepaste = [];
+
         
         this.mouseX     = 0;
         this.mouseY     = 0;
-        this.sizeDelta  = 200
+        this.sizeDelta  = 200;
 
-        this.copyNode      = this.copyNode.bind(this)
-        this.pasteNode     = this.pasteNode.bind(this)
-        this.removeNode    = this.removeNode.bind(this)
-        this.objectClicked = this.objectClicked.bind(this)
-        this.inputClicked  = this.inputClicked.bind(this)
-
-        this.flowchartList = [];
-        this.idsbeforepaste = [];
+        this.copyNode      = this.copyNode.bind(this);
+        this.pasteNode     = this.pasteNode.bind(this);
+        this.removeNode    = this.removeNode.bind(this);
+        this.objectClicked = this.objectClicked.bind(this);
+        this.inputClicked  = this.inputClicked.bind(this);
+        
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", this.objectClicked);
@@ -59,7 +62,7 @@ class Container extends View {
             for(let n = 0; n < this.flowchartList.length; n++){
                 console.log(this.flowchartList[n]);
             }*/
-        })
+        });
     
     }
 
