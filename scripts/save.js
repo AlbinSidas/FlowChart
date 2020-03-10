@@ -55,6 +55,7 @@ class Save
 				eventEmitter.emit("inputClicked", object[i].id);
 			}
 			for (let j=0; j < object[i].outputConnectionList.length; j++){
+				console.log(object[i].id)
 				eventEmitter.emit("outputClicked", object[i].id);
 				eventEmitter.emit("inputClicked", object[i].outputConnectionList[j]);
 				
