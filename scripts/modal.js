@@ -311,7 +311,11 @@ class Modal extends View
   close() {
     if(this.mode == "Node") {
       // Logik för att se om det finns ickesparade förändringar? 
+<<<<<<< HEAD
       this._saveNode();
+=======
+      //this.save();
+>>>>>>> master
     }
     this._updateFooterNode();
     this._updateHeaderNode();

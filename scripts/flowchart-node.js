@@ -226,6 +226,14 @@ class FlowchartNode extends View {
         //was moved to mousedown to fix bug
         //eventEmitter.emit("clicked", this.id, e);
     }
-    
+    static CreateExternal(object, inputIds, outputIds) {
+        const node = new FlowchartNode(object.id);
+        node.fillNode(object);
+        return node;
+    }
+
+
 }
+
+
 export default FlowchartNode;
