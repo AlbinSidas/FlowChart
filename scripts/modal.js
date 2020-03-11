@@ -128,7 +128,7 @@ class Modal extends View
 
       nameInput.value = 'Name';
       typeInput.value = 'Type';
-      this.updateList();
+      //this.updateList();
     })
   }
 
@@ -173,6 +173,7 @@ class Modal extends View
 
   updateList(){
     let ul = document.getElementById("cVarList");
+    console.log(ul)
     if(!this.obj.functionDefinitionInstance) { return; }
     for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
       this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
