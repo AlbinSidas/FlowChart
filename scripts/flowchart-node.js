@@ -35,7 +35,7 @@ class FlowchartNode extends View {
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output");
         //this.functionName = "";
-        this.funcitionDefinition = {};
+        this.functionDefinitionInstance = {};
         this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id} \n has no function</p>`);
 
         this.element.classList.add(style.flowchart_square);
@@ -192,13 +192,12 @@ class FlowchartNode extends View {
      }
 
     getMetaInfo() {
-        console.log("i noden", this.input.connections)
         return new NodeMetaInfo(
                 this.type, 
                 this.functionDescription,
                 this.posX, 
                 this.posY, 
-                this.id, 
+                this.id,
                 this.output.connections, 
                 this.input.connections,   
                 this.functionVariables);

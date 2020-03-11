@@ -66,6 +66,9 @@ class Modal extends View
     
     eventEmitter.on('listClick', (listObject) => {
       this.loadDefinitionToModal(listObject);
+      this.obj.functionDefinitionInstance = listObject;
+      document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
+      // Uppdatera DOM för att motsvara korrekt funktionsdefinitionsnamn
       this._save();
       this.obj.changeFunctionName(listObject.name);
     })
@@ -237,13 +240,17 @@ class Modal extends View
       let idField = document.getElementById("modalTitle");
       idField.classList.add(styleClasses.idText);
       idField.textContent = "ID: " + this.obj.id.toString();
+      /*
+      Input: <input type="text" id="inputBox" value="${this.obj.getInValue()}"> </br>
+      Output: <input type="text" id="outputBox" value="${this.obj.getOutValue()}"> </br>
+      Create Variables:                    
+      <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
+      */
 	    this.modalContent.changeHtml(`
                             <div id="boxtime">
-                              Name: <input type="text" id="name" value=""> ${this.obj.getName()} </br>                       
-                              Input: <input type="text" id="inputBox" value="${this.obj.getInValue()}"> </br>
-                              Output: <input type="text" id="outputBox" value="${this.obj.getOutValue()}"> </br>
-                              Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
-                              <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
+                              <p>Name: <input type="text" id="name" value="${this.obj.getName()}"></p> 
+                              <p>Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}"> </p>
+                              <p id="functionDefinition"> Function: ${this.obj.functionDefinition} </br> </p>
                               Variables:
                               <ul id="cVarList"></ul>
                             </div>`);
@@ -280,6 +287,38 @@ class Modal extends View
       }
   }
 
+  _saveNode() {
+    this.obj.setName(document.getElementById("name").value);
+    
+    this.obj.functionDescription = document.getElementById("funcdescBox").value;
+    /*let setDefaultInput = true;
+    let setDefaultOutput = true;*/
+    for (let i = 0; i < this.obj.functionVariables.length; i++) {
+      //if(this.obj.functionVariables[i].type == "var"){
+        this.obj.functionVariables[i].value = document.getElementById(this.obj.functionVariables[i].name).value;
+      //}
+      /*
+      else if(this.obj.functionVariables[i].type == "input"){
+        this.obj.functionVariables[i].value = document.getElementById("inputBox").value;
+        setDefaultInput = false;
+      }
+      else if(this.obj.functionVariables[i].type == "output"){
+        this.obj.functionVariables[i].value = document.getElementById("outputBox").value;
+        setDefaultOutput = false;
+      }
+      */
+    }
+    /*
+    if (setDefaultInput){
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultInput", "input", document.getElementById("inputBox").value);
+    }
+    if (setDefaultOutput){
+      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultOutput", "output", document.getElementById("outputBox").value);
+    }
+    */
+
+  }
+
   _save() {
     let variableList = [];
     const variables = document.getElementById('cVarList').children;
@@ -299,8 +338,9 @@ class Modal extends View
   }
 
   close() {
-    if(this.mode == "Node") { 
+    if(this.mode == "Node") {
       // Logik för att se om det finns ickesparade förändringar? 
+      this._saveNode();
     }
     this._updateFooterNode();
     this._updateHeaderNode();
