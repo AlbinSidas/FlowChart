@@ -72,7 +72,6 @@ class Modal extends View
         document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
         this._saveNode();
       }
-      this.obj.changeFunctionName(listObject.name);
     })
 
     eventEmitter.on('createFunction', () => {
@@ -317,6 +316,7 @@ class Modal extends View
     this._updateHeaderNode();
 
     this.element.style.display = "none";
+    this.obj.refreshPreview();
   }
 
   render() {
