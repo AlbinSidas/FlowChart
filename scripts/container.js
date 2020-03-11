@@ -51,6 +51,8 @@ class Container extends View {
         this.inputClicked     = this.inputClicked.bind(this);
         
 
+        this.loadFlow = this.loadFlow.bind(this)
+
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", this.objectClicked);
         eventEmitter.on("connectorClicked", this.connectorClicked);
@@ -123,39 +125,62 @@ class Container extends View {
     }
     
     inputClicked(id) {
-        if (id == this.markedOutput) {
+        if (id == this.markedOutput || this.markedOutput == "") {
             return;
         }
 
-        else if (this.markedOutput != ""){
-            let currNode = this.objects.find((temp) => {
-                return temp.id == id;
-            })
-    
-            let prevNode = this.objects.find((temp) => {
-                return temp.id == this.markedOutput;
-            })
+        const currNode = this.objects.find(temp => temp.id == id )
+        const prevNode = this.objects.find(temp => temp.id == this.markedOutput )
 
-            let connector = {};
-            if (!currNode.input.connections.includes(this.markedOutput)) {
-                currNode.input.connections.push(this.markedOutput);
-                prevNode.output.connections.push(currNode.id);
+        let connector = {};
+        if (!currNode.input.connections.includes(this.markedOutput)) {
+            currNode.input.connections.push(this.markedOutput);
+            prevNode.output.connections.push(currNode.id);
 
-                connector = new Connector(currNode.id + prevNode.id, prevNode, currNode);
-                prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
-                currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
-                connector.element.classList.add("connector");
-                this.attach(connector);
-                this.connectorList.push(connector);
-            }
-            else {
-                connector = this.connectorList.find((c) => {
-                    return c.id == currNode.id + prevNode.id; 
-                });
-            }
-            this.markedOutput = "";
-            connector.updateConnections();
-        } 
+            connector = new Connector(currNode.id + prevNode.id, prevNode, currNode);
+            prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
+            currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
+            connector.element.classList.add("connector");
+            this.attach(connector);
+            this.connectorList.push(connector);
+        }
+        else {
+            connector = this.connectorList.find((c) => {
+                return c.id == currNode.id + prevNode.id; 
+            });
+        }
+        this.markedOutput = "";
+        connector.updateConnections();
+        
+    }
+
+
+    connectNodes(looseObjects) {
+
+        looseObjects.forEach(item => {
+			if(item.inputConnectionList.length !=0 && item.inputConnectionList.includes("start-node")){
+				eventEmitter.emit("outputClicked", "start-node");
+				eventEmitter.emit("inputClicked", item.id);
+			}
+            item.outputConnectionList.forEach((output) => {
+				eventEmitter.emit("outputClicked", item.id);
+				eventEmitter.emit("inputClicked", output);
+            })
+        })
+
+    }
+
+
+    // ##################
+    async loadFlow() {
+        const loadedObjects = await this.saveClass.loadFlow(this);
+        const looseNodes = loadedObjects.nodes;
+        looseNodes.forEach((looseNode) => {
+              this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
+        })
+
+        this.objects.forEach(obj => this.attach(obj))
+        this.connectNodes(looseNodes)
     }
 
     connectorClicked(id, e){
@@ -167,11 +192,11 @@ class Container extends View {
         });
         this.removeMarked();
         this.markedConnector[this.markedConnector.length] = obj;
-        console.log(id);
     }
 
     didAttach(parent) {
-        this.toolbox = new Toolbox();
+        this.toolbox = new Toolbox(this);
+        
         this.attach(this.toolbox)
 
         const showHideButton = new ShowHideButton();
@@ -188,9 +213,6 @@ class Container extends View {
             this.saveClass.saveFlow(this.objects)
         })
 
-        eventEmitter.on('load', () =>  {
-            this.saveClass.loadFlow(this.objects, this)
-        })
 
         eventEmitter.on('increaseSize', () =>  {
             this.increaseSize();

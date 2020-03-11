@@ -10,9 +10,9 @@
 
 function ViewInterface(object) {
   return {
-    render:    function() { return object.element },
-    setHtml:   function(template) { object.element = _html(template) },
-    didAttach: function() {},
+    render:     function() { return object.element },
+    setHtml:    function(template) { object.element = _html(template) },
+    didAttach:  function(parent) {},
     changeHtml: function(template) {
         if(!object.element) {throw "Whoops no element"}
         object.element.innerHTML = template
@@ -26,6 +26,16 @@ export function InlineView (elementString) {
   }
   return Object.assign(object, ViewInterface(object))
 }
+
+export function InlineClickableView (elementString, clickCb) {
+  const object = {
+    element: _html(elementString),
+  }
+  object.element.onclick = clickCb
+  return Object.assign(object, ViewInterface(object))
+}
+
+
 
 class View {
   constructor() {

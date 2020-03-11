@@ -7,7 +7,7 @@ import NodeMetaInfo from 'Model/node-meta-info.js'
 import { InlineView } from './base/view.js';
 
 class FlowchartNode extends View {
-    constructor(id){
+    constructor(id, functionDefinitionInstance = null){
         super()
         this.setHtml('<div></div>')
     
@@ -36,7 +36,7 @@ class FlowchartNode extends View {
         this.input  = new NodeIO(this, "box-input");
         this.output = new NodeIO(this, "box-output");
         //this.functionName = "";
-        this.funcitionDefinition = {};
+        this.functionDefinitionInstance = functionDefinitionInstance;//{};
         this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id} \n has no function</p>`);
 
         this.element.classList.add(style.flowchart_square);
@@ -44,9 +44,9 @@ class FlowchartNode extends View {
         
     }
 
-    changeFunctionName(name){
-        //this.functionName = name;
-        document.getElementById(`${this.id}_function`).innerHTML = name;
+    refreshPreview(){
+        // NOTE: allt som ska vara tillgängligt i preview dynamiskt ändras här ..
+        this.functionNameView.changeHtml(`<p id='${this.id}_function'>${this.id}\n has ${this.getName()}</p>`);
     }
 
 
@@ -70,23 +70,37 @@ class FlowchartNode extends View {
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
         this.output.connections = cRef;
-        for (let i = 0; i < other.functionVariables.length; i++){
-            this.functionVariables[i] = other.functionVariables[i];
+        this.functionDefinitionInstance = other.functionDefinitionInstance;
+        if(this.functionDefinitionInstance) {
+            other.functionDefinitionInstance.functionVariables.forEach((element, i) => {
+                this.functionDefinitionInstance.functionVariables[i] = other.functionDefinitionInstance.functionVariables[i];
+            });
         }
-        
+            
     }
+
+
     fillNode(other) {
+        // incomplete state med this är farligt, vi gör om de här till Static funktioner sen
         //fyller i data för en node baserat på ett metaobjekt från servern
         this.posX              = other.pX;
         this.posY              = other.pY;
         this.id                = other.id;
-        this.functionVariables = other.functionVariables
+        //this.functionVariables = other.functionVariables
+
+        //this.functionDefinitionInstance = other.functionDefinitionInstance
+        // if(other.functionDefinitionInstance) {
+        //     other.functionDefinitionInstance.functionVariables.forEach((element, i) => {
+        //         this.functionDefinitionInstance.functionVariables[i] = other.functionDefinitionInstance.functionVariables[i];
+        //     });
+        // }
+        this.setName(other.nodeName);
         this.funcDefId         = other.funDefId;
         this.nodeDescription   = other.nodeDescription;
         this.element.classList.add(style.flowchart_square);
         this.offsetX           = other.offsetX;
         this.offsetY           = other.offsetY;
-        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${this.id}\n has ${this.funcDefId}</p>`);
+        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${this.id}\n has ${this.getName()}</p>`);
         this.functionDescription = other.funDefId;
     }
 
@@ -94,7 +108,8 @@ class FlowchartNode extends View {
         this._connectorUpdaters[id] = func
     }
     removeConnectorUpdater(id) {
-        delete this._connectorUpdaters[id]
+        delete this._connectorUpdaters[id] 
+        console.log(this._connectorUpdaters) 
     }
 
 
@@ -164,8 +179,8 @@ class FlowchartNode extends View {
         this.posY += pym;
         this.element.style.top  = `${this.posY}px`
         this.element.style.left = `${this.posX}px`
-        this._connectorUpdaters.forEach(callback => {
-            callback();
+        Object.keys(this._connectorUpdaters).forEach((key) => {
+            this._connectorUpdaters[key]()
         });
     }
 
@@ -199,7 +214,6 @@ class FlowchartNode extends View {
      }
 
     getMetaInfo() {
-        console.log("i noden", this.input.connections)
         return new NodeMetaInfo(
                 this.type,
                 this.getName(), 
@@ -207,10 +221,9 @@ class FlowchartNode extends View {
                 this.id, 
                 this.posX, 
                 this.posY, 
-                this.funcDefId,
                 this.input.connections, 
                 this.output.connections, 
-                this.functionVariables);
+                this.functionDefinitionInstance);
     }
 
     onClick(e) {
@@ -218,6 +231,15 @@ class FlowchartNode extends View {
         //was moved to mousedown to fix bug
         //eventEmitter.emit("clicked", this.id, e);
     }
-    
+    static CreateExternal(object, inputIds, outputIds) {
+        console.log(object)
+        const node = new FlowchartNode(object.id, object.functionDefinitionInstance);
+        node.fillNode(object);
+        return node;
+    }
+
+
 }
+
+
 export default FlowchartNode;
