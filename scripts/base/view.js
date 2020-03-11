@@ -31,7 +31,7 @@ export function InlineClickableView (elementString, clickCb) {
   const object = {
     element: _html(elementString),
   }
-  Object.element.onclick = clickCb
+  object.element.onclick = clickCb
   return Object.assign(object, ViewInterface(object))
 }
 
