@@ -119,15 +119,15 @@ class Modal extends View
 
     eventEmitter.on('addVariable', () =>  {
       let nameInput = document.getElementById('nameInp');
-      let typeInput = document.getElementById('valInp');
+      let typeInput = document.getElementById('typeInp');
       if(nameInput.length != 0 && typeInput.length != 0) {
         this._addVariable(document.getElementById('cVarList'), new FunctionVariable(nameInput.value, 
                                                                                     typeInput.value, 
                                                                                     "not yet added"));
       }
 
-      nameInput.value = '';
-      typeInput.value = '';
+      nameInput.value = 'Name';
+      typeInput.value = 'Type';
       this.updateList();
     })
   }
@@ -142,9 +142,9 @@ class Modal extends View
   _emptyInnerContent(content) {
     content.innerHTML = `
                             Name: <input type="text" id="name" value=""> </br>                       
-                            Description: <input type="text" id="funcdescBox" value="${this.obj.functionDefinitionInstance.description}">
+                            Description: <input type="text" id="funcdescBox" value="${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.description : ""}">
                             Variables: </br>
-                            <input type="text" value ="Name" id="nameInp"><input type="text" value ="Type" id="valInp"> </br></br>
+                            <input type="text" value="Name" id="nameInp"><input type="text" value="Type" id="typeInp"> </br></br>
                             <ul id="cVarList"></ul>
                          `;
   }
@@ -295,8 +295,8 @@ class Modal extends View
     const variables = document.getElementById('cVarList').children;
     for(let i=0; i < variables.length ; i++) {
       let nameAndType = variables[i].textContent.split(": ");
-      let name = nameAndType[0];
-      let type = nameAndType[1];
+      let type = nameAndType[0];
+      let name = nameAndType[1];
       variableList.push( 
         new FunctionVariable(name, type, 'Not yet added')
       );
