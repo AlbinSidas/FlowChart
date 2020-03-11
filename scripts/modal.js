@@ -68,10 +68,10 @@ class Modal extends View
       this.loadDefinitionToModal(listObject);
       this.obj.functionDefinitionInstance = listObject;
       if(this.mode == "Node") {
+        // Uppdatera DOM för att motsvara korrekt funktionsdefinitionsnamn
         document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
+        this._saveNode();
       }
-      // Uppdatera DOM för att motsvara korrekt funktionsdefinitionsnamn
-      this._save();
       this.obj.changeFunctionName(listObject.name);
     })
 
@@ -142,7 +142,7 @@ class Modal extends View
   _emptyInnerContent(content) {
     content.innerHTML = `
                             Name: <input type="text" id="name" value=""> </br>                       
-                            Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
+                            Description: <input type="text" id="funcdescBox" value="${this.obj.functionDefinitionInstance.description}">
                             Variables: </br>
                             <input type="text" value ="Name" id="nameInp"><input type="text" value ="Type" id="valInp"> </br></br>
                             <ul id="cVarList"></ul>
@@ -177,7 +177,7 @@ class Modal extends View
     for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
       this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
       // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
-      // Lägg till dessa varianter till funktionen ovan isåfall.  
+      // Lägg till dessa varianter till addvariable isåfall.
     }
   }
 
@@ -185,31 +185,19 @@ class Modal extends View
       let li = document.createElement("li");
       li.appendChild(document.createTextNode(variableObject.type + ': ' + variableObject.name));
       if(this.mode == "Node") {
-        // Skapa inputnoder och lägg till denna vid mode Node
         let input = document.createElement("INPUT");
         input.setAttribute('id', variableObject.name);
-        console.log(variableObject.name)
+        // TODO Sätt defaultvärden här om det behövs. Förändra defaultvärdet i funktionsvariabler?
+        input.value = variableObject.value ? variableObject.value : "Fill value"; 
         li.appendChild(input);
       }
       list.appendChild(li);
   }
 
-  /*
-  Denna finns för att implementeras och kunna bygga både node mode modal samt functiondef modal, kanske går att lösa med
-  addvariable funktionen istället genom att kolla på modes, kolla näramare på detta! 
-
-  _loadVariables() {
-    // Ta in en default parameter och bygg sedan upp cvarlist på type samma 
-    // sätt fast ha en if om det ska läggas till inputfält för att ändra värde på 
-    // variabeln, Detta ska endast kunna ske i node mode
-
-    // Denna bör användas av load Definitionmodal och av updateList
-  }
-  */
-
   loadDefinitionToModal(def) {
-    //document.getElementById("name").value = def.name;
-    document.getElementById("funcdescBox").value = def.description;
+    if(this.mode == "Function") {
+      document.getElementById("funcdescBox").value = def.description;
+    }
 
     let varList = document.getElementById('cVarList');
     varList.innerHTML = '';
@@ -249,17 +237,12 @@ class Modal extends View
       let idField = document.getElementById("modalTitle");
       idField.classList.add(styleClasses.idText);
       idField.textContent = "ID: " + this.obj.id.toString();
-      /*
-      Input: <input type="text" id="inputBox" value="${this.obj.getInValue()}"> </br>
-      Output: <input type="text" id="outputBox" value="${this.obj.getOutValue()}"> </br>
-      Create Variables:                    
-      <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
-      */
+      
 	    this.modalContent.changeHtml(`
                             <div id="boxtime">
                               <p>Name: <input type="text" id="name" value="${this.obj.getName()}"></p> 
-                              <p>Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}"> </p>
-                              <p id="functionDefinition"> Function: ${this.obj.functionDefinition} </br> </p>
+                              <p>Description: <input type="text" id="nodeDescriptionBox" value="${this.obj.functionDescription}"> </p>
+                              <p id="functionDefinition"> Function: ${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.name : "No function assigned"} </br> </p>
                               Variables:
                               <ul id="cVarList"></ul>
                             </div>`);
@@ -298,35 +281,13 @@ class Modal extends View
 
   _saveNode() {
     this.obj.setName(document.getElementById("name").value);
-
-
-    this.obj.functionDescription = document.getElementById("funcdescBox").value;
-    /*let setDefaultInput = true;
-    let setDefaultOutput = true;*/
-    for (let i = 0; i < this.obj.functionVariables.length; i++) {
-      //if(this.obj.functionVariables[i].type == "var"){
-        this.obj.functionVariables[i].value = document.getElementById(this.obj.functionVariables[i].name).value;
-      //}
-      /*
-      else if(this.obj.functionVariables[i].type == "input"){
-        this.obj.functionVariables[i].value = document.getElementById("inputBox").value;
-        setDefaultInput = false;
+    this.obj.functionDescription = document.getElementById("nodeDescriptionBox").value;
+    if (this.obj.functionDefinitionInstance) {
+      let definitionVariables = this.obj.functionDefinitionInstance.functionVariables;
+      for (let i = 0; i < definitionVariables.length; i++) {
+          definitionVariables[i].value = document.getElementById(definitionVariables[i].name).value;
       }
-      else if(this.obj.functionVariables[i].type == "output"){
-        this.obj.functionVariables[i].value = document.getElementById("outputBox").value;
-        setDefaultOutput = false;
-      }
-      */
     }
-    /*
-    if (setDefaultInput){
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultInput", "input", document.getElementById("inputBox").value);
-    }
-    if (setDefaultOutput){
-      this.obj.functionVariables[this.obj.functionVariables.length] = new FunctionVariable("defaultOutput", "output", document.getElementById("outputBox").value);
-    }
-    */
-
   }
 
   _save() {
