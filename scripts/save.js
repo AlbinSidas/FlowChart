@@ -26,7 +26,8 @@ class Save
 		API.flowchartAPI.save(data);
 	}
 	
-    async loadFlow(obj, that){	
+    async loadFlow() {
+		let resultArray = [];
 		const jsonData = await API.flowchartAPI.getNameList();
 		let a = 0;
 		let trash ="";
@@ -36,33 +37,11 @@ class Save
 
 		let filename = prompt("skriv in namnet på filen du vill ladda\n" +trash)
 		let foundId  = jsonData.find(element => element.name == filename)._id;
-		const loadtxt = await API.flowchartAPI.getById(foundId);
-		let object = loadtxt.nodes;
-
-		let i = 0;
-		for (i=0; i < object.length; i++){
-
-			if(document.getElementById(object[i].id) == null){
-				let loadnode = new FlowchartNode(object[i].id);
-				loadnode.fillNode(object[i]);
-				obj.push(loadnode);
-				that.attach(loadnode);
-			}
-		}
-		for (i=0; i < object.length; i++){
-			if(object[i].inputConnectionList.length !=0 && object[i].inputConnectionList.includes("start-node")){
-				eventEmitter.emit("outputClicked", "start-node");
-				eventEmitter.emit("inputClicked", object[i].id);
-			}
-			for (let j=0; j < object[i].outputConnectionList.length; j++){
-				console.log(object[i].id)
-				eventEmitter.emit("outputClicked", object[i].id);
-				eventEmitter.emit("inputClicked", object[i].outputConnectionList[j]);
-				
-			}
-		}
-		
+		const loadedData = await API.flowchartAPI.getById(foundId);
+		let nodes = loadedData.nodes;
+		return loadedData
     }
 
 }
 export default Save;
+
