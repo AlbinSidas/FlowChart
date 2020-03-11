@@ -209,7 +209,6 @@ class FlowchartNode extends View {
      }
 
     getMetaInfo() {
-        console.log("i noden", this.input.connections)
         return new NodeMetaInfo(
                 this.type,
                 this.getName(), 
@@ -217,6 +216,7 @@ class FlowchartNode extends View {
                 this.id, 
                 this.posX, 
                 this.posY, 
+                this.id,
                 this.input.connections, 
                 this.output.connections, 
                 this.functionDefinitionInstance);
