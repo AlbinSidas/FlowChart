@@ -118,6 +118,7 @@ class Modal extends View
     })
 
     eventEmitter.on('addVariable', () =>  {
+      // Bör ha logik i denna för att ha unika delar av funktionsvariablerna så inte de får unika id i DOMen senare.
       let nameInput = document.getElementById('nameInp');
       let typeInput = document.getElementById('typeInp');
       if(nameInput.length != 0 && typeInput.length != 0) {
@@ -128,7 +129,6 @@ class Modal extends View
 
       nameInput.value = 'Name';
       typeInput.value = 'Type';
-      //this.updateList();
     })
   }
 
@@ -173,7 +173,6 @@ class Modal extends View
 
   updateList(){
     let ul = document.getElementById("cVarList");
-    console.log(ul)
     if(!this.obj.functionDefinitionInstance) { return; }
     for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
       this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
