@@ -25,7 +25,7 @@ class FlowchartNode extends View {
         this.offsetX = 0;
         this.offsetY = 0;
         this.idRef   = "";
-        this._connectorUpdaters = [];
+        this._connectorUpdaters = {}
         //flow
         this.id    = id;
         this._name = "";
@@ -91,8 +91,12 @@ class FlowchartNode extends View {
     }
 
     registerConnectorUpdater(id, func) {
-        this._connectorUpdaters.push(func)
+        this._connectorUpdaters[id] = func
     }
+    removeConnectorUpdater(id) {
+        delete this._connectorUpdaters[id]
+    }
+
 
     getName() {
         return this._name;
@@ -147,10 +151,13 @@ class FlowchartNode extends View {
         eventEmitter.emit("dragged", nextX - this.posX ,  nextY - this.posY, this.id);
         this.posX = nextX;
         this.posY = nextY;
-
-        this._connectorUpdaters.forEach(callback => {
-            callback();
+        
+        Object.keys(this._connectorUpdaters).forEach((key) => {
+            this._connectorUpdaters[key]()
         });
+        // this._connectorUpdaters.forEach(callback => {
+        //     callback();
+        // });
     }
     dragOthers(pxm, pym){
         this.posX += pxm;

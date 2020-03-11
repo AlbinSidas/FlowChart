@@ -89,7 +89,7 @@ class Container extends View {
                 }
             }.bind(this)
         } else {
-            if (this.markedObject.length != 0 && e.shiftKey == false) {
+            if (this.markedObject.length != 0 && e.ctrlKey == false) {
                 this.removeMarked();
                 this.removeMarkedConnector();
             }
@@ -142,8 +142,8 @@ class Container extends View {
                 prevNode.output.connections.push(currNode.id);
 
                 connector = new Connector(currNode.id + prevNode.id, prevNode, currNode);
-                prevNode.registerConnectorUpdater("", connector.updateConnections);
-                currNode.registerConnectorUpdater("", connector.updateConnections);
+                prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
+                currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
                 connector.element.classList.add("connector");
                 this.attach(connector);
                 this.connectorList.push(connector);
@@ -240,7 +240,6 @@ class Container extends View {
     }
 
     removeMarkedConnector() {
-        console.log("ska ta bort glow")
         for (let i = this.connectorList.length-1; i >= 0; i--){
             this.connectorList[i].unglow();
         }
@@ -335,14 +334,51 @@ class Container extends View {
 
                 case 68:
                     // 68 = D Remove
+                    
                     e.preventDefault();
-                    this.removeNode()
+                    if(this.markedObject.length != 0){
+                        this.removeNode();
+                    }
+                    else if(this.markedConnector.length != 0){
+                        this.removeConnector();
+                        this.markedConnector = [];
+                    }
                     e.preventDefault();
                     break;
             }
         }
     }
-
+    removeConnector(){
+        var removed = this.markedConnector[0];
+        // this loop removes the connector id from the two nodes
+        for( let i = 0 ; i < this.objects.length; i++ ) {
+            if (this.objects[i].id == removed.currNode.id ) {
+                for(let j = 0; j < this.objects[i].input.connections.length; j++){
+                    if(this.objects[i].input.connections[j] == removed.prevNode.id){
+                        this.objects[i].input.connections.splice(j);
+                        this.objects[i].removeConnectorUpdater(removed.id);
+                        break;
+                    }
+                }
+            }
+            if (this.objects[i].id == removed.prevNode.id ) {
+                for(let j = 0; j < this.objects[i].output.connections.length; j++){
+                    if(this.objects[i].output.connections[j] == removed.currNode.id){
+                        this.objects[i].output.connections.splice(j);
+                        this.objects[i].removeConnectorUpdater(removed.id);
+                        break;
+                    }
+                }
+            }
+        }
+        let connectorElement = document.getElementById(removed.id);
+        connectorElement.parentElement.removeChild(connectorElement);
+        for(let i = 0; i < this.connectorList.length; i++){
+            if(this.connectorList[i].id == removed.id){
+                this.connectorList.splice(i);
+            }
+        }
+    }
     render() {
         //this.child_views.forEach(c => c.render());
         this.setHeight(this.height)

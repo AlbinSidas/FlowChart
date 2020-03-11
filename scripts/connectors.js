@@ -38,7 +38,7 @@ class Connector extends View
     let line = this._calculateLine(outX, outY, inX, inY);
     this.element.setAttribute("style", `width:${line[0]}px; left:${line[1]}px; top:${line[2]}px; transform:rotate(${line[3]}deg); `);
     if(this.glowing){
-      this.glow();
+        this.glow();
     }
   }
 
