@@ -207,7 +207,7 @@ class FlowchartNode extends View {
     }
 
     onClick(e) {
-        console.log("node click");  
+        //console.log("node click");  
         //was moved to mousedown to fix bug
         //eventEmitter.emit("clicked", this.id, e);
     }

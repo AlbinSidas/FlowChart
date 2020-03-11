@@ -25,13 +25,15 @@ class Container extends View {
         this.width = window.innerWidth;
         this.childScrolled = this.childScrolled.bind(this)
 
-	    this.saveClass     = new Saving();
-        this.objects       = [];
-        this.markedObject  = [];
-        this.markedOutput  = "";
-        this.connectorList = [];
-        this.objectClick   = {};
-        this.copyObject    = [];
+	    this.saveClass      = new Saving();
+        this.objects        = [];
+        this.markedObject   = [];
+        this.markedConnector= [];
+        this.markedOutput   = "";
+        this.connectorList  = [];
+        this.objectClick    = {};
+        this.connectorClick = {};        
+        this.copyObject     = [];
         this.toolboxVisible = false;
         this.flowchartList  = [];
         this.idsbeforepaste = [];
@@ -41,15 +43,17 @@ class Container extends View {
         this.mouseY     = 0;
         this.sizeDelta  = 200;
 
-        this.copyNode      = this.copyNode.bind(this);
-        this.pasteNode     = this.pasteNode.bind(this);
-        this.removeNode    = this.removeNode.bind(this);
-        this.objectClicked = this.objectClicked.bind(this);
-        this.inputClicked  = this.inputClicked.bind(this);
+        this.copyNode         = this.copyNode.bind(this);
+        this.pasteNode        = this.pasteNode.bind(this);
+        this.removeNode       = this.removeNode.bind(this);
+        this.objectClicked    = this.objectClicked.bind(this);
+        this.connectorClicked = this.connectorClicked.bind(this);
+        this.inputClicked     = this.inputClicked.bind(this);
         
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", this.objectClicked);
+        eventEmitter.on("connectorClicked", this.connectorClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
         eventEmitter.on("inputClicked", this.inputClicked);
         eventEmitter.on("createRunnable", (id) => {   
@@ -87,11 +91,37 @@ class Container extends View {
         } else {
             if (this.markedObject.length != 0 && e.shiftKey == false) {
                 this.removeMarked();
+                this.removeMarkedConnector();
             }
             this.markedObject[this.markedObject.length] = obj;
+            
+            if(this.markedObject.length > 1){ 
+                this.highlightConnector(obj);
+            }
+            else{
+               // this.removeMarkedConnector();
+            }
         }
     }
-
+    highlightConnector(obj){
+        for(let i =0; i < this.connectorList.length; i++){
+            if(this.connectorList[i].currNode.id == obj.id){
+                for (let j = 0; j < this.markedObject.length; j++){
+                    if(this.markedObject[j].id == this.connectorList[i].prevNode.id && this.markedObject[j].id != obj.id){
+                        this.connectorList[i].glow();
+                    }
+                }
+            }
+            else if (this.connectorList[i].prevNode.id == obj.id){              
+                for (let j = 0; j < this.markedObject.length; j++){
+                    if(this.markedObject[j].id == this.connectorList[i].currNode.id && this.markedObject[j].id != obj.id){
+                        this.connectorList[i].glow();  
+                    }
+                }
+            }
+        }
+    }
+    
     inputClicked(id) {
         if (id == this.markedOutput) {
             return;
@@ -126,6 +156,18 @@ class Container extends View {
             this.markedOutput = "";
             connector.updateConnections();
         } 
+    }
+
+    connectorClicked(id, e){
+        this.removeMarkedConnector();
+        this.connectorClick = e;
+
+        let obj = this.connectorList.find((obj) => {
+            return obj.id == id;
+        });
+        this.removeMarked();
+        this.markedConnector[this.markedConnector.length] = obj;
+        console.log(id);
     }
 
     didAttach(parent) {
@@ -181,6 +223,10 @@ class Container extends View {
     onClick(e) {
         if ((e.clientX != this.objectClick.clientX || e.clientY != this.objectClick.clientY) && this.markedObject.length != 0) {
             this.removeMarked();
+            this.removeMarkedConnector();
+        }
+        if ((e.clientX != this.connectorClick.clientX || e.clientY != this.connectorClick.clientY) && this.markedConnector.length != 0) {
+            this.removeMarkedConnector();
         }
     }
 
@@ -193,6 +239,13 @@ class Container extends View {
         this.markedObject = [];
     }
 
+    removeMarkedConnector() {
+        console.log("ska ta bort glow")
+        for (let i = this.connectorList.length-1; i >= 0; i--){
+            this.connectorList[i].unglow();
+        }
+        this.markedConnector = [];
+    }
 
     removeNode() { // 68
         if (this.markedObject.length != 0) {
@@ -248,7 +301,7 @@ class Container extends View {
                 
             }
             if(tempRef.length > 1){
-                for(let i = 0; i < this.copyObject.length; i++){
+                for(let i = 0; i < this.copyObject.length; i++){    
                     for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
                         if(this.idsbeforepaste.includes(this.copyObject[i].output.connections[j])){                           
                             for(let k = 0; k < tempRef.length; k++){

@@ -161,19 +161,6 @@ body{
     z-index: -3;
 }
 
-<<<<<<< HEAD
-/*Input circle*/
-.boxInput {
-    border-radius: 27.5px 27.5px 0px 0px;
-    height: 25px;
-    width: 50px;
-    margin-top: -78px; /* used to be -25 */ 
-    margin-left: 25px;
-    background-color: green;
-    cursor: pointer;
-}
-=======
->>>>>>> master
 .flowchart_square {
     z-index: 9;
     width: 300px;
