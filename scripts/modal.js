@@ -67,7 +67,9 @@ class Modal extends View
     eventEmitter.on('listClick', (listObject) => {
       this.loadDefinitionToModal(listObject);
       this.obj.functionDefinitionInstance = listObject;
-      document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
+      if(this.mode == "Node") {
+        document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
+      }
       // Uppdatera DOM för att motsvara korrekt funktionsdefinitionsnamn
       this._save();
       this.obj.changeFunctionName(listObject.name);
@@ -171,9 +173,9 @@ class Modal extends View
 
   updateList(){
     let ul = document.getElementById("cVarList");
-
-    for (let i = 0; i < this.obj.functionVariables.length; i++){
-      this._addVariable(ul, this.obj.functionVariables[i]);
+    if(!this.obj.functionDefinitionInstance) { return; }
+    for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
+      this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
       // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
       // Lägg till dessa varianter till funktionen ovan isåfall.  
     }
@@ -182,6 +184,13 @@ class Modal extends View
   _addVariable(list, variableObject) {
       let li = document.createElement("li");
       li.appendChild(document.createTextNode(variableObject.type + ': ' + variableObject.name));
+      if(this.mode == "Node") {
+        // Skapa inputnoder och lägg till denna vid mode Node
+        let input = document.createElement("INPUT");
+        input.setAttribute('id', variableObject.name);
+        console.log(variableObject.name)
+        li.appendChild(input);
+      }
       list.appendChild(li);
   }
 
@@ -199,7 +208,7 @@ class Modal extends View
   */
 
   loadDefinitionToModal(def) {
-    document.getElementById("name").value = def.name;
+    //document.getElementById("name").value = def.name;
     document.getElementById("funcdescBox").value = def.description;
 
     let varList = document.getElementById('cVarList');
@@ -283,13 +292,14 @@ class Modal extends View
               saveObject
           );
       } catch(e) {
-        throw e;
+        throw new Error('Failed to save');
       }
   }
 
   _saveNode() {
     this.obj.setName(document.getElementById("name").value);
-    
+
+
     this.obj.functionDescription = document.getElementById("funcdescBox").value;
     /*let setDefaultInput = true;
     let setDefaultOutput = true;*/
@@ -344,6 +354,7 @@ class Modal extends View
     }
     this._updateFooterNode();
     this._updateHeaderNode();
+
     this.element.style.display = "none";
   }
 
