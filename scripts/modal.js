@@ -168,9 +168,9 @@ class Modal extends View
 
   updateList(){
     let ul = document.getElementById("cVarList");
-
-    for (let i = 0; i < this.obj.functionVariables.length; i++){
-      this._addVariable(ul, this.obj.functionVariables[i]);
+    if(!this.obj.functionDefinitionInstance) { return; }
+    for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
+      this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
       // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
       // Lägg till dessa varianter till funktionen ovan isåfall.  
     }
@@ -276,7 +276,7 @@ class Modal extends View
               saveObject
           );
       } catch(e) {
-        throw e;
+        throw new Error('Failed to save');
       }
   }
 
@@ -292,20 +292,20 @@ class Modal extends View
       );
     }
 
-    let funcDef = new FunctionDefinition(document.getElementById("name").value,
+    let funcDef = FunctionDefinition.CreateLocal(document.getElementById("name").value,
                                      document.getElementById("funcdescBox").value,
                                      variableList);
-
-
     return funcDef;
   }
 
   close() {
     if(this.mode == "Node") { 
       // Logik för att se om det finns ickesparade förändringar? 
+      this.save();
     }
     this._updateFooterNode();
     this._updateHeaderNode();
+
     this.element.style.display = "none";
   }
 
