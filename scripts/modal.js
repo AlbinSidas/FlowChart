@@ -89,10 +89,10 @@ class Modal extends View
       this.close();
     })
 
-    eventEmitter.on('saveFunction', async () => {
+    eventEmitter.on('saveNewFunctionDef', async () => {
       let funcDef = await this._save();
       try {
-        await this._saveFuncDef(funcDef);
+        await this._saveNewFuncDef(funcDef);
         this.functionDefinitions.push(funcDef);
         this.loadList.push(funcDef);
         this.updateLoadListDOM();
@@ -101,16 +101,43 @@ class Modal extends View
         console.log(`Save failed due to ${e}`);
       }
     })
-  
-  eventEmitter.on('backToNode', () => {
-    /*
-      Gör koll här och konfirma att personen vill lämna sidan och gå tillbaka till noden?
-    */
-    this.close();
-    this.show(this.obj);
-  })
+
+    eventEmitter.on('saveVersionFunctionDef', async () => {
+      /*let funcDef = await this._save();
+      try {
+        await this._saveFuncDef(funcDef);
+        this.functionDefinitions.push(funcDef);
+        this.loadList.push(funcDef);
+        this.updateLoadListDOM();
+      }
+      catch(e){
+        console.log(`Save failed due to ${e}`);
+      }*/
+      let funcDef = await this._save();
+      try {
+        funcDef.version += 0.1
+        // Gör backendanrop här await this._saveVersionFuncDef(funcDef)
+
+        this.updateLoadListDOM();
+      } catch(e) {
+        console.log(`Save failed due to ${e}`);
+      }
+      // Hitta den aktuella funktionsdefinitionen i this.loadList och this.functionDefinitions för att uppdatera till rätt def.
+      
+      console.log("Saveing version", funcDef)
+
+    })
     
-  eventEmitter.on('loadFunction', () => {
+    eventEmitter.on('backToNode', () => {
+      /*
+        TODO
+        Gör koll här och konfirma att personen vill lämna sidan och gå tillbaka till noden?
+      */
+      this.close();
+      this.show(this.obj);
+    })
+      
+    eventEmitter.on('loadFunction', () => {
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
       this.updateLoadList("");
       this.updateLoadListDOM();
@@ -135,7 +162,7 @@ class Modal extends View
       let backButton = '<button style="background-color: var(--button-color)" id="backModalButton" class="btn"> Back </button>';
 
       header.insertAdjacentHTML('beforebegin', backButton);
-      this.saveButton    = new BackButton();
+      this.backButton    = new BackButton();
       header.textContent = 'Create function';
   }
   _emptyInnerContent(content) {
@@ -147,15 +174,19 @@ class Modal extends View
                             <ul id="cVarList"></ul>
                          `;
   }
-  _changeAndAddButtonsFooter(footer) {    
-    let saveButton = '<button style="background-color: var(--button-color)" class="saveModalButton btn"> Save function </button>';
+  _changeAndAddButtonsFooter(footer) {  
+    let saveVersionButton = '<button style="background-color: var(--button-color)" class="saveFunctionVersionButton btn"> Save as new version </button>';
+    let saveNewFunctionButton = '<button style="background-color: var(--button-color)" class="saveFunctionDefButton btn"> Save as new function </button>';
     let addButton  = '<button style="background-color: var(--button-color)" class="addModalButton btn"> Add variable </button>';
 
     // Denna line tar bort Create Function knappen
     footer.removeChild(footer.children[0]);
+
+    footer.insertAdjacentHTML('afterbegin', saveVersionButton);
+    this.saveVersionButton   = new SaveVersionButton();
     
-    footer.insertAdjacentHTML('afterbegin', saveButton);
-    this.saveButton   = new SaveButton();
+    footer.insertAdjacentHTML('afterbegin', saveNewFunctionButton);
+    this.saveNewFunctionButton   = new SaveNewFunctionButton();
 
     footer.insertAdjacentHTML('afterbegin', addButton);
     this.addButton    = new AddButton();
@@ -255,6 +286,7 @@ class Modal extends View
     if(footer.innerHTML.includes("Add variable")) {
       footer.removeChild(footer.children[0]);
       footer.removeChild(footer.children[0]);
+      footer.removeChild(footer.children[0]);
       let createButton = '<button id ="createFunctionButton" style="background-color: var(--button-color)" class="btn"> Create function </button>';
       footer.insertAdjacentHTML('afterbegin', createButton);
       this.createButton = new CreateFunctionButton();
@@ -268,14 +300,24 @@ class Modal extends View
     }
   }
 
-  async _saveFuncDef(saveObject) {
+  async _saveNewFuncDef(saveObject) {
       try {
           await funcDefAPI.save(
               saveObject
           );
       } catch(e) {
-        throw new Error('Failed to save');
+        throw new Error('Failed to save functiondefinition');
       }
+  }
+
+  async _saveVersionFuncDef(saveObject) {
+    try {
+        /*await funcDefAPI.save(
+            saveObject
+        );*/
+    } catch(e) {
+      throw new Error('Failed to save version');
+    }
   }
 
   _saveNode() {
@@ -356,11 +398,11 @@ class CreateFunctionButton extends Button {
   }
 }
 
-class SaveButton extends Button {
+class SaveNewFunctionButton extends Button {
   constructor() {
       super();
-      this.setHtml(document.getElementsByClassName('saveModalButton')[0]);
-      this.element = document.getElementsByClassName('saveModalButton')[0];
+      this.setHtml(document.getElementsByClassName('saveFunctionDefButton')[0]);
+      this.element = document.getElementsByClassName('saveFunctionDefButton')[0];
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
@@ -368,7 +410,23 @@ class SaveButton extends Button {
     }
 
   onClick() {
-    eventEmitter.emit('saveFunction');
+    eventEmitter.emit('saveNewFunctionDef');
+  }
+}
+
+class SaveVersionButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementsByClassName('saveFunctionVersionButton')[0]);
+      this.element = document.getElementsByClassName('saveFunctionVersionButton')[0];
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.buttonFooter);
+    }
+
+  onClick() {
+    eventEmitter.emit('saveVersionFunctionDef');
   }
 }
 
