@@ -22,7 +22,7 @@ class FlowChartTest(unittest.TestCase):
         self.browser.get("localhost:9000")
         self.assertEqual("Flowchart", self.browser.title)
 
-    def test_create_object(self):
+    """ def test_create_object(self):
         new_object_btn = self.browser.find_element_by_id('newObject')
         workspace = self.browser.find_element_by_id('workspace-root')
         
@@ -258,7 +258,7 @@ class FlowChartTest(unittest.TestCase):
 
         time.sleep(0.2)
         comparewidth = str(width) + "px"
-        self.assertEqual(wroot.value_of_css_property("width"), comparewidth)
+        self.assertEqual(wroot.value_of_css_property("width"), comparewidth) """
 
     def test_modal(self):
         modal = self.browser.find_element_by_id("modal")
@@ -280,14 +280,121 @@ class FlowChartTest(unittest.TestCase):
         modaltitle = self.browser.find_element_by_id("modalTitle")
         self.assertEqual(modaltitle.text, IDstring)
 
-        #testing the modal functions
-        """ modalcontent = self.browser.find_element_by_id("boxtime") """        
+        #testing the modal functions default values
+        modalcontent = self.browser.find_element_by_id("boxtime")
+        modal_name = modalcontent.find_element_by_id("name")
+        self.assertEqual(modal_name.get_attribute("value"), "")
+        modal_input = modalcontent.find_element_by_id("inputBox")
+        self.assertEqual(modal_input.get_attribute("value"), "no input found")
+        modal_output = modalcontent.find_element_by_id("outputBox")
+        self.assertEqual(modal_output.get_attribute("value"), "no output found")
+        modal_function = modalcontent.find_element_by_id("funcdescBox")
+        self.assertEqual(modal_function.get_attribute("value"), "No function yet")
+        modal_name_input = modalcontent.find_element_by_id("nameInp")
+        self.assertEqual(modal_name_input.get_attribute("value"), "Name")
+        modal_value = modalcontent.find_element_by_id("valInp")
+        self.assertEqual(modal_value.get_attribute("value"), "Value")
 
+        time.sleep(0.2)
+        #testing the create function in the modal
+        create_func = self.browser.find_element_by_id("createFunctionButton")
+        create_func.click()
+        time.sleep(0.2)
+
+        modaltitle = self.browser.find_element_by_id("modalTitle")
+        self.assertEqual(modaltitle.text, "Create function")
+        modalcontent = self.browser.find_element_by_class_name("modalContent")
+        func_name = modalcontent.find_element_by_id("name")
+        func_name.click()
+        action = ActionChains(self.browser)
+        action.send_keys("Test1")
+        action.perform()
+
+        func_desc = modalcontent.find_element_by_id("funcdescBox")
+        func_desc.click()
+        action2 = ActionChains(self.browser)
+        action2.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform()
+        action2.reset_actions()
+        action2.key_down(Keys.DELETE).key_up(Keys.DELETE).perform()
+        action2.reset_actions()
+        action2.send_keys("Function description for func test1")
+        action2.perform()
+
+        func_var_name = modalcontent.find_element_by_id("nameInp")
+        func_var_name.click()
+        action3 = ActionChains(self.browser)
+        action3.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform()
+        action3.reset_actions()
+        action3.key_down(Keys.DELETE).key_up(Keys.DELETE).perform()
+        action3.reset_actions()
+        action3.send_keys("123")
+        action3.perform()        
+
+        func_var_value = modalcontent.find_element_by_id("valInp")
+        func_var_value.click()
+        action4 = ActionChains(self.browser)
+        action4.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform()
+        action4.reset_actions()
+        action4.key_down(Keys.DELETE).key_up(Keys.DELETE).perform()
+        action4.reset_actions()
+        action4.send_keys("int")
+        action4.perform()
+
+        add_var_btn = self.browser.find_element_by_class_name("addModalButton")
+        add_var_btn.click()
+        time.sleep(0.5)
+
+        func_var_name = modalcontent.find_element_by_id("nameInp")
+        func_var_name.click()
+        action3 = ActionChains(self.browser)
+        action3.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform()
+        action3.reset_actions()
+        action3.key_down(Keys.DELETE).key_up(Keys.DELETE).perform()
+        action3.reset_actions()
+        action3.send_keys("false")
+        action3.perform()        
+
+        func_var_value = modalcontent.find_element_by_id("valInp")
+        func_var_value.click()
+        action4 = ActionChains(self.browser)
+        action4.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform()
+        action4.reset_actions()
+        action4.key_down(Keys.DELETE).key_up(Keys.DELETE).perform()
+        action4.reset_actions()
+        action4.send_keys("bool")
+        action4.perform()
+
+        add_var_btn.click()
+        time.sleep(0.2)
         
+        save_func_btn = self.browser.find_element_by_class_name("saveModalButton")
+        save_func_btn.click()
+        time.sleep(0.2)
 
+        back_btn = self.browser.find_element_by_id("backModalButton")
+        back_btn.click()
+        modaltitle = self.browser.find_element_by_id("modalTitle")
+        self.assertEqual(modaltitle.text, IDstring)
 
+        #testing modal load function
+        load_func_btn = self.browser.find_element_by_id("loadModalButton")
+        load_func_btn.click()
+        time.sleep(0.2)
 
-        time.sleep(1)
+        item = self.browser.find_element_by_class_name("loadDropdownItem")
+        item.click()
+        time.sleep(0.2)
+
+        close_btn = self.browser.find_element_by_id("closeModalButton")
+        close_btn.click()
+        time.sleep(0.2)
+
+        square2 = self.browser.find_element_by_class_name(flowchart_square)
+        squareID = square2.get_attribute("id")
+        func_name_box = self.browser.find_element_by_id(squareID + "_function").text
+        self.assertEqual(func_name_box, "Test1")
+
+        time.sleep(1.5)
 
     def tearDown(self):
         self.browser.quit()
