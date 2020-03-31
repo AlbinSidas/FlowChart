@@ -115,7 +115,7 @@ class Modal extends View
       }*/
       let funcDef = await this._save();
       try {
-        funcDef.version += 0.1
+        //funcDef.version += 1;
         // Gör backendanrop här await this._saveVersionFuncDef(funcDef)
 
         this.updateLoadListDOM();
@@ -141,6 +141,16 @@ class Modal extends View
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
       this.updateLoadList("");
       this.updateLoadListDOM();
+    })
+
+    eventEmitter.on('changeLowerVersion', () => {
+      console.log("Lower")
+      
+    })
+
+    eventEmitter.on('changeHigherVersion', () => {
+      console.log("HIGHER")
+
     })
 
     eventEmitter.on('addVariable', () =>  {
@@ -273,10 +283,18 @@ class Modal extends View
                               <p>Name: <input type="text" id="name" value="${this.obj.getName()}"></p> 
                               <p>Description: <input type="text" id="nodeDescriptionBox" value="${this.obj.functionDescription}"> </p>
                               <p id="functionDefinition"> Function: ${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.name : "No function assigned"} </br> </p>
+                              <div id="functionVersion"> Version: 
+                                <button id="functionVersionDown" class="btn"></button> 
+                                <span id="versionNumber"> 0 </span> 
+                                <button id="functionVersionUp" class="btn"></button>
+                              </div>
                               Variables:
                               <ul id="cVarList"></ul>
                             </div>`);
-      
+
+
+      this.lowerVersion  = new EarlierVersionButton();
+      this.higherVersion = new LaterVersionButton();
       document.getElementById('cVarList').innerHTML = '';
       this.updateList();
   }
@@ -366,6 +384,7 @@ class Modal extends View
   }
 }
 
+// Lägga ut alla knapparna i en egen fil för att importera varje enskild knapp vore en bra idé
 class CloseButton extends Button {
   constructor() {
       super();
@@ -475,6 +494,40 @@ class BackButton extends Button {
 
   onClick() {
     eventEmitter.emit('backToNode');
+  }
+}
+
+class LaterVersionButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementById('functionVersionUp'));
+      this.element = document.getElementById('functionVersionUp');
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.innerHTML = `<img src="${require('../static/assets/rightArrow.png').default}" >`;
+      this.element.children[0].classList.add(styleClasses.versionImages)
+  }
+
+  onClick() {
+    eventEmitter.emit('changeHigherVersion');
+  }
+}
+
+class EarlierVersionButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementById('functionVersionDown'));
+      this.element = document.getElementById('functionVersionDown');
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.innerHTML = `<img src="${require('../static/assets/leftArrow.png').default}">`;
+      this.element.children[0].classList.add(styleClasses.versionImages);
+  }
+
+  onClick() {
+    eventEmitter.emit('changeLowerVersion');
   }
 }
 
