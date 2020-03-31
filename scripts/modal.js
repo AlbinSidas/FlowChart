@@ -117,7 +117,7 @@ class Modal extends View
       try {
         //funcDef.version += 1;
         // Gör backendanrop här await this._saveVersionFuncDef(funcDef)
-
+        
         this.updateLoadListDOM();
       } catch(e) {
         console.log(`Save failed due to ${e}`);
@@ -144,13 +144,11 @@ class Modal extends View
     })
 
     eventEmitter.on('changeLowerVersion', () => {
-      console.log("Lower")
       this._updateVersionNumber(-1);
 
     })
 
     eventEmitter.on('changeHigherVersion', () => {
-      console.log("HIGHER")
       this._updateVersionNumber(1);
 
 
