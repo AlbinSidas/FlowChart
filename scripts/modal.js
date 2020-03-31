@@ -145,11 +145,14 @@ class Modal extends View
 
     eventEmitter.on('changeLowerVersion', () => {
       console.log("Lower")
-      
+      this._updateVersionNumber(-1);
+
     })
 
     eventEmitter.on('changeHigherVersion', () => {
       console.log("HIGHER")
+      this._updateVersionNumber(1);
+
 
     })
 
@@ -166,6 +169,24 @@ class Modal extends View
       nameInput.value = 'Name';
       typeInput.value = 'Type';
     })
+  }
+
+  _updateVersionNumber(upOrDown) {
+    let elem = document.getElementById('versionNumber');
+    let newValue = "";
+    if(upOrDown > 0){
+      newValue = parseInt(elem.innerHTML) + 1;
+      // Lägg till max version som är senaste versionen av 
+      /*if (newValue > this.funcDef.version max ? ? ? ? ?  ?) {
+        newValue = this.funcDef.version; ???????????????
+      }*/
+    } else {
+      newValue = parseInt(elem.innerHTML) - 1;
+      if (newValue < 0) {
+        newValue = 0;
+      }
+    }
+    elem.innerHTML = newValue;
   }
 
   _changeHeader(header) {
