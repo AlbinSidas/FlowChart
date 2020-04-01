@@ -58,6 +58,7 @@ async function main() {
         const databaseOps = await mongoController.flowchartHandler.getView();
         res.json(Response("", databaseOps))
     });
+
     app.get('/flowchart/:id', async function (req, res) {
         console.log(req.body);
        
@@ -96,6 +97,25 @@ async function main() {
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
     });
+
+    app.post('/funcdef/add/version', async (req, res) => {
+
+        // Lägg till version
+        
+        const data = req.body;
+        // try {
+        //     await Schema.validate(data, Schema.jsonSchemas.funcDefSchema);
+        // } catch (InvalidTypeError) {
+        //     console.log(InvalidTypeError.message)
+        //     res.status(400);
+        //     res.send(InvalidTypeError.message);
+        //     return
+        // }
+        const databaseOps = await mongoController.funcDefHandler.addVersion(data)
+        res.status(200)
+        res.json(Response("Versioned function definition", databaseOps));
+    });
+
 
     app.get('/funcdef/all', async(req, res) => {
         const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
