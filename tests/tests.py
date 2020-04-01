@@ -258,8 +258,8 @@ class FlowChartTest(unittest.TestCase):
 
         time.sleep(0.2)
         comparewidth = str(width) + "px"
-        self.assertEqual(wroot.value_of_css_property("width"), comparewidth) """
-
+        self.assertEqual(wroot.value_of_css_property("width"), comparewidth)
+ """
     def test_modal(self):
         modal = self.browser.find_element_by_id("modal")
         self.assertEqual(modal.value_of_css_property("display"), "none")
@@ -284,18 +284,14 @@ class FlowChartTest(unittest.TestCase):
         modalcontent = self.browser.find_element_by_id("boxtime")
         modal_name = modalcontent.find_element_by_id("name")
         self.assertEqual(modal_name.get_attribute("value"), "")
-        modal_input = modalcontent.find_element_by_id("inputBox")
-        self.assertEqual(modal_input.get_attribute("value"), "no input found")
-        modal_output = modalcontent.find_element_by_id("outputBox")
-        self.assertEqual(modal_output.get_attribute("value"), "no output found")
-        modal_function = modalcontent.find_element_by_id("funcdescBox")
-        self.assertEqual(modal_function.get_attribute("value"), "No function yet")
-        modal_name_input = modalcontent.find_element_by_id("nameInp")
-        self.assertEqual(modal_name_input.get_attribute("value"), "Name")
-        modal_value = modalcontent.find_element_by_id("valInp")
-        self.assertEqual(modal_value.get_attribute("value"), "Value")
-
+        node_desc = modalcontent.find_element_by_id("nodeDescriptionBox")
+        self.assertEqual(node_desc.get_attribute("value"), "No function yet")
+        modal_func_desc = modalcontent.find_element_by_id("functionDefinition")
+        self.assertEqual(modal_func_desc.text, "Function: No function assigned")
+        modal_version = modalcontent.find_element_by_id("versionNumber")
+        self.assertEqual(modal_version.text, "0")
         time.sleep(0.2)
+
         #testing the create function in the modal
         create_func = self.browser.find_element_by_id("createFunctionButton")
         create_func.click()
@@ -330,7 +326,7 @@ class FlowChartTest(unittest.TestCase):
         action3.send_keys("123")
         action3.perform()        
 
-        func_var_value = modalcontent.find_element_by_id("valInp")
+        func_var_value = modalcontent.find_element_by_id("typeInp")
         func_var_value.click()
         action4 = ActionChains(self.browser)
         action4.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform()
@@ -354,7 +350,7 @@ class FlowChartTest(unittest.TestCase):
         action3.send_keys("false")
         action3.perform()        
 
-        func_var_value = modalcontent.find_element_by_id("valInp")
+        func_var_value = modalcontent.find_element_by_id("typeInp")
         func_var_value.click()
         action4 = ActionChains(self.browser)
         action4.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform()
@@ -367,7 +363,7 @@ class FlowChartTest(unittest.TestCase):
         add_var_btn.click()
         time.sleep(0.2)
         
-        save_func_btn = self.browser.find_element_by_class_name("saveModalButton")
+        save_func_btn = self.browser.find_element_by_class_name("saveFunctionDefButton")
         save_func_btn.click()
         time.sleep(0.2)
 
@@ -390,14 +386,14 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.2)
 
         square2 = self.browser.find_element_by_class_name(flowchart_square)
-        squareID = square2.get_attribute("id")
-        func_name_box = self.browser.find_element_by_id(squareID + "_function").text
-        self.assertEqual(func_name_box, "Test1")
+        square2.click()
+        square2.click()
+        modal_func_def = self.browser.find_element_by_id("functionDefinition").text
+        self.assertEqual(modal_func_def, "Function: Test1")
+        time.sleep(0.2)
 
         #test modal load search function
-        square2.click()
-        square2.click()
-        time.sleep(0.2)
+
 
         create_func = self.browser.find_element_by_id("createFunctionButton")
         create_func.click()
@@ -410,7 +406,7 @@ class FlowChartTest(unittest.TestCase):
         action.perform()
         time.sleep(0.2)
 
-        save_func_btn = self.browser.find_element_by_class_name("saveModalButton")
+        save_func_btn = self.browser.find_element_by_class_name("saveFunctionDefButton")
         save_func_btn.click()
         back_btn = self.browser.find_element_by_id("backModalButton")
         back_btn.click()
@@ -427,7 +423,7 @@ class FlowChartTest(unittest.TestCase):
         action.perform()
         time.sleep(0.2)
 
-        save_func_btn = self.browser.find_element_by_class_name("saveModalButton")
+        save_func_btn = self.browser.find_element_by_class_name("saveFunctionDefButton")
         save_func_btn.click()
         back_btn = self.browser.find_element_by_id("backModalButton")
         back_btn.click()
@@ -450,9 +446,24 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.2)
 
         square3 = self.browser.find_element_by_class_name(flowchart_square)
-        squareID = square3.get_attribute("id")
-        func_name_box = self.browser.find_element_by_id(squareID + "_function").text
-        self.assertEqual(func_name_box, "Test2")
+        square3.click()
+        square3.click()
+        time.sleep(0.2)
+
+        modal_func_def = self.browser.find_element_by_id("functionDefinition").text
+        self.assertEqual(modal_func_def, "Function: Test2")
+
+        #test function version number buttons
+
+        funcVUp = modalcontent.find_element_by_id("functionVersionUp")
+        funcVUp.click()
+        funcVUp.click()
+        modal_version = modalcontent.find_element_by_id("versionNumber")
+        self.assertEqual(modal_version.text, "2")
+        funcVDown = modalcontent.find_element_by_id("functionVersionDown")
+        funcVDown.click()
+        modal_version = modalcontent.find_element_by_id("versionNumber")
+        self.assertEqual(modal_version.text, "1")
 
 
     #def test_click_on_connector(self):
