@@ -44,9 +44,9 @@ class FlowchartNode extends View {
         
     }
 
-    changeFunctionName(name){
-        //this.functionName = name;
-        document.getElementById(`${this.id}_function`).innerHTML = name;
+    refreshPreview(){
+        // NOTE: allt som ska vara tillgängligt i preview dynamiskt ändras här ..
+        this.functionNameView.changeHtml(`<p id='${this.id}_function'>${this.id}\n has ${this.getName()}</p>`);
     }
 
 
@@ -87,23 +87,20 @@ class FlowchartNode extends View {
         this.posY              = other.pY;
         this.id                = other.id;
         //this.functionVariables = other.functionVariables
-        this.functionDefinitionInstance = other.functionDefinitionInstance
-        if(this.functionDefinitionInstance) {
-            other.functionDefinitionInstance.functionVariables.forEach((element, i) => {
-                this.functionDefinitionInstance.functionVariables[i] = other.functionDefinitionInstance.functionVariables[i];
-            });
-        }
-        // for (let i = 0; i < other.functionDefinitionInstance.functionVariables.length; i++){
-        //     this.functionDefinitionInstance.functionVariables[i] 
-        //                 = other.functionDefinitionInstance.functionVariables[i];
-        // }
 
+        //this.functionDefinitionInstance = other.functionDefinitionInstance
+        // if(other.functionDefinitionInstance) {
+        //     other.functionDefinitionInstance.functionVariables.forEach((element, i) => {
+        //         this.functionDefinitionInstance.functionVariables[i] = other.functionDefinitionInstance.functionVariables[i];
+        //     });
+        // }
+        this.setName(other.nodeName);
         this.funcDefId         = other.funDefId;
         this.nodeDescription   = other.nodeDescription;
         this.element.classList.add(style.flowchart_square);
         this.offsetX           = other.offsetX;
         this.offsetY           = other.offsetY;
-        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${this.id}\n has ${this.funcDefId}</p>`);
+        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${this.id}\n has ${this.getName()}</p>`);
         this.functionDescription = other.funDefId;
     }
 
@@ -209,7 +206,6 @@ class FlowchartNode extends View {
      }
 
     getMetaInfo() {
-        console.log("i noden", this.input.connections)
         return new NodeMetaInfo(
                 this.type,
                 this.getName(), 
@@ -226,6 +222,15 @@ class FlowchartNode extends View {
         //was moved to mousedown to fix bug
         //eventEmitter.emit("clicked", this.id, e);
     }
-    
+    static CreateExternal(object, inputIds, outputIds) {
+        console.log(object)
+        const node = new FlowchartNode(object.id, object.functionDefinitionInstance);
+        node.fillNode(object);
+        return node;
+    }
+
+
 }
+
+
 export default FlowchartNode;

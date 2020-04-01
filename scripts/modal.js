@@ -66,8 +66,12 @@ class Modal extends View
     
     eventEmitter.on('listClick', (listObject) => {
       this.loadDefinitionToModal(listObject);
-      this._save();
-      this.obj.changeFunctionName(listObject.name);
+      this.obj.functionDefinitionInstance = listObject;
+      if(this.mode == "Node") {
+        // Uppdatera DOM för att motsvara korrekt funktionsdefinitionsnamn
+        document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
+        this._saveNode();
+      }
     })
 
     eventEmitter.on('createFunction', () => {
@@ -85,10 +89,10 @@ class Modal extends View
       this.close();
     })
 
-    eventEmitter.on('saveFunction', async () => {
+    eventEmitter.on('saveNewFunctionDef', async () => {
       let funcDef = await this._save();
       try {
-        await this._saveFuncDef(funcDef);
+        await this._saveNewFuncDef(funcDef);
         this.functionDefinitions.push(funcDef);
         this.loadList.push(funcDef);
         this.updateLoadListDOM();
@@ -97,61 +101,121 @@ class Modal extends View
         console.log(`Save failed due to ${e}`);
       }
     })
-  
-  eventEmitter.on('backToNode', () => {
-    /*
-      Gör koll här och konfirma att personen vill lämna sidan och gå tillbaka till noden?
-    */
-    this.close();
-    this.show(this.obj);
-  })
+
+    eventEmitter.on('saveVersionFunctionDef', async () => {
+      /*let funcDef = await this._save();
+      try {
+        await this._saveFuncDef(funcDef);
+        this.functionDefinitions.push(funcDef);
+        this.loadList.push(funcDef);
+        this.updateLoadListDOM();
+      }
+      catch(e){
+        console.log(`Save failed due to ${e}`);
+      }*/
+      let funcDef = await this._save();
+      try {
+        //funcDef.version += 1;
+        // Gör backendanrop här await this._saveVersionFuncDef(funcDef)
+        
+        this.updateLoadListDOM();
+      } catch(e) {
+        console.log(`Save failed due to ${e}`);
+      }
+      // Hitta den aktuella funktionsdefinitionen i this.loadList och this.functionDefinitions för att uppdatera till rätt def.
+      
+      console.log("Saveing version", funcDef)
+
+    })
     
-  eventEmitter.on('loadFunction', () => {
+    eventEmitter.on('backToNode', () => {
+      /*
+        TODO
+        Gör koll här och konfirma att personen vill lämna sidan och gå tillbaka till noden?
+      */
+      this.close();
+      this.show(this.obj);
+    })
+      
+    eventEmitter.on('loadFunction', () => {
       // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
       this.updateLoadList("");
       this.updateLoadListDOM();
     })
 
+    eventEmitter.on('changeLowerVersion', () => {
+      this._updateVersionNumber(-1);
+
+    })
+
+    eventEmitter.on('changeHigherVersion', () => {
+      this._updateVersionNumber(1);
+
+
+    })
+
     eventEmitter.on('addVariable', () =>  {
+      // Bör ha logik i denna för att ha unika delar av funktionsvariablerna så inte de får unika id i DOMen senare.
       let nameInput = document.getElementById('nameInp');
-      let typeInput = document.getElementById('valInp');
+      let typeInput = document.getElementById('typeInp');
       if(nameInput.length != 0 && typeInput.length != 0) {
         this._addVariable(document.getElementById('cVarList'), new FunctionVariable(nameInput.value, 
                                                                                     typeInput.value, 
                                                                                     "not yet added"));
       }
 
-      nameInput.value = '';
-      typeInput.value = '';
-      this.updateList();
+      nameInput.value = 'Name';
+      typeInput.value = 'Type';
     })
+  }
+
+  _updateVersionNumber(upOrDown) {
+    let elem = document.getElementById('versionNumber');
+    let newValue = "";
+    if(upOrDown > 0){
+      newValue = parseInt(elem.innerHTML) + 1;
+      // Lägg till max version som är senaste versionen av 
+      /*if (newValue > this.funcDef.version max ? ? ? ? ?  ?) {
+        newValue = this.funcDef.version; ???????????????
+      }*/
+    } else {
+      newValue = parseInt(elem.innerHTML) - 1;
+      if (newValue < 0) {
+        newValue = 0;
+      }
+    }
+    elem.innerHTML = newValue;
   }
 
   _changeHeader(header) {
       let backButton = '<button style="background-color: var(--button-color)" id="backModalButton" class="btn"> Back </button>';
 
       header.insertAdjacentHTML('beforebegin', backButton);
-      this.saveButton    = new BackButton();
+      this.backButton    = new BackButton();
       header.textContent = 'Create function';
   }
   _emptyInnerContent(content) {
     content.innerHTML = `
                             Name: <input type="text" id="name" value=""> </br>                       
-                            Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
+                            Description: <input type="text" id="funcdescBox" value="${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.description : ""}">
                             Variables: </br>
-                            <input type="text" value ="Name" id="nameInp"><input type="text" value ="Type" id="valInp"> </br></br>
+                            <input type="text" value="Name" id="nameInp"><input type="text" value="Type" id="typeInp"> </br></br>
                             <ul id="cVarList"></ul>
                          `;
   }
-  _changeAndAddButtonsFooter(footer) {    
-    let saveButton = '<button style="background-color: var(--button-color)" class="saveModalButton btn"> Save function </button>';
+  _changeAndAddButtonsFooter(footer) {  
+    let saveVersionButton = '<button style="background-color: var(--button-color)" class="saveFunctionVersionButton btn"> Save as new version </button>';
+    let saveNewFunctionButton = '<button style="background-color: var(--button-color)" class="saveFunctionDefButton btn"> Save as new function </button>';
     let addButton  = '<button style="background-color: var(--button-color)" class="addModalButton btn"> Add variable </button>';
 
     // Denna line tar bort Create Function knappen
     footer.removeChild(footer.children[0]);
+
+    footer.insertAdjacentHTML('afterbegin', saveVersionButton);
+    this.saveVersionButton   = new SaveVersionButton();
     
-    footer.insertAdjacentHTML('afterbegin', saveButton);
-    this.saveButton   = new SaveButton();
+    footer.insertAdjacentHTML('afterbegin', saveNewFunctionButton);
+    this.saveNewFunctionButton   = new SaveNewFunctionButton();
 
     footer.insertAdjacentHTML('afterbegin', addButton);
     this.addButton    = new AddButton();
@@ -172,32 +236,27 @@ class Modal extends View
     for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
       this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
       // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
-      // Lägg till dessa varianter till funktionen ovan isåfall.  
+      // Lägg till dessa varianter till addvariable isåfall.
     }
   }
 
   _addVariable(list, variableObject) {
       let li = document.createElement("li");
       li.appendChild(document.createTextNode(variableObject.type + ': ' + variableObject.name));
+      if(this.mode == "Node") {
+        let input = document.createElement("INPUT");
+        input.setAttribute('id', variableObject.name);
+        // TODO Sätt defaultvärden här om det behövs. Förändra defaultvärdet i funktionsvariabler?
+        input.value = variableObject.value ? variableObject.value : "Fill value"; 
+        li.appendChild(input);
+      }
       list.appendChild(li);
   }
 
-  /*
-  Denna finns för att implementeras och kunna bygga både node mode modal samt functiondef modal, kanske går att lösa med
-  addvariable funktionen istället genom att kolla på modes, kolla näramare på detta! 
-
-  _loadVariables() {
-    // Ta in en default parameter och bygg sedan upp cvarlist på type samma 
-    // sätt fast ha en if om det ska läggas till inputfält för att ändra värde på 
-    // variabeln, Detta ska endast kunna ske i node mode
-
-    // Denna bör användas av load Definitionmodal och av updateList
-  }
-  */
-
   loadDefinitionToModal(def) {
-    document.getElementById("name").value = def.name;
-    document.getElementById("funcdescBox").value = def.description;
+    if(this.mode == "Function") {
+      document.getElementById("funcdescBox").value = def.description;
+    }
 
     let varList = document.getElementById('cVarList');
     varList.innerHTML = '';
@@ -237,17 +296,24 @@ class Modal extends View
       let idField = document.getElementById("modalTitle");
       idField.classList.add(styleClasses.idText);
       idField.textContent = "ID: " + this.obj.id.toString();
+      
 	    this.modalContent.changeHtml(`
                             <div id="boxtime">
-                              Name: <input type="text" id="name" value=""> ${this.obj.getName()} </br>                       
-                              Input: <input type="text" id="inputBox" value="${this.obj.getInValue()}"> </br>
-                              Output: <input type="text" id="outputBox" value="${this.obj.getOutValue()}"> </br>
-                              Description: <input type="text" id="funcdescBox" value="${this.obj.functionDescription}">
-                              <input type="text" value ="Name" id="nameInp"><input type="text" value ="Value" id="valInp"> </br></br>
+                              <p>Name: <input type="text" id="name" value="${this.obj.getName()}"></p> 
+                              <p>Description: <input type="text" id="nodeDescriptionBox" value="${this.obj.functionDescription}"> </p>
+                              <p id="functionDefinition"> Function: ${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.name : "No function assigned"} </br> </p>
+                              <div id="functionVersion"> Version: 
+                                <button id="functionVersionDown" class="btn"></button> 
+                                <span id="versionNumber"> 0 </span> 
+                                <button id="functionVersionUp" class="btn"></button>
+                              </div>
                               Variables:
                               <ul id="cVarList"></ul>
                             </div>`);
-      
+
+
+      this.lowerVersion  = new EarlierVersionButton();
+      this.higherVersion = new LaterVersionButton();
       document.getElementById('cVarList').innerHTML = '';
       this.updateList();
   }
@@ -255,6 +321,7 @@ class Modal extends View
   _updateFooterNode() {
     let footer = document.getElementsByClassName("modalFooter")[0];
     if(footer.innerHTML.includes("Add variable")) {
+      footer.removeChild(footer.children[0]);
       footer.removeChild(footer.children[0]);
       footer.removeChild(footer.children[0]);
       let createButton = '<button id ="createFunctionButton" style="background-color: var(--button-color)" class="btn"> Create function </button>';
@@ -270,14 +337,35 @@ class Modal extends View
     }
   }
 
-  async _saveFuncDef(saveObject) {
+  async _saveNewFuncDef(saveObject) {
       try {
           await funcDefAPI.save(
               saveObject
           );
       } catch(e) {
-        throw new Error('Failed to save');
+        throw new Error('Failed to save functiondefinition');
       }
+  }
+
+  async _saveVersionFuncDef(saveObject) {
+    try {
+        /*await funcDefAPI.save(
+            saveObject
+        );*/
+    } catch(e) {
+      throw new Error('Failed to save version');
+    }
+  }
+
+  _saveNode() {
+    this.obj.setName(document.getElementById("name").value);
+    this.obj.functionDescription = document.getElementById("nodeDescriptionBox").value;
+    if (this.obj.functionDefinitionInstance) {
+      let definitionVariables = this.obj.functionDefinitionInstance.functionVariables;
+      for (let i = 0; i < definitionVariables.length; i++) {
+          definitionVariables[i].value = document.getElementById(definitionVariables[i].name).value;
+      }
+    }
   }
 
   _save() {
@@ -285,8 +373,8 @@ class Modal extends View
     const variables = document.getElementById('cVarList').children;
     for(let i=0; i < variables.length ; i++) {
       let nameAndType = variables[i].textContent.split(": ");
-      let name = nameAndType[0];
-      let type = nameAndType[1];
+      let type = nameAndType[0];
+      let name = nameAndType[1];
       variableList.push( 
         new FunctionVariable(name, type, 'Not yet added')
       );
@@ -299,14 +387,15 @@ class Modal extends View
   }
 
   close() {
-    if(this.mode == "Node") { 
+    if(this.mode == "Node") {
       // Logik för att se om det finns ickesparade förändringar? 
-      //this.save();
+      this._saveNode();
     }
     this._updateFooterNode();
     this._updateHeaderNode();
 
     this.element.style.display = "none";
+    this.obj.refreshPreview();
   }
 
   render() {
@@ -314,6 +403,7 @@ class Modal extends View
   }
 }
 
+// Lägga ut alla knapparna i en egen fil för att importera varje enskild knapp vore en bra idé
 class CloseButton extends Button {
   constructor() {
       super();
@@ -346,11 +436,11 @@ class CreateFunctionButton extends Button {
   }
 }
 
-class SaveButton extends Button {
+class SaveNewFunctionButton extends Button {
   constructor() {
       super();
-      this.setHtml(document.getElementsByClassName('saveModalButton')[0]);
-      this.element = document.getElementsByClassName('saveModalButton')[0];
+      this.setHtml(document.getElementsByClassName('saveFunctionDefButton')[0]);
+      this.element = document.getElementsByClassName('saveFunctionDefButton')[0];
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
@@ -358,7 +448,23 @@ class SaveButton extends Button {
     }
 
   onClick() {
-    eventEmitter.emit('saveFunction');
+    eventEmitter.emit('saveNewFunctionDef');
+  }
+}
+
+class SaveVersionButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementsByClassName('saveFunctionVersionButton')[0]);
+      this.element = document.getElementsByClassName('saveFunctionVersionButton')[0];
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.buttonFooter);
+    }
+
+  onClick() {
+    eventEmitter.emit('saveVersionFunctionDef');
   }
 }
 
@@ -407,6 +513,40 @@ class BackButton extends Button {
 
   onClick() {
     eventEmitter.emit('backToNode');
+  }
+}
+
+class LaterVersionButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementById('functionVersionUp'));
+      this.element = document.getElementById('functionVersionUp');
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.innerHTML = `<img src="${require('../static/assets/rightArrow.png').default}" >`;
+      this.element.children[0].classList.add(styleClasses.versionImages)
+  }
+
+  onClick() {
+    eventEmitter.emit('changeHigherVersion');
+  }
+}
+
+class EarlierVersionButton extends Button {
+  constructor() {
+      super();
+      this.setHtml(document.getElementById('functionVersionDown'));
+      this.element = document.getElementById('functionVersionDown');
+      this.render = this.render.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.element.onclick = this.onClick;
+      this.element.innerHTML = `<img src="${require('../static/assets/leftArrow.png').default}">`;
+      this.element.children[0].classList.add(styleClasses.versionImages);
+  }
+
+  onClick() {
+    eventEmitter.emit('changeLowerVersion');
   }
 }
 

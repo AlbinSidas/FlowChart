@@ -1,16 +1,16 @@
 
 import styleClasses from 'Styles/toolbox.css'
 import Button from 'Base/button.js'
-import View from 'Base/view.js'
+import View,  {InlineClickableView} from 'Base/view.js'
 import eventEmitter from 'Singletons/event-emitter.js'
-import LoadButton from './load-button';
 import SaveButton from './save-button';
 
 
 class Toolbox extends View
 {
-  constructor(){
+  constructor(boxEventhandlerDelegate){
     super();
+    this.boxEventhandlerDelegate = boxEventhandlerDelegate;
     this.setHtml('<div></div>');
     this.element.setAttribute('id', 'toolbox');
   }
@@ -18,7 +18,10 @@ class Toolbox extends View
   didAttach(parent) {
     super.didAttach(parent);
     //Load
-    this.loadButton = new LoadButton();
+    this.loadButton = InlineClickableView(
+                                '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; margin-right:10%; width:40%;" name="button">Load</button>', 
+                                this.boxEventhandlerDelegate.loadFlow
+                      ) //new LoadButton();
     this.attach(this.loadButton);
     //Save
     this.saveButton = new SaveButton();

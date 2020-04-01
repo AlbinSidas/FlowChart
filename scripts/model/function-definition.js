@@ -8,6 +8,7 @@ class FunctionDefinition
         this.name              = name;
         this.description       = description;
         this.functionVariables = functionVariables;
+        this.version           = 1;
     }
     
     static CreateLocal(name, description, functionVariable) {
