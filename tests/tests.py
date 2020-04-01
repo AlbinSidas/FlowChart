@@ -394,6 +394,10 @@ class FlowChartTest(unittest.TestCase):
         func_name_box = self.browser.find_element_by_id(squareID + "_function").text
         self.assertEqual(func_name_box, "Test1")
 
+    def test_click_on_connector(self):
+        
+
+
         time.sleep(1.5)
 
     def tearDown(self):

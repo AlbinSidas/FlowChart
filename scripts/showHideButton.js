@@ -6,7 +6,7 @@ class ShowHideButton extends Button
 {
   constructor() {
     super();
-    this.setHtml('<button type="button" class="btn" name="button">Show/Hide</button>');
+    this.setHtml('<button type="button" class="btn" name="button" id="showhide">Show/Hide</button>');
     this.element.setAttribute("style", "background-color:var(--button-color); width:10vw; margin:1.5vw; position:fixed; z-index:10;")
     this.render = this.render.bind(this);
     this.name = "ShowHide";
