@@ -74,15 +74,34 @@ class MongoHandler {
     }
 
 
-    async getVersionSnpashot(id) {        
-        const getSnapshots = _promisify((...args) => { this.collection.findOne(...args) });
-        const result = await getSnapshots(
-            {_id: ObjectID(id)}, // match
-            {"versions": 0,"versions.version": 1} // what fields
-        )
-        console.log(result)
-        //const allEntries = await result.toArray();
-        return result;
+    // async getVersionSnpashot(id) {        
+    //     const getSnapshots = _promisify((...args) => { this.collection.findOne(...args) });
+    //     const result = await getSnapshots(
+    //         {_id: ObjectID(id)}, // match
+    //         {"versions.version": 1} // what fields
+    //     )
+    //     console.log(result)
+    //     //const allEntries = await result.toArray();
+    //     return result;
+    // }
+
+    async getVersionSnpashot(id) {
+        const aggregateVersion  = _promisify((...args) => { this.collection.aggregate(...args) });
+        const result            =  await aggregateVersion([
+            
+            {
+                $match: {_id:  ObjectID(id) }
+            }, 
+            { 
+                $addFields: { "versionNumbers": "$versions.version" } },
+            {
+              $project:  {versions: 0},
+            }
+        
+        ]).then(a  => a)
+          .catch(e => console.log(e))
+        const data = await result.toArray();
+        return data
     }
 
 }
