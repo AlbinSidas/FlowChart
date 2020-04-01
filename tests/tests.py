@@ -394,7 +394,68 @@ class FlowChartTest(unittest.TestCase):
         func_name_box = self.browser.find_element_by_id(squareID + "_function").text
         self.assertEqual(func_name_box, "Test1")
 
-    def test_click_on_connector(self):
+        #test modal load search function
+        square2.click()
+        square2.click()
+        time.sleep(0.2)
+
+        create_func = self.browser.find_element_by_id("createFunctionButton")
+        create_func.click()
+        time.sleep(0.2)
+
+        func_name = modalcontent.find_element_by_id("name")
+        func_name.click()
+        action = ActionChains(self.browser)
+        action.send_keys("Test2")
+        action.perform()
+        time.sleep(0.2)
+
+        save_func_btn = self.browser.find_element_by_class_name("saveModalButton")
+        save_func_btn.click()
+        back_btn = self.browser.find_element_by_id("backModalButton")
+        back_btn.click()
+        time.sleep(0.2)
+
+        create_func = self.browser.find_element_by_id("createFunctionButton")
+        create_func.click()
+        time.sleep(0.2)
+
+        func_name = modalcontent.find_element_by_id("name")
+        func_name.click()
+        action = ActionChains(self.browser)
+        action.send_keys("Test3")
+        action.perform()
+        time.sleep(0.2)
+
+        save_func_btn = self.browser.find_element_by_class_name("saveModalButton")
+        save_func_btn.click()
+        back_btn = self.browser.find_element_by_id("backModalButton")
+        back_btn.click()
+        time.sleep(0.2)
+
+        load_func_btn.click()
+        time.sleep(0.2)
+
+        search_load = self.browser.find_element_by_id('loadFunctionInput')
+        search_load.click()
+        action5 = ActionChains(self.browser)
+        action5.send_keys("Test2")
+        action5.perform()
+        item = self.browser.find_element_by_class_name("loadDropdownItem")
+        item.click()
+        time.sleep(0.2)
+
+        close_btn = self.browser.find_element_by_id("closeModalButton")
+        close_btn.click()
+        time.sleep(0.2)
+
+        square3 = self.browser.find_element_by_class_name(flowchart_square)
+        squareID = square3.get_attribute("id")
+        func_name_box = self.browser.find_element_by_id(squareID + "_function").text
+        self.assertEqual(func_name_box, "Test2")
+
+
+    #def test_click_on_connector(self):
         
 
 
