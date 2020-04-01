@@ -59,13 +59,10 @@ async function main() {
         res.json(Response("", databaseOps))
     });
 
-    app.get('/flowchart/:id', async function (req, res) {
-        console.log(req.body);
-       
-        const databaseOps = await mongoController.flowchartHandler.getById(req.params.id)
+    app.get('/flowchart/:id/:version?', async function (req, res) {
+        const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
-
     });
 
 
@@ -127,11 +124,16 @@ async function main() {
         res.json(Response("", databaseOps))
     });
 
-    app.get('/funcdef/:id', async(req, res) => {
-        const databaseOps = await mongoController.funcDefHandler.getById(req.params.id); // kan behöva kallas på från någon annanstans om det blir större
+    // app.get('/funcdef/:id', async(req, res) => {
+    //     const databaseOps = await mongoController.funcDefHandler.getById(req.params.id); // kan behöva kallas på från någon annanstans om det blir större
+    //     res.json(Response("", databaseOps))
+    // });
+
+
+    app.get('/funcdef/:id/:version?', async(req, res) => {
+        const databaseOps = await mongoController.funcDefHandler.getOne(req.params.id, req.params.version); // kan behöva kallas på från någon annanstans om det blir större
         res.json(Response("", databaseOps))
     });
-
 
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))
 }

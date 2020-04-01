@@ -8,10 +8,74 @@ class MongoHandler {
         this.db             = db
         this.collection     = this.db.collection(collectionName)
        
-        this.getById = this.getById.bind(this)
-        this.save    = this.save.bind(this)
-        this.getAll  = this.getAll.bind(this)
+        this._getById      = this._getById.bind(this)
+        this.save          = this.save.bind(this)
+        this.getAll        = this.getAll.bind(this)
+        this._versionQuery = this._versionQuery.bind(this)
     }
+
+
+    // ================== PRIVATE =====================
+    async _getByVersion(id, versionNumber) { 
+        // TODO: forstsätt här och sen fixa get all
+        const getVersion = _promisify((...args) => { this.collection.aggregate(...args) });
+         const result = await getVersion(
+             //{versions: { version: versionNumber}}, // match
+             //{"versions.version": 1} // what fields
+         [
+             { $match: { _id: ObjectID(id) } },
+             {
+                 $project: 
+                 {
+                      
+                    bullar: 
+                    { 
+                        "versions": 
+                        { 
+                        
+                                $eq: [ "$version", versionNumber] 
+                            
+                        } 
+                   }
+            
+                 }
+             }
+    
+         ]
+         )  
+         const data = await result.toArray()
+         console.log(data)
+         return data;
+    }
+
+    
+    async _getById (id) {
+        const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
+        const result     =  await findById([
+            { $match: {_id:  ObjectID(id) } },
+            {
+                $project: 
+                {
+                    latestVersionNumber: 1,
+                    last: { $arrayElemAt: ["$versions", -1]} 
+                }
+            }
+        
+        ]).then(a  => a)
+          .catch(e => console.log(e))
+        const allEntries = await result.toArray();
+        return allEntries[0]
+    }
+
+
+    _versionQuery(versionNumber) {
+       // if (versionNumber) {
+          //  return {}//{versions: { $elemMatch: { version: versionNumber } }};
+        //}
+        return { $arrayElemAt: ["$versions", -1]};
+    }
+
+    // ======================== PUBLIC ==================
 
     async save (data)  {
         const latestVersionNumber = 1;
@@ -25,25 +89,14 @@ class MongoHandler {
            .catch(e => console.log("SAVE ERRROOORO", e))
         return result
     }
-    
-    async getById (id) {
-        const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
-        const result     =  await findById([
-            {
-                $match: {_id:  ObjectID(id) }
-            }, 
-            {
-                $project: 
-                {
-                    latestVersionNumber: 1,
-                    last: { $arrayElemAt: ["$versions", -1]} 
-                }
-            }
-        
-        ]).then(a  => a)
-          .catch(e => console.log(e))
-        const allEntries = await result.toArray();
-        return allEntries[0]
+
+
+    async getOne(id, versionNumber) {
+        if(versionNumber) {
+            return await this._getByVersion(id, versionNumber);
+        } else {
+            return await this._getById(id);
+        }
     }
 
     async getAll() {
