@@ -98,7 +98,7 @@ async function main() {
         res.json(Response("Save function definition", databaseOps));
     });
 
-    app.post('/funcdef/add/version', async (req, res) => {
+    app.post('/funcdef/version/add', async (req, res) => {
 
         // Lägg till version
         
@@ -116,6 +116,11 @@ async function main() {
         res.json(Response("Versioned function definition", databaseOps));
     });
 
+    app.get('/funcdef/version/snapshot/:id', async(req, res) => {
+        const result = await mongoController.funcDefHandler.getVersionSnpashot(req.params.id);
+        res.status(200)
+        res.json(Response("Fetched version numbers", result));
+    });
 
     app.get('/funcdef/all', async(req, res) => {
         const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
@@ -126,7 +131,6 @@ async function main() {
         const databaseOps = await mongoController.funcDefHandler.getById(req.params.id); // kan behöva kallas på från någon annanstans om det blir större
         res.json(Response("", databaseOps))
     });
-
 
 
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))
