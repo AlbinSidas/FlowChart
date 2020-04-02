@@ -11,8 +11,6 @@ const MongoHandler    = mongo.MongoHanlder;
 const Schema          = require('./schema.js')
 const apiAux          = require('./api/api_auxiliary')
 const Response        = apiAux.Response
-const apiHandlers     = require('./api/api-handlers');
-
 
 async function main() {
 
