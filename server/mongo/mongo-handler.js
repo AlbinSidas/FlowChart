@@ -19,13 +19,26 @@ class MongoHandler {
         const aggregateVersion  = _promisify((...args) => { this.collection.aggregate(...args) });
         const result            =  await aggregateVersion([
             
-            { $match: {_id:  ObjectID(id), "versions.version":  parseInt(versionNumber) }}, 
-            { $project:   
-                { 
-                    latestVersionNumber: 1,
-                    targetVersion: { $arrayElemAt: ["$versions", -1]} 
-                },
-             }
+            // { $match: {_id:  ObjectID(id), "versions.versionNumber":  parseInt(versionNumber) }}, 
+            // { $project:   
+            //     { 
+            //         latestVersionNumber: 1,
+            //         targetVersion: { $arrayElemAt: ["$versions", -1]} 
+            //     },
+            //  }
+        
+
+            { $match   : { "versions.versionNumber": parseInt(versionNumber)} },
+            { $unwind  : "$versions" },
+            { $match   : { "versions.versionNumber": parseInt(versionNumber) } }, 
+            { $project : { latestVersionNumber: 1, targetVersion: "$versions" } }
+                        // { $project:   
+            //     { 
+            //         latestVersionNumber: 1,
+            //         targetVersion: { $arrayElemAt: ["$versions", -1]} 
+            //     },
+            //  }
+            
         
         ]).then(a  => a)
           .catch(e => console.log(e))
@@ -61,7 +74,7 @@ class MongoHandler {
         const result     =  await insertOne({latestVersionNumber: latestVersionNumber, versions: [
             {
                 ...data,
-                version: latestVersionNumber
+                versionNumber: latestVersionNumber
             }
         ]}).then(a  => a.ops)
            .catch(e => console.log("SAVE ERRROOORO", e))
@@ -84,9 +97,9 @@ class MongoHandler {
 
     async addVersion(data) {
         const update = _promisify((...args) => { this.collection.update(...args) });
-        const oldEntry       = await this.getById(data._id);
+        const oldEntry       = await this._getById(data._id);
         const updatedVersion = oldEntry.latestVersionNumber + 1;
-        const versionEntry   = { ...data.content, version: updatedVersion }
+        const versionEntry   = { ...data.content, versionNumber: updatedVersion }
 
         const result = await update(
             // ID
@@ -112,7 +125,7 @@ class MongoHandler {
                 $match: {_id:  ObjectID(id) }
             }, 
             { 
-                $addFields: { "versionNumbers": "$versions.version" } },
+                $addFields: { "versionNumbers": "$versions.versionNumber" } },
             {
               $project:  {versions: 0},
             }
