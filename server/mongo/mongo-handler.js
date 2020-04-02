@@ -72,10 +72,30 @@ class MongoHandler {
         }
     }
 
+    // async getAll() {
+    //     const data = this.collection.find();
+    //     return await data.toArray();
+    // }
+
     async getAll() {
-        const data = this.collection.find();
-        return await data.toArray();
+
+        const findAll   = _promisify((...args) => { this.collection.aggregate(...args) });
+        const result     =  await findAll([
+            {
+                $project: 
+                {
+                    latestVersionNumber: 1,
+                    latestVersion: { $arrayElemAt: ["$versions", -1]} 
+                }
+            }
+        
+        ]).then(a  => a)
+          .catch(e => console.log(e))
+        const all = await result.toArray();
+        console.log(all)
+        return all;//await result.limit(1).next();
     }
+
 
     async addVersion(data) {
         const update = _promisify((...args) => { this.collection.update(...args) });
