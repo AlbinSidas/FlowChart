@@ -190,7 +190,7 @@ class Container extends View {
             return obj.id == id;
         });
         this.removeMarked();
-        this.markedConnector[this.markedConnector.length] = obj;
+        this.markedConnector[0] = obj;
     }
 
     didAttach(parent) {
@@ -371,6 +371,7 @@ class Container extends View {
     }
     removeConnector(){
         var removed = this.markedConnector[0];
+        var startNodeTest = RegExp('start-node');
         // this loop removes the connector id from the two nodes
         for( let i = 0 ; i < this.objects.length; i++ ) {
             if (this.objects[i].id == removed.currNode.id ) {
@@ -382,11 +383,11 @@ class Container extends View {
                     }
                 }
             }
-            if (this.objects[i].id == removed.prevNode.id ) {
+            if (this.objects[i].id == removed.prevNode.id && !startNodeTest.test(removed.id)) {
                 for(let j = 0; j < this.objects[i].output.connections.length; j++){
                     if(this.objects[i].output.connections[j] == removed.currNode.id){
                         this.objects[i].output.connections.splice(j);
-                        this.objects[i].removeConnectorUpdater(removed.id);
+                        this.objects[i].removeConnectorUpdater(removed.id);                    
                         break;
                     }
                 }
@@ -396,7 +397,7 @@ class Container extends View {
         connectorElement.parentElement.removeChild(connectorElement);
         for(let i = 0; i < this.connectorList.length; i++){
             if(this.connectorList[i].id == removed.id){
-                this.connectorList.splice(i);
+                this.connectorList.splice(i,1);
             }
         }
     }
