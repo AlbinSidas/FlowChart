@@ -54,16 +54,43 @@ class MongoHandler {
         //  ]
         //  )  
 
-        const getVersion = _promisify((...args) => { this.collection.find(...args) });
-        console.log("WHATIS WRONG THE TYP IS:", typeof versionNumber)
-        console.log("THE VERSIONNUMVER IS ", versionNumber);
-        const result    = await getVersion({
-            _id: ObjectID(id),
-            "versions.version":  parseInt(versionNumber)
-        })
-         const data = await result.toArray()
-         console.log(data)
-         return data;
+        // const getVersion = _promisify((...args) => { this.collection.find(...args) });
+        // console.log("WHATIS WRONG THE TYP IS:", typeof versionNumber)
+        // console.log("THE VERSIONNUMVER IS ", versionNumber);
+        // const result  = await getVersion({
+        //     _id: ObjectID(id),
+        //     "versions.version":  parseInt(versionNumber)
+        // })
+        // const p = result.project({
+        //     entry: { $arrayElemAt: ["$versions", -1]},
+        //     _id: 1,
+        // })
+        // console.log("projection", p)
+        //  const data = await result.toArray()
+        //  console.log(data)
+        //  return data;
+
+
+
+
+
+
+        const aggregateVersion  = _promisify((...args) => { this.collection.aggregate(...args) });
+        const result            =  await aggregateVersion([
+            
+            { $match: {_id:  ObjectID(id), "versions.version":  parseInt(versionNumber) }}, 
+            { $project:   
+                { 
+                    latestVersionNumber: 1,
+                    targetVersion: { $arrayElemAt: ["$versions", -1]} 
+                },
+             }
+        
+        ]).then(a  => a)
+          .catch(e => console.log(e))
+        const data = await result.limit(1).next();
+        console.log(data)
+        return data
     }
 
     
@@ -75,14 +102,13 @@ class MongoHandler {
                 $project: 
                 {
                     latestVersionNumber: 1,
-                    last: { $arrayElemAt: ["$versions", -1]} 
+                    latestVersion: { $arrayElemAt: ["$versions", -1]} 
                 }
             }
         
         ]).then(a  => a)
           .catch(e => console.log(e))
-        const allEntries = await result.toArray();
-        return allEntries[0]
+        return await result.limit(1).next();
     }
 
 
