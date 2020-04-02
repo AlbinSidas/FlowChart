@@ -18,28 +18,10 @@ class MongoHandler {
     async _getByVersion(id, versionNumber) { 
         const aggregateVersion  = _promisify((...args) => { this.collection.aggregate(...args) });
         const result            =  await aggregateVersion([
-            
-            // { $match: {_id:  ObjectID(id), "versions.versionNumber":  parseInt(versionNumber) }}, 
-            // { $project:   
-            //     { 
-            //         latestVersionNumber: 1,
-            //         targetVersion: { $arrayElemAt: ["$versions", -1]} 
-            //     },
-            //  }
-        
-
             { $match   : { "versions.versionNumber": parseInt(versionNumber)} },
             { $unwind  : "$versions" },
             { $match   : { "versions.versionNumber": parseInt(versionNumber) } }, 
             { $project : { latestVersionNumber: 1, targetVersion: "$versions" } }
-                        // { $project:   
-            //     { 
-            //         latestVersionNumber: 1,
-            //         targetVersion: { $arrayElemAt: ["$versions", -1]} 
-            //     },
-            //  }
-            
-        
         ]).then(a  => a)
           .catch(e => console.log(e))
         const data = await result.limit(1).next();
