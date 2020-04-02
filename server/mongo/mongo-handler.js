@@ -11,38 +11,56 @@ class MongoHandler {
         this._getById      = this._getById.bind(this)
         this.save          = this.save.bind(this)
         this.getAll        = this.getAll.bind(this)
-        this._versionQuery = this._versionQuery.bind(this)
     }
 
 
     // ================== PRIVATE =====================
     async _getByVersion(id, versionNumber) { 
+        console.log("SOO", versionNumber)
         // TODO: forstsätt här och sen fixa get all
-        const getVersion = _promisify((...args) => { this.collection.aggregate(...args) });
-         const result = await getVersion(
-             //{versions: { version: versionNumber}}, // match
-             //{"versions.version": 1} // what fields
-         [
-             { $match: { _id: ObjectID(id) } },
-             {
-                 $project: 
-                 {
+        //const getVersion = _promisify((...args) => { this.collection.aggregate(...args) });
+        //  const result = await getVersion(
+        //      //{versions: { version: versionNumber}}, // match
+        //      //{"versions.version": 1} // what fields
+        //  [
+        //      { $match: { _id: ObjectID(id) } },
+        //      {
+        //          $project: 
+        //          {
                       
-                    bullar: 
-                    { 
-                        "versions": 
-                        { 
+        //             versions: 
+        //             { 
+
+
+        //                 $filter: {
+        //                     input: "$versions",
+        //                     as: "entry",
+        //                     cond: { $eq: [ "$$entry.version", versionNumber ] }
+        //                 }
+        //                // "versions": 
+        //                // { 
                         
-                                $eq: [ "$version", versionNumber] 
+                        
+                        
+                        
+        //                 //        $eq: [ "$version", versionNumber] 
                             
-                        } 
-                   }
+        //                // } 
+        //            }
             
-                 }
-             }
+        //          }
+        //      }
     
-         ]
-         )  
+        //  ]
+        //  )  
+
+        const getVersion = _promisify((...args) => { this.collection.find(...args) });
+        console.log("WHATIS WRONG THE TYP IS:", typeof versionNumber)
+        console.log("THE VERSIONNUMVER IS ", versionNumber);
+        const result    = await getVersion({
+            _id: ObjectID(id),
+            "versions.version":  parseInt(versionNumber)
+        })
          const data = await result.toArray()
          console.log(data)
          return data;
@@ -67,13 +85,6 @@ class MongoHandler {
         return allEntries[0]
     }
 
-
-    _versionQuery(versionNumber) {
-       // if (versionNumber) {
-          //  return {}//{versions: { $elemMatch: { version: versionNumber } }};
-        //}
-        return { $arrayElemAt: ["$versions", -1]};
-    }
 
     // ======================== PUBLIC ==================
 
