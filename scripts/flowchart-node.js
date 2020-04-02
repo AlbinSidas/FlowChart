@@ -109,7 +109,6 @@ class FlowchartNode extends View {
     }
     removeConnectorUpdater(id) {
         delete this._connectorUpdaters[id] 
-        console.log(this._connectorUpdaters) 
     }
 
 
@@ -170,10 +169,8 @@ class FlowchartNode extends View {
         Object.keys(this._connectorUpdaters).forEach((key) => {
             this._connectorUpdaters[key]()
         });
-        // this._connectorUpdaters.forEach(callback => {
-        //     callback();
-        // });
     }
+
     dragOthers(pxm, pym){
         this.posX += pxm;
         this.posY += pym;
@@ -227,10 +224,8 @@ class FlowchartNode extends View {
     }
 
     onClick(e) {
-        //console.log("node click");  
-        //was moved to mousedown to fix bug
-        //eventEmitter.emit("clicked", this.id, e);
     }
+
     static CreateExternal(object, inputIds, outputIds) {
         console.log(object)
         const node = new FlowchartNode(object.id, object.functionDefinitionInstance);

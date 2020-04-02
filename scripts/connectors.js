@@ -19,7 +19,6 @@ class Connector extends View
 
   didAttach(parent) {
     this.element.onclick = this.onClick;
-    console.log(this.element.onclick);
   }
 
   updateConnections(){//prevNode, currNode){

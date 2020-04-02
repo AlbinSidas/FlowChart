@@ -17,7 +17,6 @@ class Container extends View {
         
         this.setHtml(elementString)
 
-        //FIXA ADDEVENTLISTENER HÄR OSKAR!!! gogogogo
         this.onClick    = this.onClick.bind(this);
         this.onKeyPress = this.onKeyPress.bind(this);
 
