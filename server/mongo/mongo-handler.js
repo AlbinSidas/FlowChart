@@ -23,7 +23,7 @@ class MongoHandler {
             }
         ]}).then(a  => a.ops)
            .catch(e => console.log("SAVE ERRROOORO", e))
-        return result
+        return result;
     }
     
     async getById (id) {
@@ -43,7 +43,9 @@ class MongoHandler {
         ]).then(a  => a)
           .catch(e => console.log(e))
         const allEntries = await result.toArray();
-        return allEntries[0]
+
+        console.log("Kommer till efter find med res", allEntries);
+        return allEntries[0];
     }
 
     async getAll() {
@@ -54,6 +56,7 @@ class MongoHandler {
     async addVersion(data) {
         const update = _promisify((...args) => { this.collection.update(...args) });
         const oldEntry       = await this.getById(data._id);
+        console.log(oldEntry);
         const updatedVersion = oldEntry.latestVersionNumber + 1;
         const versionEntry   = { ...data.content, version: updatedVersion }
 

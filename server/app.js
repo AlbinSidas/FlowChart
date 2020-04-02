@@ -95,11 +95,12 @@ async function main() {
         }
         const databaseOps = await mongoController.funcDefHandler.save(data)
         res.status(200)
-        res.json(Response("Save function definition", databaseOps));
+        //res.json(Response("Save function definition", databaseOps));
+        console.log(databaseOps);
+        res.send(databaseOps);
     });
 
     app.post('/funcdef/version/add', async (req, res) => {
-
         // Lägg till version
         
         const data = req.body;
@@ -111,6 +112,7 @@ async function main() {
         //     res.send(InvalidTypeError.message);
         //     return
         // }
+        console.log(data);
         const databaseOps = await mongoController.funcDefHandler.addVersion(data)
         res.status(200)
         res.json(Response("Versioned function definition", databaseOps));

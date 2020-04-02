@@ -8,17 +8,19 @@ class Network {
 
     async save(obj) {
         console.log("OBJ", obj)
-        fetch(`${this.baseURL}/save`, 
+        return fetch(`${this.baseURL}/save`, 
         {
             method:   'POST',
             headers:  {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(obj)
-        }).then((response) => {
+        }).then((response) => response.json())
+        .then(data => {
             // Confirm save
-            console.log("success", response.json().data);
-            
+            console.log("success", data);
+            return data;
+
         }).catch((error) => {
             // Handle error
             console.log("Fail", error);
@@ -27,6 +29,27 @@ class Network {
       // Konfirmation that object was saved
       
       // Kolla på fetch för PUT för att skicka med objektet till backend 
+    }
+
+    async saveVersion(obj) {
+        console.log("Save object to update Version", obj)
+        return fetch(`${this.baseURL}/save`, 
+        {
+            method:   'POST',
+            headers:  {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        }).then((response) => response.json())
+        .then(data => {
+            // Confirm save
+            console.log("success", data);
+            return data;
+
+        }).catch((error) => {
+            // Handle error
+            console.log("Fail", error);
+        });
     }
 
     async getAll() {

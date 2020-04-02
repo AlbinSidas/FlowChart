@@ -92,9 +92,10 @@ class Modal extends View
     eventEmitter.on('saveNewFunctionDef', async () => {
       let funcDef = await this._save();
       try {
-        await this._saveNewFuncDef(funcDef);
-        this.functionDefinitions.push(funcDef);
-        this.loadList.push(funcDef);
+        const data = await this._saveNewFuncDef(funcDef);
+        console.log("fått tillbaka korrekt funcDef", data)
+        this.functionDefinitions.push(data);
+        this.loadList.push(data);
         this.updateLoadListDOM();
       }
       catch(e){
@@ -103,22 +104,15 @@ class Modal extends View
     })
 
     eventEmitter.on('saveVersionFunctionDef', async () => {
-      /*let funcDef = await this._save();
-      try {
-        await this._saveFuncDef(funcDef);
-        this.functionDefinitions.push(funcDef);
-        this.loadList.push(funcDef);
-        this.updateLoadListDOM();
-      }
-      catch(e){
-        console.log(`Save failed due to ${e}`);
-      }*/
+
       let funcDef = await this._save();
       try {
-        //funcDef.version += 1;
         // Gör backendanrop här await this._saveVersionFuncDef(funcDef)
-        
-        this.updateLoadListDOM();
+        let newVersion = await this._saveVersionFuncDef(funcDef);
+        console.log("Efter vi fått tillbaka uppdaterad version av funcdef", newVersion);
+        //this.updateLoadListDOM();
+        // Kontrollera att lsitan är uppdaterad med det nya objektet, alternativt om det ej är det så ersätt
+        // det uppdaterade objektet med funcDef som kommer tillbaka från this._save().
       } catch(e) {
         console.log(`Save failed due to ${e}`);
       }
@@ -138,7 +132,6 @@ class Modal extends View
     })
       
     eventEmitter.on('loadFunction', () => {
-      // Utan dessa blir loadlistan tom när man öppnar efter att ha refreshat /Oskar
       this.updateLoadList("");
       this.updateLoadListDOM();
     })
@@ -282,6 +275,7 @@ class Modal extends View
     }
 
     for (let i = 0; i < this.loadList.length; i++) {
+      // console.log("loadList", this.loadList[i]) KONTROLL FÖR ATT SE OBJEKTEN SOM FINNS I LOADLIST
       let listItem = new ListItem(this.loadList[i].name, this.loadList[i]);
       dropdown.appendChild(listItem.render());
     }
@@ -339,9 +333,8 @@ class Modal extends View
 
   async _saveNewFuncDef(saveObject) {
       try {
-          await funcDefAPI.save(
-              saveObject
-          );
+          const res = await funcDefAPI.save( saveObject );
+          return res;
       } catch(e) {
         throw new Error('Failed to save functiondefinition');
       }
@@ -349,9 +342,10 @@ class Modal extends View
 
   async _saveVersionFuncDef(saveObject) {
     try {
-        /*await funcDefAPI.save(
+        let res =  await funcDefAPI.saveVersion(
             saveObject
-        );*/
+        );
+        return res;
     } catch(e) {
       throw new Error('Failed to save version');
     }
