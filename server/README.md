@@ -5,7 +5,7 @@ You only need to run:
 ```shell
 npm run mongo <PortNumber>
 ```
-`<PorNumber>` is something you provide 27018 or 27017 are the common ones
+`<PortNumber>` is something you provide 27018 or 27017 are the common ones
 
 
 
