@@ -54,10 +54,25 @@ async function main() {
         res.json(Response("", databaseOps))
 
     });
-
+    
     app.get('/flowchart/view', async function(req, res) {
         const databaseOps = await mongoController.flowchartHandler.getView();
         res.json(Response("", databaseOps))
+    });
+    
+    
+    app.post('/flowchart/version/add', async (req, res) => {
+        const data = req.body;
+        // SCHEMA VALIDATION?
+        const databaseOps = await mongoController.flowchartHandler.addVersion(data)
+        res.status(200)
+        res.json(Response("Versioned function definition", databaseOps));
+    });
+    
+    app.get('/flowchart/version/snapshot/:id', async(req, res) => {
+        const result = await mongoController.flowchartHandler.getVersionSnpashot(req.params.id);
+        res.status(200)
+        res.json(Response("Fetched version numbers", result));
     });
 
     app.get('/flowchart/:id/:version?', async function (req, res) {
@@ -65,22 +80,7 @@ async function main() {
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
     });
-
-
-   app.post('/flowchart/version/add', async (req, res) => {
-        const data = req.body;
-        // SCHEMA VALIDATION?
-        const databaseOps = await mongoController.flowchartHandler.addVersion(data)
-        res.status(200)
-        res.json(Response("Versioned function definition", databaseOps));
-    });
-
-    app.get('/flowchart/version/snapshot/:id', async(req, res) => {
-        const result = await mongoController.flowchartHandler.getVersionSnpashot(req.params.id);
-        res.status(200)
-        res.json(Response("Fetched version numbers", result));
-    });
-
+    
 
     
 
@@ -101,16 +101,17 @@ async function main() {
         res.status(200)
         res.json(Response("Fetched version numbers", result));
     });
+    
+    app.get('/funcdef/all', async(req, res) => {
+        const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
+        res.json(Response("", databaseOps))
+    });
 
     app.get('/funcdef/:id/:version?', async(req, res) => {
         const databaseOps = await mongoController.funcDefHandler.getOne(req.params.id, req.params.version); // kan behöva kallas på från någon annanstans om det blir större
         res.json(Response("", databaseOps))
     });
 
-    app.get('/funcdef/all', async(req, res) => {
-        const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
-        res.json(Response("", databaseOps))
-    });
 
     app.post('/funcdef/save', async (req, res) => {
         const data = req.body;

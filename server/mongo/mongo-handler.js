@@ -72,11 +72,6 @@ class MongoHandler {
         }
     }
 
-    // async getAll() {
-    //     const data = this.collection.find();
-    //     return await data.toArray();
-    // }
-
     async getAll() {
 
         const findAll   = _promisify((...args) => { this.collection.aggregate(...args) });
