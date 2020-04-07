@@ -109,7 +109,6 @@ body{
 :global .connector {
     z-index: 1;
     background-color: var(--node-connector);
-    pointer-events: none;
     position: absolute;
     padding:0px; 
     margin:0px;
