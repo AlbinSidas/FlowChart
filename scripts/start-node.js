@@ -43,6 +43,13 @@ class StartNode extends View {
         this._connectorUpdaters.push(func)
     }
 
+    hasConnector(){
+        if(this._connectorUpdaters.length != 0){
+            return true;
+        }
+        return false;
+    }
+
     unregisterConnectorUpdater(id) {
 
     }

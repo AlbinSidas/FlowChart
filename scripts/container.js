@@ -212,7 +212,6 @@ class Container extends View {
             this.saveClass.saveFlow(this.objects)
         })
 
-
         eventEmitter.on('increaseSize', () =>  {
             this.increaseSize();
         })
