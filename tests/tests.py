@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
-
+from selenium.webdriver.common.alert import Alert
 
 # Selenium dokumentation: 
 # https://selenium-python.readthedocs.io/api.html
@@ -259,7 +259,7 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.2)
         comparewidth = str(width) + "px"
         self.assertEqual(wroot.value_of_css_property("width"), comparewidth)
- """
+
     def test_modal(self):
         modal = self.browser.find_element_by_id("modal")
         self.assertEqual(modal.value_of_css_property("display"), "none")
@@ -463,14 +463,141 @@ class FlowChartTest(unittest.TestCase):
         funcVDown = modalcontent.find_element_by_id("functionVersionDown")
         funcVDown.click()
         modal_version = modalcontent.find_element_by_id("versionNumber")
-        self.assertEqual(modal_version.text, "1")
+        self.assertEqual(modal_version.text, "1") """
 
 
-    #def test_click_on_connector(self):
+    """ def test_click_on_connector(self):
+        new_obj_btn = self.browser.find_element_by_id("newObject")
+        new_obj_btn.click()
+
+        time.sleep(0.2)
+        square = self.browser.find_element_by_class_name(flowchart_square)
+
+        time.sleep(0.2)
+        action_chain = ActionChains(self.browser)
+        start_node_output_id = "start-nodebox-start"
+        start_node_output = self.browser.find_element_by_id(start_node_output_id)
+        action_chain.click(start_node_output).perform()
+        action_chain.reset_actions()
+
+        time.sleep(0.2)
+        action_chain_2 = ActionChains(self.browser)
+        input_id = square.get_attribute("id") + "box-input"
+        square_input = self.browser.find_element_by_id(input_id)
+        action_chain_2.click(square_input).perform()
+        action_chain_2.reset_actions()
+        
+        time.sleep(0.2)
+        connectorid = square.get_attribute("id") + "start-node"
+        connector = self.browser.find_element_by_id(connectorid)
+        connector.click()
+        style = self.browser.find_element_by_id(connectorid).get_attribute('style')
+        self.assertTrue("box-shadow" in style)
         
 
+        time.sleep(0.5)
+        wroot = self.browser.find_element_by_id("workspace-root")
+        wroot.click()
+        style = self.browser.find_element_by_id(connectorid).get_attribute('style')
+        self.assertTrue("box-shadow" not in style)
+        time.sleep(1)
+
+    def test_remove_connector(self):
+        new_obj_btn = self.browser.find_element_by_id("newObject")
+        new_obj_btn.click()
+
+        time.sleep(0.2)
+        square = self.browser.find_element_by_class_name(flowchart_square)
+
+        time.sleep(0.2)
+        action_chain = ActionChains(self.browser)
+        start_node_output_id = "start-nodebox-start"
+        start_node_output = self.browser.find_element_by_id(start_node_output_id)
+        action_chain.click(start_node_output).perform()
+        action_chain.reset_actions()
+
+        time.sleep(0.2)
+        action_chain_2 = ActionChains(self.browser)
+        input_id = square.get_attribute("id") + "box-input"
+        square_input = self.browser.find_element_by_id(input_id)
+        action_chain_2.click(square_input).perform()
+        action_chain_2.reset_actions()
+        
+        time.sleep(0.2)
+        connectorid = square.get_attribute("id") + "start-node"
+        connector = self.browser.find_element_by_id(connectorid)
+        connector.click()
+        style = self.browser.find_element_by_id(connectorid).get_attribute('style')
+        self.assertTrue("box-shadow" in style)
+
+        time.sleep(0.5)
+        action_chain_3 = ActionChains(self.browser)
+        action_chain_3.key_down(Keys.CONTROL).send_keys('d').key_up(Keys.CONTROL)
+        action_chain_3.perform() """ 
+
+    def test_saving_flow(self):
+        new_obj_btn = self.browser.find_element_by_id("newObject")
+        new_obj_btn.click()
+        time.sleep(0.2)
+        new_obj_btn.click()
+
+        time.sleep(0.2)
+        square = self.browser.find_element_by_class_name(flowchart_square)
+
+        time.sleep(0.2)
+        all_squares = self.browser.find_elements(By.CLASS_NAME, flowchart_square)
+
+        time.sleep(0.2)
+        action_chain_1 = ActionChains(self.browser)
+        action_chain_1.drag_and_drop_by_offset(all_squares[1], 1000, 0).perform()
+
+        action_chain_2 = ActionChains(self.browser)
+        output_id = square.get_attribute("id") + "box-output"
+        square_output = self.browser.find_element_by_id(output_id)
+        action_chain_2.click(square_output).perform()
+        action_chain_2.reset_actions()
+
+        time.sleep(0.2)
+        action_chain_3 = ActionChains(self.browser)
+        input_id = all_squares[1].get_attribute("id") + "box-input"
+        square_2_input = self.browser.find_element_by_id(input_id)
+        action_chain_3.click(square_2_input).perform()
+        action_chain_3.reset_actions()
+
+        time.sleep(0.5)
+        action_chain_4 = ActionChains(self.browser)
+        action_chain_4 = ActionChains(self.browser)
+        start_node_output_id = "start-nodebox-start"
+        start_node_output = self.browser.find_element_by_id(start_node_output_id)
+        action_chain_4.click(start_node_output).perform()
+        action_chain_4.reset_actions()
+
+        time.sleep(0.2)
+        action_chain_5 = ActionChains(self.browser)
+        input_id = all_squares[0].get_attribute("id") + "box-input"
+        square_input = self.browser.find_element_by_id(input_id)
+        action_chain_5.click(square_input).perform()
+        action_chain_5.reset_actions()
+    
+        time.sleep(0.5)
+        show_hide_btn = self.browser.find_element_by_id("showhide")
+        show_hide_btn.click()
+        toolbox = self.browser.find_element_by_id("toolbox")
+        save_chart_btn = toolbox.find_element_by_id("saveChart")
+        save_chart_btn.click()
+        time.sleep(0.5)
+
+        save_text_question = Alert(self.browser).text
+        self.assertEqual(save_text_question, "Please enter the name for your save file")
+        alert = Alert(self.browser)
+        alert.send_keys("testsave1")
+        time.sleep(0.5)
+        alert.accept()
 
         time.sleep(1.5)
+
+        
+        
 
     def tearDown(self):
         self.browser.quit()
