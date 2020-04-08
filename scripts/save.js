@@ -11,7 +11,6 @@ class Save
     }
 
 	validateSave(obj){
-		// 2 because of the start node
 		if(obj.length < 2){
 			let saveEmpty = confirm("It looks like you are trying to save a empty flowchart.\n Are you sure you want to do that?");
 			if(!saveEmpty)
