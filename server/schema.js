@@ -3,7 +3,7 @@ const datatype = require('./datatype.js')
 const Schema = {
     validate: async function (data, schema) {
         const keys = Object.keys(schema)
-        
+
         for (const key of keys) {
             const schemaValue = schema[key]; 
             const value = data[key];
