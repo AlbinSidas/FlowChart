@@ -111,6 +111,7 @@ class FlowchartNode extends View {
     getName() {
         return this._name;
     }
+    
     getInValue() {
         for (let i = 0; i < this.functionVariables.length; i++){
             if(this.functionVariables[i].type == "input"){

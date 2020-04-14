@@ -61,11 +61,11 @@ async function main() {
     });
 
     app.get('/flowchart/:id/:version?', async function (req, res) {
+        console.log("PARAMS", req.params)
         const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
     });
-
 
    app.post('/flowchart/version/add', async (req, res) => {
         const data = req.body;
@@ -81,8 +81,6 @@ async function main() {
         res.json(Response("Fetched version numbers", result));
     });
 
-
-
 // ================= FUNCDEF =====================
     app.post('/funcdef/version/add', async (req, res) => {
         const data = req.body;
@@ -94,8 +92,16 @@ async function main() {
 
     app.get('/funcdef/version/snapshot/:id', async(req, res) => {
         const result = await mongoController.funcDefHandler.getVersionSnpashot(req.params.id);
-        res.status(200)
+        res.status(200);
         res.json(Response("Fetched version numbers", result));
+    });
+
+    
+    // ORDNINGEN BLIR VIKTIG HÄR! Om funcdef/all ligger under funcdef/:id kommer "all" att
+    // identifieras som id och därför gå in i fel path.
+    app.get('/funcdef/all', async(req, res) => {
+        const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
+        res.json(Response("", databaseOps))
     });
 
     app.get('/funcdef/:id/:version?', async(req, res) => {
@@ -103,10 +109,6 @@ async function main() {
         res.json(Response("", databaseOps))
     });
 
-    app.get('/funcdef/all', async(req, res) => {
-        const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
-        res.json(Response("", databaseOps))
-    });
 
     app.post('/funcdef/save', async (req, res) => {
         const data = req.body;

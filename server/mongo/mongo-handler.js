@@ -24,14 +24,17 @@ class MongoHandler {
             { $project : { latestVersionNumber: 1, targetVersion: "$versions" } }
         ]).then(a  => a)
           .catch(e => console.log(e))
+          
         const data = await result.limit(1).next();
-        console.log(data)
+        //console.log(data)
         return data
     }
 
     
     async _getById (id) {
         const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
+        console.log("ID ÄR: ", id)
+        // Det som kommer in här som ID är "all"
         const result     =  await findById([
             { $match: {_id:  ObjectID(id) } },
             {
@@ -68,6 +71,7 @@ class MongoHandler {
         if(versionNumber) {
             return await this._getByVersion(id, versionNumber);
         } else {
+            // Denna gör så det inte returneras från all
             return await this._getById(id);
         }
     }
@@ -79,7 +83,7 @@ class MongoHandler {
 
     async getAll() {
 
-        const findAll   = _promisify((...args) => { this.collection.aggregate(...args) });
+        const findAll    = _promisify((...args) => { this.collection.aggregate(...args) });
         const result     =  await findAll([
             {
                 $project: 
@@ -92,20 +96,20 @@ class MongoHandler {
         ]).then(a  => a)
           .catch(e => console.log(e))
         const all = await result.toArray();
-        console.log(all)
         return all;//await result.limit(1).next();
     }
 
 
     async addVersion(data) {
         const update = _promisify((...args) => { this.collection.update(...args) });
-        const oldEntry       = await this._getById(data._id);
+        console.log("I addversion i mongohandler: ", data)
+        const oldEntry       = await this._getById(data.id);
         const updatedVersion = oldEntry.latestVersionNumber + 1;
         const versionEntry   = { ...data.content, versionNumber: updatedVersion }
 
         const result = await update(
             // ID
-            {_id: ObjectID(data._id)},
+            {_id: ObjectID(data.id)},
             {
                 $set: { "latestVersionNumber": updatedVersion },
                 $push: {
