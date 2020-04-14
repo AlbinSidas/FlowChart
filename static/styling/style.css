@@ -9,7 +9,7 @@
     --node-background:  rgb(26, 160, 104);
     --node-input:       rgb(113, 184, 113);
     --node-output:      rgb(182, 83, 104);
-    --node-outputif:    rgb(100, 100, 200);
+    --node-outputif:    rgb(0, 230, 57);
     --node-outputelse:  rgb(200, 100, 100);
     --node-connector:   rgb(72, 163, 175);
     --node-highlight:   rgb(138, 179, 218);
@@ -75,6 +75,17 @@ body{
 
 :global #newObject img {
     width: 100%;
+}
+
+:global #newIfObject {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    position: fixed;
+    right: 9%;
+    bottom: 3%;
+    background-color: var(--button-color);
+    z-index: 10;
 }
 
 /* används inte atm */
@@ -150,7 +161,7 @@ body{
     width: 50px;
     height: 25px;
     margin-top: 250px;
-    margin-left: 100px;
+    margin-left: 50px;
     background-color: var(--node-outputif);
     cursor: pointer;
     position: absolute;
@@ -162,7 +173,7 @@ body{
     width: 50px;
     height: 25px;
     margin-top: 250px;
-    margin-left: 150px;
+    margin-left: 200px;
     background-color: var(--node-outputelse);
     cursor: pointer;
     position: absolute;

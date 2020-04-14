@@ -25,6 +25,12 @@ class NodeIO extends View {
             case 'box-dummy':
                 this.element.classList.add(style.boxStartDummy);
                 break;
+            case 'box-outputIf':
+                this.element.classList.add(style.boxOutputIf);
+                break;
+            case 'box-outputElse':
+                this.element.classList.add(style.boxOutputElse);
+                break;
             default:
                 break;
         }
