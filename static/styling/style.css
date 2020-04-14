@@ -9,6 +9,8 @@
     --node-background:  rgb(26, 160, 104);
     --node-input:       rgb(113, 184, 113);
     --node-output:      rgb(182, 83, 104);
+    --node-outputif:    rgb(100, 100, 200);
+    --node-outputelse:  rgb(200, 100, 100);
     --node-connector:   rgb(72, 163, 175);
     --node-highlight:   rgb(138, 179, 218);
 
@@ -138,6 +140,30 @@ body{
     margin-top: 250px;
     margin-left: 125px;
     background-color: var(--node-output);
+    cursor: pointer;
+    position: absolute;
+}
+
+/*Output circle*/
+.boxOutputIf {
+    border-radius: 0 0 50px 50px;
+    width: 50px;
+    height: 25px;
+    margin-top: 250px;
+    margin-left: 100px;
+    background-color: var(--node-outputif);
+    cursor: pointer;
+    position: absolute;
+}
+
+/*Output circle*/
+.boxOutputElse {
+    border-radius: 0 0 50px 50px;
+    width: 50px;
+    height: 25px;
+    margin-top: 250px;
+    margin-left: 150px;
+    background-color: var(--node-outputelse);
     cursor: pointer;
     position: absolute;
 }
