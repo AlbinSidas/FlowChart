@@ -107,6 +107,7 @@ class FlowchartNode extends View {
     registerConnectorUpdater(id, func) {
         this._connectorUpdaters[id] = func
     }
+    
     removeConnectorUpdater(id) {
         delete this._connectorUpdaters[id] 
     }

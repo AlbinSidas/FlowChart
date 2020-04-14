@@ -212,7 +212,6 @@ class Container extends View {
             this.saveClass.saveFlow(this.objects)
         })
 
-
         eventEmitter.on('increaseSize', () =>  {
             this.increaseSize();
         })
@@ -383,7 +382,7 @@ class Container extends View {
                     }
                 }
             }
-            if (this.objects[i].id == removed.prevNode.id && !startNodeTest.test(removed.id)) {
+            if (this.objects[i].id == removed.prevNode.id) { //&& !startNodeTest.test(removed.id)
                 for(let j = 0; j < this.objects[i].output.connections.length; j++){
                     if(this.objects[i].output.connections[j] == removed.currNode.id){
                         this.objects[i].output.connections.splice(j);
