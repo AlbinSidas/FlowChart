@@ -90,9 +90,11 @@ class Modal extends View
     eventEmitter.on('listClick', (listObject) => {
       this.loadDefinitionToModal(listObject);
       this.obj.functionDefinitionInstance = listObject;
+      this.currentFunctionDefinition.obj = listObject;  
       if(this.mode == "Node") {
         // Uppdatera DOM för att motsvara korrekt funktionsdefinitionsnamn
         document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
+        document.getElementById('versionNumber').innerHTML = listObject.versionNumber;
         this._saveNode();
       }
     })
@@ -196,16 +198,24 @@ class Modal extends View
     let newValue = "";
     if(upOrDown > 0){
       newValue = parseInt(elem.innerHTML) + 1;
+      console.log(this.currentFunctionDefinition.obj);
+      
+      //denna kan hitta samma funktionsdefinition i definitionslistan som innehåller senaste versionsvärdet
+      let latestVersionNumber = this.functionDefinitions.find(elem => {
+        return elem.id == this.currentFunctionDefinition.obj.id;
+      }).versionNumber;
       // Lägg till max version som är senaste versionen av 
-      /*if (newValue > this.funcDef.version max ? ? ? ? ?  ?) {
-        newValue = this.funcDef.version; ???????????????
-      }*/
+      if (newValue > latestVersionNumber) {
+        newValue = latestVersionNumber;
+      }
     } else {
       newValue = parseInt(elem.innerHTML) - 1;
       if (newValue < 0) {
         newValue = 0;
-      }
+      } 
     }
+    // Hämta en snapshot från databas och uppdatera sidan för att representera ny funcdefversion
+    // sätt this.object.functionDefinitionInstance = snapshot;
     elem.innerHTML = newValue;
   }
 
@@ -323,6 +333,7 @@ class Modal extends View
   show(object) {
       this.mode = "Node";
       this.obj = object;
+      //this.currentFunctionDefinition.obj = this.object.functionDefinitionInstance;
       this.element.style.display = "block";
       let idField = document.getElementById("modalTitle");
       idField.classList.add(styleClasses.idText);
