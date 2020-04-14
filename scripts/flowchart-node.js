@@ -10,7 +10,7 @@ class FlowchartNode extends View {
     constructor(id, functionDefinitionInstance = null){
         super()
         this.setHtml('<div></div>')
-    
+
         //functions
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
@@ -107,6 +107,7 @@ class FlowchartNode extends View {
     registerConnectorUpdater(id, func) {
         this._connectorUpdaters[id] = func
     }
+    
     removeConnectorUpdater(id) {
         delete this._connectorUpdaters[id] 
     }
@@ -115,6 +116,7 @@ class FlowchartNode extends View {
     getName() {
         return this._name;
     }
+    
     getInValue() {
         for (let i = 0; i < this.functionVariables.length; i++){
             if(this.functionVariables[i].type == "input"){

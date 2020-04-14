@@ -11,7 +11,6 @@ const MongoHandler    = mongo.MongoHanlder;
 const Schema          = require('./schema.js')
 const apiAux          = require('./api/api_auxiliary')
 const Response        = apiAux.Response
-const apiHandlers     = require('./api/api-handlers');
 
 
 async function main() {
@@ -38,6 +37,9 @@ async function main() {
     console.log("Back to main generated function")
     app.get('/', (req, res) => res.json({'apa':'Hello World!'}))
 
+
+
+// ================ FLOWCHART ====================
     app.post('/flowchart/save', async function (req, res) {
         console.log(req.body);
        
@@ -53,34 +55,60 @@ async function main() {
 
     });
 
-
     app.get('/flowchart/view', async function(req, res) {
         const databaseOps = await mongoController.flowchartHandler.getView();
         res.json(Response("", databaseOps))
     });
-    app.get('/flowchart/:id', async function (req, res) {
-        console.log(req.body);
-       
-        const databaseOps = await mongoController.flowchartHandler.getById(req.params.id)
+
+    app.get('/flowchart/:id/:version?', async function (req, res) {
+        console.log("PARAMS", req.params)
+        const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
-
     });
 
-
-    app.get('/loadfile/:fileName', function (req, res){
-        fs.readFile("./saved/"+req.params.fileName,function (err, data) {
-            if (err) throw err;
-            res.send(data);
-          }); 
+   app.post('/flowchart/version/add', async (req, res) => {
+        const data = req.body;
+        // SCHEMA VALIDATION?
+        const databaseOps = await mongoController.flowchartHandler.addVersion(data)
+        res.status(200)
+        res.json(Response("Versioned function definition", databaseOps));
     });
+
+    app.get('/flowchart/version/snapshot/:id', async(req, res) => {
+        const result = await mongoController.flowchartHandler.getVersionSnpashot(req.params.id);
+        res.status(200)
+        res.json(Response("Fetched version numbers", result));
+    });
+
+// ================= FUNCDEF =====================
+    app.post('/funcdef/version/add', async (req, res) => {
+        const data = req.body;
+        // SCHEMA VALIDATION?
+        const databaseOps = await mongoController.funcDefHandler.addVersion(data)
+        res.status(200)
+        res.json(Response("Versioned function definition", databaseOps));
+    });
+
+    app.get('/funcdef/version/snapshot/:id', async(req, res) => {
+        const result = await mongoController.funcDefHandler.getVersionSnpashot(req.params.id);
+        res.status(200);
+        res.json(Response("Fetched version numbers", result));
+    });
+
     
-    app.get('/loadfilenames', function (req, res){
-        fs.readdir("./saved/",function (err, files) {
-            if (err) throw err;
-            res.send(files);
-          }); 
+    // ORDNINGEN BLIR VIKTIG HÄR! Om funcdef/all ligger under funcdef/:id kommer "all" att
+    // identifieras som id och därför gå in i fel path.
+    app.get('/funcdef/all', async(req, res) => {
+        const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
+        res.json(Response("", databaseOps))
     });
+
+    app.get('/funcdef/:id/:version?', async(req, res) => {
+        const databaseOps = await mongoController.funcDefHandler.getOne(req.params.id, req.params.version); // kan behöva kallas på från någon annanstans om det blir större
+        res.json(Response("", databaseOps))
+    });
+
 
     app.post('/funcdef/save', async (req, res) => {
         const data = req.body;
@@ -96,18 +124,6 @@ async function main() {
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
     });
-
-    app.get('/funcdef/all', async(req, res) => {
-        const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
-        res.json(Response("", databaseOps))
-    });
-
-    app.get('/funcdef/:id', async(req, res) => {
-        const databaseOps = await mongoController.funcDefHandler.getById(req.params.id); // kan behöva kallas på från någon annanstans om det blir större
-        res.json(Response("", databaseOps))
-    });
-
-
 
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))
 }

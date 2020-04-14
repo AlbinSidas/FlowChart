@@ -3,6 +3,7 @@ import View from 'Base/view.js';
 class Button extends View {
     constructor() { 
         super()
+        this.onClick = this.onClick.bind(this);
     }
 
     didAttach(parent) {
