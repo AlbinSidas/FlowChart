@@ -19,23 +19,10 @@ class Modal extends View
     this.loadList = [];
     this.mode = "Node";
     this.render = this.render.bind(this);
-
-    /*
-    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/observe
-    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxyt
-    */
     this.saveVersionButton = null;
 
     const validator = {
         set: (target, key, value) => {
-          // console.log(target, " v ", key, " ", value);
-          // if(this.saveVersionButton == null) {return Reflect.set(value);};
-          // if(value == null || value == {}) {
-          //   this.saveVersionButton.enable(false);
-          // } else {
-          //   this.saveVersionButton.enable();
-          // }
-          // return Reflect.set(value);
             let res = Reflect.set(target, key, value);
             if(!this.saveVersionButton) {return  res }
             if(key == "obj" && (value == null || value == {})) {
@@ -132,16 +119,6 @@ class Modal extends View
         const versionObject = data.data[0];
         let funcDefObject = versionObject.versions[0];
         funcDefObject.id = versionObject._id;
-        
-        /*
-        // Letar genom listan för att finna tidigare versionobjekt
-        for(let i = 0; i < this.functionDefinitions.length ; ++i) {
-          if (this.functionDefinitions[i].id == versionObject._id) {
-            this.functionDefinitions[i] = funcDefObject;
-            break;
-          }
-        }
-        */
 
         this.functionDefinitions.push(funcDefObject);
         this.loadList.push(funcDefObject);
@@ -162,30 +139,13 @@ class Modal extends View
         funcDef.name = document.getElementById("name").value;
         funcDef.description = document.getElementById("funcdescBox").value;
         funcDef.functionVariables = this._saveScreenVariables();        
-        //console.log("########################################")
-        //console.log("Är det här ok===>", funcDef);
         let data = await this._saveVersionFuncDef(funcDef);
-        // ```
-        // {
-        //   "_id": "5e955d3abb9e745ca373a466",
-        //   "content": {
-        //          "description": "ok",
-        //         "name": "nynyny4",
-        //         "functionVariables": []
-        //   }
-          
-        // }
-        // ```
-                //kan vi se om det funkar nu 
-                // verkar vara problematiskt fortfarande
+        
         this.currentFunctionDefinition.obj.version = data.data.versionNumber;
         if(this.currentFunctionDefinition.obj.latestVersionNumber < data.data.versionNumber) {
           this.currentFunctionDefinition.obj.latestVersionNumber = data.data.versionNumber;
         }
 
-        // Kontrollera att lsitan är uppdaterad med det nya objektet, alternativt om det ej är det så ersätt
-        // det uppdaterade objektet med funcDef som kommer tillbaka från this._save().
-        // this.updateLoadListDOM();
       } catch(e) {
         console.log(`Save failed due to ${e}`);
       }
@@ -290,10 +250,8 @@ class Modal extends View
 
   async setupDropdownList() {
     const data = await funcDefAPI.getAll();
-    //console.log("Data till dropdwon", data)
     data.forEach(funcdef => {
-      //funcdef.latestVersionNumber =
-      console.log(funcdef);
+      //console.log(funcdef);
       funcdef.latestVersion.id = funcdef._id;
       this.functionDefinitions.push(funcdef.latestVersion);
       this.loadList.push(funcdef.latestVersion);
@@ -335,7 +293,7 @@ class Modal extends View
     def.functionVariables.forEach(variable => {
       this._addVariable(varList, variable)
     })
-    //this.currentFunctionDefinition.obj = def;
+    this.currentFunctionDefinition.obj = def;
   }
 
   updateLoadList(searchString) {
@@ -355,7 +313,6 @@ class Modal extends View
     }
 
     for (let i = 0; i < this.loadList.length; i++) {
-      //console.log("loadList", this.loadList[i]) //KONTROLL FÖR ATT SE OBJEKTEN SOM FINNS I LOADLIST
       let listItem = new ListItem(this.loadList[i].name, this.loadList[i]);
       dropdown.appendChild(listItem.render());
     }
@@ -496,23 +453,6 @@ class Modal extends View
   }
 }
 
-/*
-class SaveVersionButton extends Button {
-  constructor() {
-      super();
-      this.setHtml(document.getElementsByClassName('saveFunctionVersionButton')[0]);
-      this.element = document.getElementsByClassName('saveFunctionVersionButton')[0];
-      this.render = this.render.bind(this);
-      this.onClick = this.onClick.bind(this);
-      this.element.onclick = this.onClick;
-      this.element.classList.add(styleClasses.buttonFooter);
-    }
-
-  onClick() {
-    eventEmitter.emit('saveVersionFunctionDef');
-  }
-}
-*/
 class LoadButton extends Button {
   constructor() {
       super();
