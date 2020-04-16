@@ -88,12 +88,12 @@ class Modal extends View
     
     eventEmitter.on('listClick', (listObject) => {
       this.loadDefinitionToModal(listObject);
-      this.obj.functionDefinitionInstance = listObject;
       this.currentFunctionDefinition.obj = listObject;  
       if(this.mode == "Node") {
         // Uppdatera DOM för att motsvara korrekt funktionsdefinitionsnamn
         document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
         document.getElementById('versionNumber').innerHTML = listObject.versionNumber;
+        this.obj.functionDefinitionInstance = listObject;
         this._saveNode();
       }
     })
@@ -145,7 +145,6 @@ class Modal extends View
         let data = await this._saveVersionFuncDef(funcDef);
         
         console.log(this.currentFunctionDefinition.obj)
-        //this.currentFunctionDefinition.obj.version = data.data.versionNumber;
         if(this.currentFunctionDefinition.obj.versionNumber < data.data.versionNumber) {
           this.currentFunctionDefinition.obj.versionNumber = data.data.versionNumber;
         }
