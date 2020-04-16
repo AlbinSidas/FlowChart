@@ -36,9 +36,8 @@ class Modal extends View
           return Reflect.get(...arguments);
       }
     };
-    this.currentFunctionDefinition = new Proxy({
 
-    }, validator);
+    this.currentFunctionDefinition = new Proxy({}, validator);
 
     this.modalTitle   = InlineView`<div class="modalHeader"><h5 id="modalTitle" style="padding: 0 0 0 1%;"></h5>
                                       <a class='dropdown-trigger btn' style="background-color: var(--button-color)" 
@@ -145,10 +144,16 @@ class Modal extends View
         funcDef.functionVariables = this._saveScreenVariables();        
         let data = await this._saveVersionFuncDef(funcDef);
         
-        this.currentFunctionDefinition.obj.version = data.data.versionNumber;
-        if(this.currentFunctionDefinition.obj.latestVersionNumber < data.data.versionNumber) {
-          this.currentFunctionDefinition.obj.latestVersionNumber = data.data.versionNumber;
+        console.log(this.currentFunctionDefinition.obj)
+        //this.currentFunctionDefinition.obj.version = data.data.versionNumber;
+        if(this.currentFunctionDefinition.obj.versionNumber < data.data.versionNumber) {
+          this.currentFunctionDefinition.obj.versionNumber = data.data.versionNumber;
         }
+
+        this.functionDefinitions.forEach(function(def, i) { 
+            if (def.id == funcDef.id) def[i] = funcDef; 
+        });
+        this.updateLoadListDOM();
 
       } catch(e) {
         console.log(`Save failed due to ${e}`);
@@ -203,7 +208,8 @@ class Modal extends View
     if(upOrDown > 0){
       newValue = parseInt(elem.innerHTML) + 1;
       
-      //denna kan hitta samma funktionsdefinition i definitionslistan som innehåller senaste versionsvärdet
+      // denna kan hitta samma funktionsdefinition i definitionslistan som innehåller senaste versionsvärdet
+      // Kontrollerar endast lokalt
       let latestVersionNumber = this.functionDefinitions.find(elem => {
         return elem.id == this.currentFunctionDefinition.obj.id;
       }).versionNumber;
