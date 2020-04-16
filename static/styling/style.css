@@ -7,7 +7,9 @@
 
     /* Node colors */
     --node-background:  rgb(26, 160, 104);
+    --ifnode-background:rgb(221, 136, 51);
     --node-input:       rgb(113, 184, 113);
+    --node-ifinput:     rgb(57, 153, 218);
     --node-output:      rgb(182, 83, 104);
     --node-outputif:    rgb(0, 230, 57);
     --node-outputelse:  rgb(200, 100, 100);
@@ -147,6 +149,18 @@ body{
     position: absolute;
 }
 
+/*Ifnode input circle*/
+.boxIfInput {
+    border-radius: 50px 50px 50px 50px;
+    width: 50px;
+    height: 50px;
+    margin-top: -100px;
+    margin-left: -25px;
+    background-color: var(--node-ifinput);
+    cursor: pointer;
+    position: absolute;
+}
+
 /*Output circle*/
 .boxOutput {
     border-radius: 0 0 50px 50px;
@@ -161,11 +175,11 @@ body{
 
 /*Output circle*/
 .boxOutputIf {
-    border-radius: 0 0 50px 50px;
+    border-radius: 50px 50px 50px 50px;
     width: 50px;
-    height: 25px;
-    margin-top: 250px;
-    margin-left: 50px;
+    height: 50px;
+    margin-top: 50px;
+    margin-left: -25px;
     background-color: var(--node-outputif);
     cursor: pointer;
     position: absolute;
@@ -173,11 +187,11 @@ body{
 
 /*Output circle*/
 .boxOutputElse {
-    border-radius: 0 0 50px 50px;
+    border-radius: 50px 50px 50px 50px;
     width: 50px;
-    height: 25px;
-    margin-top: 250px;
-    margin-left: 200px;
+    height: 50px;
+    margin-top: -100px;
+    margin-left: 125px;
     background-color: var(--node-outputelse);
     cursor: pointer;
     position: absolute;
@@ -216,6 +230,18 @@ body{
     text-align: center;
     width: 100%;
 }
+
+.conditionalnode {
+    width: 150px;
+    height: 150px;
+    transform: rotate(45deg);
+    z-index: 9;
+    cursor: move;
+    position: absolute;
+    border-radius: 20px;
+    background-color:var(--ifnode-background);
+}
+
 
 
 /* ============================== MODAL ============================= */

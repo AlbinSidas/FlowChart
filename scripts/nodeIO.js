@@ -16,6 +16,9 @@ class NodeIO extends View {
             case 'box-input':
                 this.element.classList.add(style.boxInput);
                 break;
+            case 'box-ifinput':
+                this.element.classList.add(style.boxIfInput);
+                break;
             case 'box-output':
                 this.element.classList.add(style.boxOutput);
                 break;

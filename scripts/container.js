@@ -56,7 +56,7 @@ class Container extends View {
         eventEmitter.on("clicked", this.objectClicked);
         eventEmitter.on("connectorClicked", this.connectorClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
-        eventEmitter.on("inputClicked", this.inputClicked); //beh
+        eventEmitter.on("inputClicked", this.inputClicked); //behöver nog veta om den ska köra eller inte beroende på om en outputclicked eller en if/elseclicked kom innan
         eventEmitter.on("ifClicked", this.ifClicked);
         eventEmitter.on("elseClicked", this.elseClicked);
         eventEmitter.on("createRunnable", (id) => {   

@@ -19,7 +19,7 @@ class ConditionalNode extends FlowchartNode {
         //ui
         this.posX    = 100;
         this.posY    = 100;
-        this.height  = 250;
+        this.height  = 150;
         this.offsetX = 0;
         this.offsetY = 0;
         this.idRef   = "";
@@ -28,11 +28,11 @@ class ConditionalNode extends FlowchartNode {
         this.id    = id;
         this._name = "";
 
-        this.input  = new NodeIO(this, "box-input");
+        this.input  = new NodeIO(this, "box-ifinput");
         this.outputIf = new NodeIO(this, "box-outputIf");
         this.outputElse = new NodeIO(this, "box-outputElse");
 
-        this.element.classList.add(style.flowchart_square);
+        this.element.classList.add(style.conditionalnode);
         this.element.id = id;
 
       //  this.ifconnections = 
