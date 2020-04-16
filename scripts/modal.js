@@ -108,6 +108,8 @@ class Modal extends View
       this._changeHeader(header);
       this._emptyInnerContent(content);
       this._changeAndAddButtonsFooter(footer);
+
+      this.currentFunctionDefinition.obj = null;
     })
 
     eventEmitter.on('closeModal', () => {
@@ -169,13 +171,10 @@ class Modal extends View
 
     eventEmitter.on('changeLowerVersion', () => {
       this._updateVersionNumber(-1);
-
     })
 
     eventEmitter.on('changeHigherVersion', () => {
       this._updateVersionNumber(1);
-
-
     })
 
     eventEmitter.on('addVariable', () =>  {
@@ -196,27 +195,46 @@ class Modal extends View
   _updateVersionNumber(upOrDown) {
     let elem = document.getElementById('versionNumber');
     let newValue = "";
+
+    if(this.currentFunctionDefinition.obj == undefined) {
+      return;
+    }
+
     if(upOrDown > 0){
       newValue = parseInt(elem.innerHTML) + 1;
-      console.log(this.currentFunctionDefinition.obj);
       
       //denna kan hitta samma funktionsdefinition i definitionslistan som innehåller senaste versionsvärdet
       let latestVersionNumber = this.functionDefinitions.find(elem => {
         return elem.id == this.currentFunctionDefinition.obj.id;
       }).versionNumber;
+
       // Lägg till max version som är senaste versionen av 
       if (newValue > latestVersionNumber) {
         newValue = latestVersionNumber;
+      } else {
+        this._updateVersion(newValue);
       }
     } else {
       newValue = parseInt(elem.innerHTML) - 1;
-      if (newValue < 0) {
-        newValue = 0;
-      } 
+      if (newValue < 1) {
+        newValue = 1;
+      } else {
+        this._updateVersion(newValue);
+      }
     }
-    // Hämta en snapshot från databas och uppdatera sidan för att representera ny funcdefversion
-    // sätt this.object.functionDefinitionInstance = snapshot;
+
     elem.innerHTML = newValue;
+  }
+
+  async _updateVersion(requestVersion) {
+    let funcDef = await this._getVersionSnapShot(this.currentFunctionDefinition.obj.id, requestVersion);
+
+    this.close();
+    this.obj.functionDefinitionInstance = funcDef.targetVersion;
+    if(funcDef.targetVersion.versionNumber == 1) {
+      funcDef.targetVersion.id = funcDef._id;
+    }
+    this.show(this.obj);
   }
 
   _changeHeader(header) {
@@ -229,7 +247,7 @@ class Modal extends View
   _emptyInnerContent(content) {
     content.innerHTML = `
                             Name: <input type="text" id="name" value=""> </br>                       
-                            Description: <input type="text" id="funcdescBox" value="${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.description : ""}">
+                            Description: <input type="text" id="funcdescBox" value="">
                             Variables: </br>
                             <input type="text" value="Name" id="nameInp"><input type="text" value="Type" id="typeInp"> </br></br>
                             <ul id="cVarList"></ul>
@@ -261,7 +279,6 @@ class Modal extends View
   async setupDropdownList() {
     const data = await funcDefAPI.getAll();
     data.forEach(funcdef => {
-      //console.log(funcdef);
       funcdef.latestVersion.id = funcdef._id;
       this.functionDefinitions.push(funcdef.latestVersion);
       this.loadList.push(funcdef.latestVersion);
@@ -269,7 +286,7 @@ class Modal extends View
     this.updateLoadListDOM();
   }
 
-  updateList(){
+  updateList() {
     let ul = document.getElementById("cVarList");
     if(!this.obj.functionDefinitionInstance) { return; }
     for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
@@ -333,7 +350,11 @@ class Modal extends View
   show(object) {
       this.mode = "Node";
       this.obj = object;
-      //this.currentFunctionDefinition.obj = this.object.functionDefinitionInstance;
+
+      if(this.obj.functionDefinitionInstance != null) {
+        this.currentFunctionDefinition.obj = this.obj.functionDefinitionInstance;
+      }
+
       this.element.style.display = "block";
       let idField = document.getElementById("modalTitle");
       idField.classList.add(styleClasses.idText);
@@ -346,7 +367,7 @@ class Modal extends View
                               <p id="functionDefinition"> Function: ${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.name : "No function assigned"} </br> </p>
                               <div id="functionVersion"> Version: 
                                 <button id="functionVersionDown" class="btn"></button> 
-                                <span id="versionNumber"> 0 </span> 
+                                <span id="versionNumber"> ${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.versionNumber : 0} </span>
                                 <button id="functionVersionUp" class="btn"></button>
                               </div>
                               Variables:
@@ -396,27 +417,25 @@ class Modal extends View
           "content": { ...saveObject }
         };
         let res =  await funcDefAPI.saveVersion(data);
-        console.log("Svar från backend med save Version:" ,res);
         return res;
     } catch(e) {
       throw new Error('Failed to save version');
     }
   }
 
-  async _getVersionSnapShot(id) {
+  async _getVersionSnapShot(id, version) {
     try {
-      let res =  await funcDefAPI/*.saveVersion(
-          saveObject
-      );
-      */
+      let res =  await funcDefAPI.getVersion(id, version);
       return res;
     } catch(e) {
-      throw new Error('Failed to save version');
+      throw new Error('Failed to get version');
     }
   }
 
   _saveNode() {
-    this.obj.setName(document.getElementById("name").value);
+    this.obj.setName(document.getElementById("name").value ? 
+                     document.getElementById("name").value : "" );
+
     this.obj.functionDescription = document.getElementById("nodeDescriptionBox").value;
     if (this.obj.functionDefinitionInstance) {
       let definitionVariables = this.obj.functionDefinitionInstance.functionVariables;

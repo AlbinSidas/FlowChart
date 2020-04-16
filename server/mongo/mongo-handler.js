@@ -24,17 +24,13 @@ class MongoHandler {
             { $project : { latestVersionNumber: 1, targetVersion: "$versions" } }
         ]).then(a  => a)
           .catch(e => console.log(e))
-          
         const data = await result.limit(1).next();
-        //console.log(data)
         return data
     }
 
-    
+
     async _getById (id) {
         const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
-        console.log("ID ÄR: ", id)
-        // Det som kommer in här som ID är "all"
         const result     =  await findById([
             { $match: {_id:  ObjectID(id) } },
             {
@@ -76,10 +72,6 @@ class MongoHandler {
         }
     }
 
-    // async getAll() {
-    //     const data = this.collection.find();
-    //     return await data.toArray();
-    // }
 
     async getAll() {
 
@@ -102,7 +94,6 @@ class MongoHandler {
 
     async addVersion(data) {
         const update = _promisify((...args) => { this.collection.update(...args) });
-        console.log("I addversion i mongohandler: ", data)
         const oldEntry       = await this._getById(data.id);
         const updatedVersion = oldEntry.latestVersionNumber + 1;
         const versionEntry   = { ...data.content, versionNumber: updatedVersion }
