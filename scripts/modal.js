@@ -144,7 +144,6 @@ class Modal extends View
         funcDef.functionVariables = this._saveScreenVariables();        
         let data = await this._saveVersionFuncDef(funcDef);
         
-        console.log(this.currentFunctionDefinition.obj)
         if(this.currentFunctionDefinition.obj.versionNumber < data.data.versionNumber) {
           this.currentFunctionDefinition.obj.versionNumber = data.data.versionNumber;
         }
