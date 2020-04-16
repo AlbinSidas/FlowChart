@@ -1,13 +1,25 @@
 const MongoHandler  = require('./mongo-handler');
-const _promisify = require('../util/promisify')
+const _promisify = require('../util/promisify');
+const FlowchartVCHandler = require('./flowchart-vc-handler') 
 //const protocolAssign = require('./mongo_protocol').assign
 
 // A Mongo handler that is MongoProtocol
 class FlowchartHandler extends MongoHandler {
-    constructor(db, collectionName) {
+    constructor(db, collectionName, controller) {
         super(db, collectionName)
+        this.controller = controller;
+        this.flowchartVCHandler = new FlowchartVCHandler(db, "flowchart_vc", this);
     }
 
+    async addToVersionControl(id) {
+        //this.controller.addToFuncdefVersionControl(id)
+        return await this.flowchartVCHandler.upsertVersion(id);
+    }
+
+    async getLatestVersion(id) {
+        const data = await this.flowchartVCHandler._getById(id);
+        return data.latestVersionNumber;
+    }
     async getView() {
      
         const findAll   = _promisify((...args) => { this.collection.aggregate(...args) });

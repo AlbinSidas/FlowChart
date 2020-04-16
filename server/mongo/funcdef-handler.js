@@ -1,0 +1,26 @@
+const MongoHandler  = require('./mongo-handler');
+const FuncDefVCHandler  = require('./funcdef-vc-handler');
+
+//const protocolAssign = require('./mongo_protocol').assign
+
+// A Mongo handler that is MongoProtocol
+class FuncDefHandler extends MongoHandler {
+    constructor(db, collectionName, controller) {
+        super(db, collectionName)
+        this.controller = controller;
+        this.funcDefVCHandler   = new FuncDefVCHandler (db, "function_definition_vc", this);
+    }
+
+    async addToVersionControl(id) {
+        //this.controller.addToFuncdefVersionControl(id)
+        return await this.funcDefVCHandler.upsertVersion(id);
+    }
+
+    async getLatestVersion(id) {
+        const data = await this.funcDefVCHandler._getById(id);
+        return data.latestVersionNumber;
+    }
+
+}
+
+module.exports = FuncDefHandler

@@ -2,10 +2,11 @@ const MongoHandler  = require('./mongo-handler');
 //const protocolAssign = require('./mongo_protocol').assign
 
 // A Mongo handler that is MongoProtocol
-class FuncDefHandler extends MongoHandler {
-    constructor(db, collectionName) {
+class FuncDefVCHandler extends MongoHandler {
+    constructor(db, collectionName, controller) {
         super(db, collectionName)
+        this.controller = controller;
     }
 }
 
-module.exports = FuncDefHandler
+module.exports = FuncDefVCHandler
