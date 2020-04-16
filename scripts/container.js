@@ -95,6 +95,7 @@ class Container extends View {
                 }
             }.bind(this)
         } else {
+            console.log(this.markedObject);
             if (this.markedObject.length != 0 && e.ctrlKey == false) {
                 this.removeMarked();
                 this.removeMarkedConnector();
@@ -138,7 +139,16 @@ class Container extends View {
         let connector = {};
         if (!currNode.input.connections.includes(this.markedOutput)) {
             currNode.input.connections.push(this.markedOutput);
-            prevNode.output.connections.push(currNode.id);
+            if(this.ifnode == ""){
+                prevNode.output.connections.push(currNode.id);
+            }
+            else if(this.ifnode == "if"){
+                prevNode.outputIf.connections.push(currNode.id);
+            }
+            // FIXA SÅ ATT DET TAS BORT PÅ RÄTT SÄTT MED
+            else if(this.ifnode == "else"){
+                prevNode.outputElse.connections.push(currNode.id);
+            }
             connector = new Connector(currNode.id + prevNode.id, prevNode, currNode, this.ifnode);
             prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
             currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
@@ -383,8 +393,8 @@ class Container extends View {
         }
     }
     removeConnector(){
-        var removed = this.markedConnector[0];
-        var startNodeTest = RegExp('start-node');
+        let removed = this.markedConnector[0];
+        let startNodeTest = RegExp('start-node');
         // this loop removes the connector id from the two nodes
         for( let i = 0 ; i < this.objects.length; i++ ) {
             if (this.objects[i].id == removed.currNode.id ) {
@@ -396,11 +406,23 @@ class Container extends View {
                     }
                 }
             }
+            // Bryt ut den till en egen funktion, en för if och en för else
+            //Behöver ta bort beroende på output, outputif och outputelse
             if (this.objects[i].id == removed.prevNode.id) { //&& !startNodeTest.test(removed.id)
                 for(let j = 0; j < this.objects[i].output.connections.length; j++){
                     if(this.objects[i].output.connections[j] == removed.currNode.id){
                         this.objects[i].output.connections.splice(j);
-                        this.objects[i].removeConnectorUpdater(removed.id);                    
+                        this.objects[i].removeConnectorUpdater(removed.id);
+                        
+                        /*if(removed.ifnode == ""){
+                                                
+                        }
+                        else if(removed.ifnode == "if"){
+
+                        }
+                        else if(removed.ifnode == "else"){
+
+                        }*/
                         break;
                     }
                 }
