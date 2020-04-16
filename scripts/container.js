@@ -29,6 +29,7 @@ class Container extends View {
         this.markedObject   = [];
         this.markedConnector= [];
         this.markedOutput   = "";
+        this.ifnode         = "";
         this.connectorList  = [];
         this.objectClick    = {};
         this.connectorClick = {};        
@@ -48,6 +49,8 @@ class Container extends View {
         this.objectClicked    = this.objectClicked.bind(this);
         this.connectorClicked = this.connectorClicked.bind(this);
         this.inputClicked     = this.inputClicked.bind(this);
+        this.ifClicked        = this.ifClicked.bind(this);
+        this.elseClicked      = this.elseClicked.bind(this);
         
 
         this.loadFlow = this.loadFlow.bind(this)
@@ -127,18 +130,16 @@ class Container extends View {
     
     inputClicked(id) {
         if (id == this.markedOutput || this.markedOutput == "") {
-            return;
-        }
-
+            return;V
+        }     
         const currNode = this.objects.find(temp => temp.id == id )
         const prevNode = this.objects.find(temp => temp.id == this.markedOutput )
-
+    
         let connector = {};
         if (!currNode.input.connections.includes(this.markedOutput)) {
             currNode.input.connections.push(this.markedOutput);
             prevNode.output.connections.push(currNode.id);
-
-            connector = new Connector(currNode.id + prevNode.id, prevNode, currNode);
+            connector = new Connector(currNode.id + prevNode.id, prevNode, currNode, this.ifnode);
             prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
             currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
             connector.element.classList.add("connector");
@@ -151,16 +152,19 @@ class Container extends View {
             });
         }
         this.markedOutput = "";
+        this.ifnode = "";
         connector.updateConnections();
         
     }
 
     ifClicked(id){
         this.markedOutput = id;
+        this.ifnode = "if";
     }
 
     elseClicked(id){
         this.markedOutput = id;
+        this.ifnode = "else";
     }
 
 

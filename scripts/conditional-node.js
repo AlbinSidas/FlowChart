@@ -1,6 +1,7 @@
 import FlowchartNode from './flowchart-node';
 import style from 'Styles/style.css';
-import NodeIO from './nodeIO.js'
+import NodeIO from './nodeIO.js';
+import { InlineView } from './base/view.js';
 
 class ConditionalNode extends FlowchartNode {
     //vid input 0 kör if-delen
@@ -28,11 +29,12 @@ class ConditionalNode extends FlowchartNode {
         this.id    = id;
         this._name = "";
 
-        this.input  = new NodeIO(this, "box-ifinput");
+        this.input  = new NodeIO(this, "box-input");
         this.outputIf = new NodeIO(this, "box-outputIf");
         this.outputElse = new NodeIO(this, "box-outputElse");
+        this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id}</p>`);
 
-        this.element.classList.add(style.conditionalnode);
+        this.element.classList.add(style.flowchart_square);
         this.element.id = id;
 
       //  this.ifconnections = 
