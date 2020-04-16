@@ -7,7 +7,6 @@ class Network {
     }
 
     async save(obj) {
-        console.log("OBJ", obj)
         return fetch(`${this.baseURL}/save`, 
         {
             method:   'POST',
@@ -23,7 +22,6 @@ class Network {
 
         }).catch((error) => {
             // Handle error
-
             console.log("Fail", error);
         });
 
@@ -33,7 +31,6 @@ class Network {
     }
 
     async saveVersion(obj) {
-        console.log("Save object to update Version", obj)
         return fetch(`${this.baseURL}/version/add`, 
         {
             method:   'POST',
@@ -44,7 +41,6 @@ class Network {
         }).then((response) => response.json())
         .then(data => {
             // Confirm save
-            console.log("Får tillbaka data från backend")
             console.log("success", data);
             return data;
 
@@ -61,7 +57,6 @@ class Network {
     }
 
     async getById(id) {
-        console.log("Kommer in i getByID istället för all")
         const data = await fetch(`${this.baseURL}/${id}`).then(res  => res.json())
                                                          .then(res => res.data)
         return data;
@@ -72,6 +67,12 @@ class Network {
 class FuncDefAPI extends Network {
     constructor(destination, apiRoute) {
         super(destination, apiRoute)
+    }
+
+    async getVersion(id, version) {
+        const data = await fetch(`${this.baseURL}/${id}/${version}`).then(res  => res.json())
+                                                         .then(res => res.data)
+        return data;
     }
 }
 

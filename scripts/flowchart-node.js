@@ -229,7 +229,6 @@ class FlowchartNode extends View {
     }
 
     static CreateExternal(object, inputIds, outputIds) {
-        console.log(object)
         const node = new FlowchartNode(object.id, object.functionDefinitionInstance);
         node.fillNode(object);
         return node;
