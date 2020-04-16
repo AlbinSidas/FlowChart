@@ -35,6 +35,8 @@ class ConditionalNode extends FlowchartNode {
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
 
+      //  this.ifconnections = 
+
 
     }
 

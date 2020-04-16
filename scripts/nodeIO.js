@@ -58,6 +58,12 @@ class NodeIO extends View {
         else if (this.type == "box-start") {
             eventEmitter.emit("outputClicked", this.id);
         }
+        else if (this.type == "box-outputIf") {
+            eventEmitter.emit("ifClicked", this.id);
+        }
+        else if (this.type == "box-outputElse") {
+            eventEmitter.emit("elseClicked", this.id);
+        }
         else if (this.type == "box-dummy") {
             return;
         }

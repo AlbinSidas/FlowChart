@@ -88,6 +88,10 @@ body{
     z-index: 10;
 }
 
+:global #newIfObject img {
+    width: 100%;
+}
+
 /* används inte atm */
 :global #element-picker { 
     background-color: orange;

@@ -56,7 +56,9 @@ class Container extends View {
         eventEmitter.on("clicked", this.objectClicked);
         eventEmitter.on("connectorClicked", this.connectorClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
-        eventEmitter.on("inputClicked", this.inputClicked);
+        eventEmitter.on("inputClicked", this.inputClicked); //beh
+        eventEmitter.on("ifClicked", this.ifClicked);
+        eventEmitter.on("elseClicked", this.elseClicked);
         eventEmitter.on("createRunnable", (id) => {   
             
             this.flowchartList = [];
@@ -151,6 +153,14 @@ class Container extends View {
         this.markedOutput = "";
         connector.updateConnections();
         
+    }
+
+    ifClicked(id){
+        this.markedOutput = id;
+    }
+
+    elseClicked(id){
+        this.markedOutput = id;
     }
 
 
