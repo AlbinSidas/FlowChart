@@ -89,7 +89,7 @@ class Modal extends View
     
     eventEmitter.on('listClick', (listObject) => {
       this.loadDefinitionToModal(listObject);
-      this.obj.functionDefinitionInstance = listObject;
+      this.currentFunctionDefinition.obj = listObject;
       if(this.mode == "Node") {
         // Uppdatera DOM för att motsvara korrekt funktionsdefinitionsnamn
         document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
@@ -264,8 +264,6 @@ class Modal extends View
     if(!this.obj.functionDefinitionInstance) { return; }
     for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
       this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
-      // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
-      // Lägg till dessa varianter till addvariable isåfall.
     }
   }
 
@@ -276,8 +274,19 @@ class Modal extends View
         let input = document.createElement("INPUT");
         input.setAttribute('id', variableObject.name);
         // TODO Sätt defaultvärden här om det behövs. Förändra defaultvärdet i funktionsvariabler?
-        input.value = variableObject.value ? variableObject.value : "Fill value"; 
+        input.value = variableObject.value ? variableObject.value : "Fill value";
         li.appendChild(input);
+      } else if (this.mode == "Function") {
+        let button = document.createElement('button');
+        button.style = "background-color: var(--button-color);";
+        button.innerHTML = "Remove variable";
+        // LÄGG TILL ID OCH ONCLICK FÖR DESSA KNAPPAR, HUR SKA JAG HANTERA DEM? 
+        // TÄNK OCKSÅ PÅ HUR DETTA BÖR HANTERAS I INPUTLISTORNA I NODEMODE
+
+        //li.appendChild('<button style="background-color: var(--button-color)"> Remove </button>');
+        //li.appendChild(button);
+        li.insertAdjacentElement('afterbegin', button)
+
       }
       list.appendChild(li);
   }
