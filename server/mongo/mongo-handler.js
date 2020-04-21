@@ -18,10 +18,9 @@ class MongoHandler {
     async _getByVersion(id, versionNumber) { 
         const aggregateVersion  = _promisify((...args) => { this.collection.aggregate(...args) });
         const result            =  await aggregateVersion([
-            { $match   : { "versions.versionNumber": parseInt(versionNumber)} },
-            { $unwind  : "$versions" },
-            { $match   : { "versions.versionNumber": parseInt(versionNumber) } }, 
-            { $project : { latestVersionNumber: 1, targetVersion: "$versions" } }
+            { $match   : { "funcdef_id": ObjectID(id)} }, 
+            { $match   : { "versionNumber": parseInt(versionNumber)} },
+            { $project : { _id: 0 } }
         ]).then(a  => a)
           .catch(e => console.log(e))
           
@@ -49,10 +48,6 @@ class MongoHandler {
           .catch(e => console.log(e))
         return await result.limit(1).next();
     }
-
-
-
-
 
 
     // ======= UPSERT ====== id är ObjeectId redan
@@ -90,7 +85,7 @@ class MongoHandler {
 
     // ======================== PUBLIC ==================
 
-    async save(data, id = null, vNum = 1) { // funcdef_id?
+    async save(data, id = null, vNum = 1) {
         
         const versionNumber = vNum;
         const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
@@ -98,7 +93,7 @@ class MongoHandler {
             const result  = await insertOne({
                 ...data,
                 versionNumber: versionNumber,
-                funcdef_id: id ? id : ObjectID()
+                funcdef_id: id ? ObjectID(id) : ObjectID()
             })
            
             const arr =  result.ops
@@ -112,47 +107,14 @@ class MongoHandler {
         } 
         
         return null;
-        // const latestVersionNumber = 1;
-        // const findLatest = _promisify((...args) => { this.collection.aggregate(...args) });
-        // const result = await findLatest([
-        //     {
-        //         $group: { _id: null, latestDocId: { $max: "$_id"} } }, 
-        //         {$project: {_id: 0, latestDocId: 1}
-        //     }
-        // ]);
-        //db.collectionName.aggregate( [{$group: {_id: null, latestDocId: { $max: "$_id"}}}, {$project: {_id: 0, latestDocId: 1}}] )
     } 
 
     async addToVersionControl() {} // overridden
 
     async addVersion(data) {
         const versionNumber = (await this.getLatestVersion(data[this.keyName])) + 1
-
-        //const insertOne = _promisify((...args) => this.collection.insertOne(...args));
         const result = await this.save(data.content, data[this.keyName], versionNumber);
-        console.log("UV", result);
-        return result
-        // const update = _promisify((...args) => { this.collection.update(...args) });
-        // console.log("I addversion i mongohandler: ", data)
-        // const oldEntry       = await this._getById(data.id);
-        // const updatedVersion = oldEntry.latestVersionNumber + 1;
-        // const versionEntry   = { ...data.content, versionNumber: updatedVersion }
-
-        // const result = await update(
-        //     // ID
-        //     {_id: ObjectID(data.id)},
-        //     {
-        //         $set: { "latestVersionNumber": updatedVersion },
-        //         $push: {
-        //             versions: versionEntry
-        //         }
-        //     }
-        // ).catch(err => { console.log(err); 
-        //                  return null 
-        //                });
-
-        // return {_id: data._id, ...versionEntry};
-
+        return result;
     }
 
 
