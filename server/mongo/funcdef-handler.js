@@ -7,6 +7,7 @@ const FuncDefVCHandler  = require('./funcdef-vc-handler');
 class FuncDefHandler extends MongoHandler {
     constructor(db, collectionName, controller) {
         super(db, collectionName)
+        this.keyName = "funcdef_id"
         this.controller = controller;
         this.funcDefVCHandler   = new FuncDefVCHandler (db, "function_definition_vc", this);
     }

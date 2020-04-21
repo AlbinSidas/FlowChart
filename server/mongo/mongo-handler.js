@@ -104,7 +104,7 @@ class MongoHandler {
             const arr =  result.ops
             const object = arr.pop();
             if(object) {
-                const versionEntry = await this.addToVersionControl(object.funcdef_id);
+                const versionEntry = await this.addToVersionControl(object[this.keyName]);
                 return object;
             }
         } catch (err) {
@@ -126,11 +126,12 @@ class MongoHandler {
     async addToVersionControl() {} // overridden
 
     async addVersion(data) {
-        const versionNumber = (await this.getLatestVersion(data.funcdef_id)) + 1
+        const versionNumber = (await this.getLatestVersion(data[this.keyName])) + 1
 
         //const insertOne = _promisify((...args) => this.collection.insertOne(...args));
-        const result = await this.save(data.content, data.funcdef_id, versionNumber);
+        const result = await this.save(data.content, data[this.keyName], versionNumber);
         console.log("UV", result);
+        return result
         // const update = _promisify((...args) => { this.collection.update(...args) });
         // console.log("I addversion i mongohandler: ", data)
         // const oldEntry       = await this._getById(data.id);
@@ -160,7 +161,7 @@ class MongoHandler {
         const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
         const result     =  await insertOne({
             ...data,
-            funcdef_id: ObjectID()
+            [this.keyName]: ObjectID()
         }).then(a  => a.ops)
            .catch(e => console.log("SAVE ERRROOORO", e))
         return result;

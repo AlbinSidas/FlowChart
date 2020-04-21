@@ -7,6 +7,7 @@ const FlowchartVCHandler = require('./flowchart-vc-handler')
 class FlowchartHandler extends MongoHandler {
     constructor(db, collectionName, controller) {
         super(db, collectionName)
+        this.keyName = "flowchart_id"
         this.controller = controller;
         this.flowchartVCHandler = new FlowchartVCHandler(db, "flowchart_vc", this);
     }
@@ -20,6 +21,7 @@ class FlowchartHandler extends MongoHandler {
         const data = await this.flowchartVCHandler._getById(id);
         return data.latestVersionNumber;
     }
+
     async getView() {
      
         const findAll   = _promisify((...args) => { this.collection.aggregate(...args) });
