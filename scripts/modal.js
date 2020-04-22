@@ -36,9 +36,8 @@ class Modal extends View
           return Reflect.get(...arguments);
       }
     };
-    this.currentFunctionDefinition = new Proxy({
 
-    }, validator);
+    this.currentFunctionDefinition = new Proxy({}, validator);
 
     this.modalTitle   = InlineView`<div class="modalHeader"><h5 id="modalTitle" style="padding: 0 0 0 1%;"></h5>
                                       <a class='dropdown-trigger btn' style="background-color: var(--button-color)" 
@@ -89,10 +88,12 @@ class Modal extends View
     
     eventEmitter.on('listClick', (listObject) => {
       this.loadDefinitionToModal(listObject);
-      this.currentFunctionDefinition.obj = listObject;
+      this.currentFunctionDefinition.obj = listObject;  
       if(this.mode == "Node") {
         // Uppdatera DOM för att motsvara korrekt funktionsdefinitionsnamn
         document.getElementById('functionDefinition').innerHTML = "Function: " + listObject.name;
+        document.getElementById('versionNumber').innerHTML = listObject.versionNumber;
+        this.obj.functionDefinitionInstance = listObject;
         this._saveNode();
       }
     })
@@ -106,6 +107,8 @@ class Modal extends View
       this._changeHeader(header);
       this._emptyInnerContent(content);
       this._changeAndAddButtonsFooter(footer);
+
+      this.currentFunctionDefinition.obj = null;
     })
 
     eventEmitter.on('closeModal', () => {
@@ -141,10 +144,14 @@ class Modal extends View
         funcDef.functionVariables = this._saveScreenVariables();        
         let data = await this._saveVersionFuncDef(funcDef);
         
-        this.currentFunctionDefinition.obj.version = data.data.versionNumber;
-        if(this.currentFunctionDefinition.obj.latestVersionNumber < data.data.versionNumber) {
-          this.currentFunctionDefinition.obj.latestVersionNumber = data.data.versionNumber;
+        if(this.currentFunctionDefinition.obj.versionNumber < data.data.versionNumber) {
+          this.currentFunctionDefinition.obj.versionNumber = data.data.versionNumber;
         }
+
+        this.functionDefinitions.forEach(function(def, i) { 
+            if (def.id == funcDef.id) def[i] = funcDef; 
+        });
+        this.updateLoadListDOM();
 
       } catch(e) {
         console.log(`Save failed due to ${e}`);
@@ -167,13 +174,10 @@ class Modal extends View
 
     eventEmitter.on('changeLowerVersion', () => {
       this._updateVersionNumber(-1);
-
     })
 
     eventEmitter.on('changeHigherVersion', () => {
       this._updateVersionNumber(1);
-
-
     })
 
     eventEmitter.on('addVariable', () =>  {
@@ -189,24 +193,71 @@ class Modal extends View
       nameInput.value = 'Name';
       typeInput.value = 'Type';
     })
+
+    eventEmitter.on('removeVariable', (removed) => {
+      console.log("FIND THIS MADDAFAKKER", removed);
+
+      /* Hitta och ta bort variabeln ur ilstan, (Kolla på bra lösning i save new version där versionen 
+        hittar och byter ut en befintlig version i listan)
+        */
+      /*this.currentFunctionDefinition.obj.functionVariables.find((vari) => {
+        return vari == removed;
+      })
+      */
+     let indxOf;
+     this.currentFunctionDefinition.obj.functionVariables.forEach(function(fvariable, i) { 
+      if (fvariable.id == removed) indxOf = i;
+    });
+    
+    this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1);
+    
+  })
   }
 
   _updateVersionNumber(upOrDown) {
     let elem = document.getElementById('versionNumber');
     let newValue = "";
+
+    if(this.currentFunctionDefinition.obj == undefined) {
+      return;
+    }
+
     if(upOrDown > 0){
       newValue = parseInt(elem.innerHTML) + 1;
+      
+      // denna kan hitta samma funktionsdefinition i definitionslistan som innehåller senaste versionsvärdet
+      // Kontrollerar endast lokalt i nuläget
+      let latestVersionNumber = this.functionDefinitions.find(elem => {
+        return elem.id == this.currentFunctionDefinition.obj.id;
+      }).versionNumber;
+
       // Lägg till max version som är senaste versionen av 
-      /*if (newValue > this.funcDef.version max ? ? ? ? ?  ?) {
-        newValue = this.funcDef.version; ???????????????
-      }*/
+      if (newValue > latestVersionNumber) {
+        newValue = latestVersionNumber;
+      } else {
+        this._updateVersion(newValue);
+      }
     } else {
       newValue = parseInt(elem.innerHTML) - 1;
-      if (newValue < 0) {
-        newValue = 0;
+      if (newValue < 1) {
+        newValue = 1;
+      } else {
+        this._updateVersion(newValue);
       }
     }
+
     elem.innerHTML = newValue;
+  }
+
+  async _updateVersion(requestVersion) {
+    let funcDef = await this._getVersionSnapShot(this.currentFunctionDefinition.obj.id, requestVersion);
+
+    this.close();
+    this.obj.functionDefinitionInstance = funcDef.targetVersion;
+    if(funcDef.targetVersion.versionNumber == 1) {
+      funcDef.targetVersion.id = funcDef._id;
+    }
+    this.show(this.obj);
   }
 
   _changeHeader(header) {
@@ -219,7 +270,7 @@ class Modal extends View
   _emptyInnerContent(content) {
     content.innerHTML = `
                             Name: <input type="text" id="name" value=""> </br>                       
-                            Description: <input type="text" id="funcdescBox" value="${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.description : ""}">
+                            Description: <input type="text" id="funcdescBox" value="">
                             Variables: </br>
                             <input type="text" value="Name" id="nameInp"><input type="text" value="Type" id="typeInp"> </br></br>
                             <ul id="cVarList"></ul>
@@ -251,7 +302,6 @@ class Modal extends View
   async setupDropdownList() {
     const data = await funcDefAPI.getAll();
     data.forEach(funcdef => {
-      //console.log(funcdef);
       funcdef.latestVersion.id = funcdef._id;
       this.functionDefinitions.push(funcdef.latestVersion);
       this.loadList.push(funcdef.latestVersion);
@@ -259,11 +309,15 @@ class Modal extends View
     this.updateLoadListDOM();
   }
 
-  updateList(){
+  updateList() {
     let ul = document.getElementById("cVarList");
-    if(!this.obj.functionDefinitionInstance) { return; }
-    for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
-      this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
+    //if(!this.obj.functionDefinitionInstance) { return; }
+    if(!this.currentFunctionDefinition.obj) {return;};
+    for (let i = 0; i < this.currentFunctionDefinition.obj.functionVariables.length; i++){
+    
+    //for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
+      //this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
+      this._addVariable(ul, this.currentFunctionDefinition.obj.functionVariables[i]);
     }
   }
 
@@ -277,15 +331,29 @@ class Modal extends View
         input.value = variableObject.value ? variableObject.value : "Fill value";
         li.appendChild(input);
       } else if (this.mode == "Function") {
-        let button = document.createElement('button');
-        button.style = "background-color: var(--button-color);";
-        button.innerHTML = "Remove variable";
+        let removeButton = document.createElement('button');
+        removeButton.innerHTML = "Remove variable";
+        removeButton.setAttribute("style", "background-color: var(--button-color);");
+        removeButton.classList.add("btn");
+        
         // LÄGG TILL ID OCH ONCLICK FÖR DESSA KNAPPAR, HUR SKA JAG HANTERA DEM? 
         // TÄNK OCKSÅ PÅ HUR DETTA BÖR HANTERAS I INPUTLISTORNA I NODEMODE
+        
+        //let removeButton = '<button style="background-color: var(--button-color)" class="btn"> Remove variable </button>';
+        
+        removeButton = new FuncDefVariableRemove(removeButton, variableObject);
+        li.insertAdjacentElement('afterbegin', removeButton.element);
 
-        //li.appendChild('<button style="background-color: var(--button-color)"> Remove </button>');
-        //li.appendChild(button);
-        li.insertAdjacentElement('afterbegin', button)
+        /*
+          Har jag tillgång till objektet?
+          Ja, variable Object kommer vara listitemet och därmed kommer jag
+          veta vilken det är. 
+          Hur ska jag lösa multiple none unique ID?
+
+          Problem uppstår med att removeButton inte är ett element av någon anledning.
+          Kolla närmare på detta.
+        */
+
 
       }
       list.appendChild(li);
@@ -332,6 +400,11 @@ class Modal extends View
   show(object) {
       this.mode = "Node";
       this.obj = object;
+
+      if(this.obj.functionDefinitionInstance != null) {
+        this.currentFunctionDefinition.obj = this.obj.functionDefinitionInstance;
+      }
+
       this.element.style.display = "block";
       let idField = document.getElementById("modalTitle");
       idField.classList.add(styleClasses.idText);
@@ -344,7 +417,7 @@ class Modal extends View
                               <p id="functionDefinition"> Function: ${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.name : "No function assigned"} </br> </p>
                               <div id="functionVersion"> Version: 
                                 <button id="functionVersionDown" class="btn"></button> 
-                                <span id="versionNumber"> 0 </span> 
+                                <span id="versionNumber"> ${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.versionNumber : 0} </span>
                                 <button id="functionVersionUp" class="btn"></button>
                               </div>
                               Variables:
@@ -394,27 +467,25 @@ class Modal extends View
           "content": { ...saveObject }
         };
         let res =  await funcDefAPI.saveVersion(data);
-        console.log("Svar från backend med save Version:" ,res);
         return res;
     } catch(e) {
       throw new Error('Failed to save version');
     }
   }
 
-  async _getVersionSnapShot(id) {
+  async _getVersionSnapShot(id, version) {
     try {
-      let res =  await funcDefAPI/*.saveVersion(
-          saveObject
-      );
-      */
+      let res =  await funcDefAPI.getVersion(id, version);
       return res;
     } catch(e) {
-      throw new Error('Failed to save version');
+      throw new Error('Failed to get version');
     }
   }
 
   _saveNode() {
-    this.obj.setName(document.getElementById("name").value);
+    this.obj.setName(document.getElementById("name").value ? 
+                     document.getElementById("name").value : "" );
+
     this.obj.functionDescription = document.getElementById("nodeDescriptionBox").value;
     if (this.obj.functionDefinitionInstance) {
       let definitionVariables = this.obj.functionDefinitionInstance.functionVariables;
@@ -541,6 +612,23 @@ class EarlierVersionButton extends Button {
 
   onClick() {
     eventEmitter.emit('changeLowerVersion');
+  }
+}
+
+class FuncDefVariableRemove extends View {
+  constructor(element, object = {}) { 
+      super();
+      this.setHtml(element);
+      this.element         = element;
+      this.render          = this.render.bind(this);
+      this.onClick         = this.onClick.bind(this)
+      this.object          = object;
+      this.element.onclick = this.onClick;
+      this.element.classList.add(styleClasses.removeVariableButton);
+  }
+
+  onClick() {
+    eventEmitter.emit('removeVariable', this.object);
   }
 }
 
