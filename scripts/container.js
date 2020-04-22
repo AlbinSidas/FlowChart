@@ -4,6 +4,7 @@ import StartNode from './start-node.js'
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
 import Modal from './modal.js'
+import StartBox from './start-box.js'
 import Saving from './save.js'
 import View from 'Base/view.js'
 import elementString from 'Views/container.html'
@@ -23,7 +24,8 @@ class Container extends View {
         this.width = window.innerWidth;
         this.childScrolled = this.childScrolled.bind(this)
 
-	    this.saveClass     = new Saving();
+        this.saveClass     = new Saving();
+        this.flowchartName = "";
         this.objects       = [];
         this.markedObject  = [];
         this.markedOutput  = "";
@@ -58,6 +60,21 @@ class Container extends View {
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
         })
+        eventEmitter.on("newFlowchart", (name) => {   
+            this.flowchartName = name;
+        })
+        eventEmitter.on("openedFlowchart", (chosenFlowchart) => {   
+                const looseNodes = chosenFlowchart.nodes;
+                looseNodes.forEach((looseNode) => {
+                      this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
+                })
+        
+                this.objects.forEach(obj => this.attach(obj))
+                this.connectNodes(looseNodes)
+                this.flowchartName = chosenFlowchart.name;
+        
+        })
+
     }
 
     objectClicked(id, e) {
@@ -163,12 +180,15 @@ class Container extends View {
         this.modal = new Modal();
         this.attach(this.modal);
         
+        this.startBox = new StartBox();
+        this.attach(this.startBox);
+        this.startBox.show();
         eventEmitter.on('showHide', () => {
             this.showHide();
         })
 
         eventEmitter.on('save', () =>  {
-            this.saveClass.saveFlow(this.objects)
+            this.saveClass.saveFlow(this.objects, this.flowchartName)
         })
 
 

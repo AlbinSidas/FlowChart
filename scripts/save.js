@@ -10,8 +10,8 @@ class Save
 		this.obj = [];
     }
 
-    saveFlow(obj){
-		let filename = prompt("Please enter the name for your save file")
+    saveFlow(obj, name){
+		let filename = name;
 		let saveObjectList = [];
 		let i = 0;
 		for (i = 1; i < obj.length; i++) {
