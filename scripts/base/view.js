@@ -1,3 +1,4 @@
+import eventEmitter from 'Singletons/event-emitter.js';
  function _html(tagString) {
     var range = document.createRange();
     // Make the parent of the first div in the document becomes the context node
@@ -12,10 +13,15 @@ function ViewInterface(object) {
   return {
     render:     function() { return object.element },
     setHtml:    function(template) { object.element = _html(template) },
+    setElement: function(element) {object.element = element},
     didAttach:  function(parent) {},
     changeHtml: function(template) {
         if(!object.element) {throw "Whoops no element"}
         object.element.innerHTML = template
+    },
+    // TODO: Sånt bör finnas i Button Interface
+    enable: function(bool = true) {
+      this.element.disabled = !bool
     }
   }
 } 
@@ -36,12 +42,36 @@ export function InlineClickableView (elementString, clickCb) {
 }
 
 
+// EN binding är skapad från ene redan existerande element
+export function InlineClickableViewBinding(element, eventName, styleClass) {
+  const object = {
+    element: element
+  }
+  if(styleClass) { object.element.classList.add(styleClass); }
+  object.element.onclick = () => {eventEmitter.emit(eventName)};
+
+  return Object.assign(object, ViewInterface(object));
+}
+
+
+// export class ButtonBinding extends Button{
+//   constructor(element) {
+//     this.setElement(element);
+//     this.element.classList.add(styleClasses.buttonFooter);
+//   }
+
+//   onClick(e) {
+    
+//   }
+// }
+
 
 class View {
   constructor() {
     this.child_views = []
     this.element = null
     Object.assign(ViewInterface(this), this)
+    this.render = this.render.bind(this);
   }
 
   didAttach(parent) {}

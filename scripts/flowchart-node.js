@@ -10,7 +10,7 @@ class FlowchartNode extends View {
     constructor(id, functionDefinitionInstance = null){
         super()
         this.setHtml('<div></div>')
-    
+
         //functions
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
@@ -25,7 +25,7 @@ class FlowchartNode extends View {
         this.offsetX = 0;
         this.offsetY = 0;
         this.idRef   = "";
-        this._connectorUpdaters = [];
+        this._connectorUpdaters = {}
         //flow
         this.id    = id;
         this._name = "";
@@ -105,12 +105,18 @@ class FlowchartNode extends View {
     }
 
     registerConnectorUpdater(id, func) {
-        this._connectorUpdaters.push(func)
+        this._connectorUpdaters[id] = func
     }
+    
+    removeConnectorUpdater(id) {
+        delete this._connectorUpdaters[id] 
+    }
+
 
     getName() {
         return this._name;
     }
+    
     getInValue() {
         for (let i = 0; i < this.functionVariables.length; i++){
             if(this.functionVariables[i].type == "input"){
@@ -149,7 +155,7 @@ class FlowchartNode extends View {
         e = e || window.event;
         e.preventDefault();
         let nextX = e.clientX-this.offsetX
-        let nextY = e.clientY-this.offsetY
+        let nextY = e.clientY-this.offsetY  
         nextX = nextX < 0 ? 0 : nextX
         nextY = nextY < 0 ? 0 : nextY
         const maxHeightRelativeToWindow      = window.innerHeight - this.height
@@ -161,18 +167,19 @@ class FlowchartNode extends View {
         eventEmitter.emit("dragged", nextX - this.posX ,  nextY - this.posY, this.id);
         this.posX = nextX;
         this.posY = nextY;
-
-        this._connectorUpdaters.forEach(callback => {
-            callback();
+        
+        Object.keys(this._connectorUpdaters).forEach((key) => {
+            this._connectorUpdaters[key]()
         });
     }
+
     dragOthers(pxm, pym){
         this.posX += pxm;
         this.posY += pym;
         this.element.style.top  = `${this.posY}px`
         this.element.style.left = `${this.posX}px`
-        this._connectorUpdaters.forEach(callback => {
-            callback();
+        Object.keys(this._connectorUpdaters).forEach((key) => {
+            this._connectorUpdaters[key]()
         });
     }
 
@@ -219,11 +226,9 @@ class FlowchartNode extends View {
     }
 
     onClick(e) {
-        //was moved to mousedown to fix bug
-        //eventEmitter.emit("clicked", this.id, e);
     }
+
     static CreateExternal(object, inputIds, outputIds) {
-        console.log(object)
         const node = new FlowchartNode(object.id, object.functionDefinitionInstance);
         node.fillNode(object);
         return node;

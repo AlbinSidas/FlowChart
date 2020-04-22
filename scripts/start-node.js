@@ -26,9 +26,8 @@ class StartNode extends View {
 
         this.output = new NodeIO(this, "box-start");
         
-
         this.onScrolledCallbacks = [];
-        this._connectorUpdaters = [];
+        this._connectorUpdaters = {};
         
         this.attach(this.output);
         this.element.onclick = this.onClick;
@@ -40,10 +39,18 @@ class StartNode extends View {
     }
 
     registerConnectorUpdater(id, func) {
-        this._connectorUpdaters.push(func)
+        this._connectorUpdaters[id] = func;
     }
 
-    unregisterConnectorUpdater(id) {
+    hasConnector(){
+        if(Object.keys(this._connectorUpdaters).length != 0){
+            return true;
+        }
+        return false;
+    }
+
+    removeConnectorUpdater(id) {
+        delete this._connectorUpdaters[id];
 
     }
     closeDragElement(e) {
