@@ -18,8 +18,15 @@ class Save
 			let saveObj = obj[i].getMetaInfo();
 			saveObjectList.push(saveObj);
 		}
-		return true;
-}
+		const data = {
+			"nodes": saveObjectList,
+			"name": filename,
+		};
+
+		API.flowchartAPI.save(data);
+	}
+
+
 	validateSave(obj){
 		if(obj.length < 2){
 			let saveEmpty = confirm("It looks like you are trying to save a empty flowchart.\n Are you sure you want to do that?");
@@ -37,7 +44,7 @@ class Save
 		}
 			return true;
 	}
-
+/*
     saveFlow(obj){
 		if(this.validateSave(obj)){
 			let filename = prompt("Please enter the name for your save file")
@@ -54,7 +61,7 @@ class Save
 
 			API.flowchartAPI.save(data);
 		}
-	}
+	}*/
 	
     async loadFlow() {
 		let resultArray = [];
