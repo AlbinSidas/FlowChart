@@ -10,7 +10,8 @@ import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
 import ShowHideButton from './showHideButton.js';
-import ConditionalNode from './conditional-node'
+import ConditionalNode from './conditional-node';
+import ParallelNode from './parallel-node';
 
 class Container extends View {
     constructor() {
@@ -30,7 +31,7 @@ class Container extends View {
         this.markedObject   = [];
         this.markedConnector= [];
         this.markedOutput   = "";
-        this.ifnode         = "";
+        this.nodeType       = "";
         this.connectorList  = [];
         this.objectClick    = {};
         this.connectorClick = {};        
@@ -52,6 +53,7 @@ class Container extends View {
         this.inputClicked     = this.inputClicked.bind(this);
         this.ifClicked        = this.ifClicked.bind(this);
         this.elseClicked      = this.elseClicked.bind(this);
+        this.parallelClicked  = this.parallelClicked.bind(this);
         
 
         this.loadFlow = this.loadFlow.bind(this)
@@ -63,6 +65,7 @@ class Container extends View {
         eventEmitter.on("inputClicked", this.inputClicked); //behöver nog veta om den ska köra eller inte beroende på om en outputclicked eller en if/elseclicked kom innan
         eventEmitter.on("ifClicked", this.ifClicked);
         eventEmitter.on("elseClicked", this.elseClicked);
+        eventEmitter.on("parallelClicked", this.parallelClicked);
         eventEmitter.on("createRunnable", (id) => {   
             
             this.flowchartList = [];
@@ -139,17 +142,19 @@ class Container extends View {
         let connector = {};
         if (!currNode.input.connections.includes(this.markedOutput)) {
             currNode.input.connections.push(this.markedOutput);
-            if(this.ifnode == ""){
+            if(this.nodeType == ""){
                 prevNode.output.connections.push(currNode.id);
             }
-            else if(this.ifnode == "if"){
+            else if(this.nodeType == "if"){
                 prevNode.outputIf.connections.push(currNode.id);
             }
-            // FIXA SÅ ATT DET TAS BORT PÅ RÄTT SÄTT MED
-            else if(this.ifnode == "else"){
+            else if(this.nodeType == "else"){
                 prevNode.outputElse.connections.push(currNode.id);
             }
-            connector = new Connector(currNode.id + prevNode.id, prevNode, currNode, this.ifnode);
+            else if(this.nodeType == "parallel"){
+                prevNode.outputParallel.connections.push(currNode.id)
+            };
+            connector = new Connector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
             prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
             currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
             connector.element.classList.add("connector");
@@ -162,21 +167,25 @@ class Container extends View {
             });
         }
         this.markedOutput = "";
-        this.ifnode = "";
+        this.nodeType = "";
         connector.updateConnections();
         
     }
 
     ifClicked(id){
         this.markedOutput = id;
-        this.ifnode = "if";
+        this.nodeType = "if";
     }
 
     elseClicked(id){
         this.markedOutput = id;
-        this.ifnode = "else";
+        this.nodeType = "else";
     }
 
+    parallelClicked(id){
+        this.markedOutput = id;
+        this.nodeType = "parallel";
+    }
 
     connectNodes(looseObjects) {
 
@@ -201,6 +210,12 @@ class Container extends View {
                     eventEmitter.emit("inputClicked", outputElse);
                 })
             }
+            else if(item.type == "parallel_node"){
+                item.outputParallelConnectionsList.forEach((outputParallel) =>{
+                    eventEmitter.emit("parallelClicked", item.id);
+                    eventEmitter.emit("inputClicked", outputParallel);
+                })
+            }
         })
     }
 
@@ -215,6 +230,9 @@ class Container extends View {
             }
             else if(looseNode.type == "conditional_node"){
                 this.objects.push(ConditionalNode.CreateExternal(looseNode))
+            }
+            else if(looseNode.type == "parallel_node"){
+                this.objects.push(ParallelNode.CreateExternal(looseNode))
             }
         })
 
@@ -434,6 +452,8 @@ class Container extends View {
             // For if-nodes
             this.removeConnectorFromNode(removed.currNode, removed.prevNode, removed.id, this.objects[i].outputIf, i);
             this.removeConnectorFromNode(removed.currNode, removed.prevNode, removed.id, this.objects[i].outputElse, i);
+            // For parallel-nodes
+            this.removeConnectorFromNode(removed.currNode, removed.prevNode, removed.id, this.objects[i].outputParallel, i);
         }
         let connectorElement = document.getElementById(removed.id);
         connectorElement.parentElement.removeChild(connectorElement);

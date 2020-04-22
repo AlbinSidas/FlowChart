@@ -224,6 +224,7 @@ class FlowchartNode extends View {
                 this.output.connections, 
                 this.functionDefinitionInstance,
                 null,
+                null,
                 null);
     }
 

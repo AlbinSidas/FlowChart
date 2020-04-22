@@ -4,7 +4,7 @@ import eventEmitter from 'Singletons/event-emitter.js';
 
 class Connector extends View
 {
-  constructor(id, prevNode, currNode, ifnode) {
+  constructor(id, prevNode, currNode, nodeType) {
     super();
     this.setHtml("<div tabindex='1' onClick='alert()'></div>");
     this.render = this.render.bind(this);
@@ -17,7 +17,7 @@ class Connector extends View
     this.glowing = false;
 
     //is "" if a regular node, "if" if a if out and "else" if a else out 
-    this.ifnode = ifnode;
+    this.nodeType = nodeType;
   }
 
   didAttach(parent) {
@@ -36,14 +36,15 @@ class Connector extends View
       outX = this.prevNode.posX + 50;
       outY = this.prevNode.posY + 50;
     }
-    else if(this.ifnode == "if"){
+    else if(this.nodeType == "if"){
       outX = this.prevNode.posX;
       outY = this.prevNode.posY + 75;
     }
-    else if(this.ifnode == "else"){
+    else if(this.nodeType == "else"){
       outX = this.prevNode.posX + 300;
       outY = this.prevNode.posY + 75;
     }
+ 
     
     // line contains the length, position x and y, and the angle
     let line = this._calculateLine(outX, outY, inX, inY);

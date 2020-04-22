@@ -5,6 +5,7 @@ import Root from 'Base/root.js';
 import 'Styles/style.css';
 import StartNode from './start-node.js'
 import ConditionalNode from "./conditional-node";
+import ParallelNode from './parallel-node';
 
 function main() {
     const workspaceObject = new Container();
@@ -24,10 +25,19 @@ function main() {
         workspaceObject.addBox(flowObjIf);
         flowObjIf.print();
     }
+
+    function createParallelNewObject(){
+        const flowObjPara = new ParallelNode(uuidv1());
+        workspaceObject.addBox(flowObjPara);
+        flowObjPara.print();
+    }
+
     //should use the same function with different inputs?
     document.querySelector("#newObject").addEventListener("click", createNewObject)
 
     document.querySelector('#newIfObject').addEventListener("click", createIfNewObject)
+
+    document.querySelector('#newParallelObject').addEventListener("click", createParallelNewObject)
 }
 
 (function() {

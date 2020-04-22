@@ -34,6 +34,9 @@ class NodeIO extends View {
             case 'box-outputElse':
                 this.element.classList.add(style.boxOutputElse);
                 break;
+            case 'box-parallel':
+                this.element.classList.add(style.boxOutputParallel);
+                break;
             default:
                 break;
         }
@@ -66,6 +69,9 @@ class NodeIO extends View {
         }
         else if (this.type == "box-outputElse") {
             eventEmitter.emit("elseClicked", this.id);
+        }
+        else if (this.type == "box-parallel") {
+            eventEmitter.emit("parallelClicked", this.id);
         }
         else if (this.type == "box-dummy") {
             return;
