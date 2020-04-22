@@ -118,6 +118,8 @@ class Modal extends View
     eventEmitter.on('saveNewFunctionDef', async () => {
       let funcDef = await this._save();
       try {
+        // Gör kontroll att det inte finns en funktion med namnet sedan tidigare
+
         const data = await this._saveNewFuncDef(funcDef);
         const versionObject = data.data[0];
         let funcDefObject = versionObject.versions[0];
@@ -195,23 +197,22 @@ class Modal extends View
     })
 
     eventEmitter.on('removeVariable', (removed) => {
-      console.log("FIND THIS MADDAFAKKER", removed);
+      if(this.currentFunctionDefinition.obj) {
+        let indxOf;
+        this.currentFunctionDefinition.obj.functionVariables.forEach(function(fvariable, i) { 
+          if (fvariable.id == removed) indxOf = i;
+        });
+        
+        this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1); 
+      }
+      this._removeElement(removed.type+removed.name);  
+    })
+  
+  }
 
-      /* Hitta och ta bort variabeln ur ilstan, (Kolla på bra lösning i save new version där versionen 
-        hittar och byter ut en befintlig version i listan)
-        */
-      /*this.currentFunctionDefinition.obj.functionVariables.find((vari) => {
-        return vari == removed;
-      })
-      */
-     let indxOf;
-     this.currentFunctionDefinition.obj.functionVariables.forEach(function(fvariable, i) { 
-      if (fvariable.id == removed) indxOf = i;
-    });
-    
-    this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1);
-    
-  })
+  _removeElement(elementId) {
+    let elem = document.getElementById(elementId)
+    elem.parentNode.removeChild(elem);
   }
 
   _updateVersionNumber(upOrDown) {
@@ -311,52 +312,41 @@ class Modal extends View
 
   updateList() {
     let ul = document.getElementById("cVarList");
-    //if(!this.obj.functionDefinitionInstance) { return; }
-    if(!this.currentFunctionDefinition.obj) {return;};
+    if(this.currentFunctionDefinition.obj == {} || this.currentFunctionDefinition.obj == undefined || this.currentFunctionDefinition.obj.functionVariables == null) {return;};
+    console.log("Detta är objektet: ",this.currentFunctionDefinition.obj)
     for (let i = 0; i < this.currentFunctionDefinition.obj.functionVariables.length; i++){
-    
-    //for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
-      //this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
       this._addVariable(ul, this.currentFunctionDefinition.obj.functionVariables[i]);
     }
   }
 
   _addVariable(list, variableObject) {
-      let li = document.createElement("li");
-      li.appendChild(document.createTextNode(variableObject.type + ': ' + variableObject.name));
-      if(this.mode == "Node") {
-        let input = document.createElement("INPUT");
-        input.setAttribute('id', variableObject.name);
-        // TODO Sätt defaultvärden här om det behövs. Förändra defaultvärdet i funktionsvariabler?
-        input.value = variableObject.value ? variableObject.value : "Fill value";
-        li.appendChild(input);
-      } else if (this.mode == "Function") {
-        let removeButton = document.createElement('button');
-        removeButton.innerHTML = "Remove variable";
-        removeButton.setAttribute("style", "background-color: var(--button-color);");
-        removeButton.classList.add("btn");
-        
-        // LÄGG TILL ID OCH ONCLICK FÖR DESSA KNAPPAR, HUR SKA JAG HANTERA DEM? 
-        // TÄNK OCKSÅ PÅ HUR DETTA BÖR HANTERAS I INPUTLISTORNA I NODEMODE
-        
-        //let removeButton = '<button style="background-color: var(--button-color)" class="btn"> Remove variable </button>';
-        
-        removeButton = new FuncDefVariableRemove(removeButton, variableObject);
-        li.insertAdjacentElement('afterbegin', removeButton.element);
+    // Control to make sure there isn't duplicate type+name in he function. 
+    if(document.getElementById(variableObject.type + variableObject.name)) {
+      alert("The variable is already in the variablelist.");
+      return;
+    }
 
-        /*
-          Har jag tillgång till objektet?
-          Ja, variable Object kommer vara listitemet och därmed kommer jag
-          veta vilken det är. 
-          Hur ska jag lösa multiple none unique ID?
+    let li = document.createElement("li");
+    li.setAttribute("id", variableObject.type + variableObject.name);
 
-          Problem uppstår med att removeButton inte är ett element av någon anledning.
-          Kolla närmare på detta.
-        */
+    li.appendChild(document.createTextNode(variableObject.type + ': ' + variableObject.name));
+    if(this.mode == "Node") {
+      let input = document.createElement("INPUT");
+      input.setAttribute('id', variableObject.name);
+      // TODO Sätt defaultvärden här om det behövs. Förändra defaultvärdet i funktionsvariabler?
+      input.value = variableObject.value ? variableObject.value : "Fill value";
+      li.appendChild(input);
+    } else if (this.mode == "Function") {
+      let removeButton = document.createElement('button');
+      removeButton.innerHTML = "Remove variable";
+      removeButton.setAttribute("style", "background-color: var(--button-color);");
+      removeButton.classList.add("btn");
+      
+      removeButton = new FuncDefVariableRemove(removeButton, variableObject);
+      li.insertAdjacentElement('afterbegin', removeButton.element);
 
-
-      }
-      list.appendChild(li);
+    }
+    list.appendChild(li);
   }
 
   loadDefinitionToModal(def) {
@@ -500,7 +490,9 @@ class Modal extends View
     const variables = document.getElementById('cVarList').children;
     for(let i=0; i < variables.length ; i++) {
       let nameAndType = variables[i].textContent.split(": ");
-      let type = nameAndType[0];
+
+      // Substring here because the split also cathes "Remove variable" which is removed here.
+      let type = nameAndType[0].substring(15);
       let name = nameAndType[1];
       variableList.push( 
         new FunctionVariable(name, type, 'Not yet added')
@@ -519,6 +511,7 @@ class Modal extends View
   close() {
     if(this.mode == "Node") {
       // Logik för att se om det finns ickesparade förändringar? 
+      /* När en node öppnas kan en version sparas och jämföras mot nuvarande state av noden */
       this._saveNode();
     }
     this._updateFooterNode();
