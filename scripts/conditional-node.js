@@ -1,6 +1,7 @@
 import FlowchartNode from './flowchart-node';
 import style from 'Styles/style.css';
 import NodeIO from './nodeIO.js';
+import NodeMetaInfo from 'Model/node-meta-info.js'
 import { InlineView } from './base/view.js';
 
 class ConditionalNode extends FlowchartNode {
@@ -15,7 +16,7 @@ class ConditionalNode extends FlowchartNode {
         this.elementDrag      = this.elementDrag.bind(this);
         this.mouseDown        = this.mouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
-        this.getMetaInfo      = this.getMetaInfo.bind(this)
+        this.getMetaInfo      = this.getMetaInfo.bind(this);
         
         //ui
         this.posX    = 100;
@@ -82,19 +83,29 @@ class ConditionalNode extends FlowchartNode {
 
      
     getMetaInfo() {
-        return 
-            new NodeMetaInfo(
-                "conditional", 
+        console.log("in metainfo for ifnode.");
+        return new NodeMetaInfo(
+                "conditional_node",
+                this.getName(),
                 this.functionDescription,
+                this.id, 
                 this.posX, 
                 this.posY, 
-                this.id, 
                 this.input.connections, 
-                this.output.connections, 
-                this.functionVariables); //behövs detta, troligen inte?
+                null,
+                this.functionDefinitionInstance,
+                this.outputIf.connections, 
+                this.outputElse.connections); 
     }
 
-
+    
+    
+    static CreateExternal(object, inputIds, outputIds) {
+        console.log(object)
+        const node = new ConditionalNode(object.id, object.functionDefinitionInstance);
+        node.fillNode(object);
+        return node;
+    }
 
 }
 

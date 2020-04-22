@@ -10,6 +10,7 @@ import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
 import ShowHideButton from './showHideButton.js';
+import ConditionalNode from './conditional-node'
 
 class Container extends View {
     constructor() {
@@ -95,7 +96,6 @@ class Container extends View {
                 }
             }.bind(this)
         } else {
-            console.log(this.markedObject);
             if (this.markedObject.length != 0 && e.ctrlKey == false) {
                 this.removeMarked();
                 this.removeMarkedConnector();
@@ -184,13 +184,24 @@ class Container extends View {
 			if(item.inputConnectionList.length !=0 && item.inputConnectionList.includes("start-node")){
 				eventEmitter.emit("outputClicked", "start-node");
 				eventEmitter.emit("inputClicked", item.id);
-			}
-            item.outputConnectionList.forEach((output) => {
-				eventEmitter.emit("outputClicked", item.id);
-				eventEmitter.emit("inputClicked", output);
-            })
+            }
+            if(item.type == "flowchart_node"){
+                item.outputConnectionList.forEach((output) => {
+				    eventEmitter.emit("outputClicked", item.id);
+				    eventEmitter.emit("inputClicked", output);
+                })
+            }
+            else if(item.type == "conditional_node"){
+                item.outputIfConnectionsList.forEach((outputIf) =>{
+                    eventEmitter.emit("ifClicked", item.id);
+                    eventEmitter.emit("inputClicked", outputIf);
+                })
+                item.outputElseConnectionsList.forEach((outputElse) =>{
+                    eventEmitter.emit("elseClicked", item.id);
+                    eventEmitter.emit("inputClicked", outputElse);
+                })
+            }
         })
-
     }
 
 
@@ -199,7 +210,12 @@ class Container extends View {
         const loadedObjects = await this.saveClass.loadFlow(this);
         const looseNodes = loadedObjects.nodes;
         looseNodes.forEach((looseNode) => {
+            if(looseNode.type == "flowchart_node"){
               this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
+            }
+            else if(looseNode.type == "conditional_node"){
+                this.objects.push(ConditionalNode.CreateExternal(looseNode))
+            }
         })
 
         this.objects.forEach(obj => this.attach(obj))

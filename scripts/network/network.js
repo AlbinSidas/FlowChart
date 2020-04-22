@@ -85,6 +85,7 @@ class FlowchartAPI extends Network {
             const data = await fetch(`${this.baseURL}/view`)
                 .then(res  => res.json())
                 .then(res => res.data)
+                console.log(data)
             return data;
         } 
         catch(e) {

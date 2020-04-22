@@ -214,7 +214,7 @@ class FlowchartNode extends View {
 
     getMetaInfo() {
         return new NodeMetaInfo(
-                this.type,
+                "flowchart_node",
                 this.getName(), 
                 this.functionDescription,
                 this.id, 
@@ -222,7 +222,9 @@ class FlowchartNode extends View {
                 this.posY, 
                 this.input.connections, 
                 this.output.connections, 
-                this.functionDefinitionInstance);
+                this.functionDefinitionInstance,
+                null,
+                null);
     }
 
     onClick(e) {
