@@ -8,9 +8,10 @@ class MongoHandler {
         this.db             = db
         this.collection     = this.db.collection(collectionName)
        
-        this._getById      = this._getById.bind(this)
-        this.save          = this.save.bind(this)
-        this.getAll        = this.getAll.bind(this)
+        this._getById           = this._getById.bind(this)
+        this.getVersionSnpashot = this.getVersionSnpashot.bind(this)
+        this.save               = this.save.bind(this)
+        this.getAll             = this.getAll.bind(this)
     }
 
 
@@ -18,7 +19,7 @@ class MongoHandler {
     async _getByVersion(id, versionNumber) { 
         const aggregateVersion  = _promisify((...args) => { this.collection.aggregate(...args) });
         const result            =  await aggregateVersion([
-            { $match   : { "funcdef_id": ObjectID(id)} }, 
+            { $match   : { [this.keyName]: ObjectID(id)} }, 
             { $match   : { "versionNumber": parseInt(versionNumber)} },
             { $project : { _id: 0 } }
         ]).then(a  => a)
@@ -34,23 +35,22 @@ class MongoHandler {
         const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
         console.log("ID ÄR: ", id)
         // Det som kommer in här som ID är "all"
-        const result     =  await findById([
-            { $match: {_id:  ObjectID(id) } },
-            {
-                $project: 
-                {
-                    latestVersionNumber: 1,
-                    latestVersion: { $arrayElemAt: ["$versions", -1]} 
-                }
-            }
-        
-        ]).then(a  => a)
-          .catch(e => console.log(e))
-        return await result.limit(1).next();
+        try {
+            const result =  await findById([
+                { $match: {[this.keyName]:  ObjectID(id) } },
+                { $sort:  {_id: -1} },
+                { $project: {_id: 0} }
+            ]);
+            const data = await result.limit(1).next();
+            return data;
+        } catch(e) {
+            console.log(e)
+            return null;
+        }
     }
 
 
-    // ======= UPSERT ====== id är ObjeectId redan
+    // ======= UPSERT ====== id är ObjeectId redan, DEPRICATED
     async upsertVersion(id) {
         const entry = await this._getById(id);
         console.log("ENTRY? ", entry)
@@ -64,9 +64,7 @@ class MongoHandler {
                 { $set: { "latestVersionNumber": latestVersionNumber }}
             );
             const data = result;
-            console.log("FINNS", data)
             return data;
-
         } else {
             const latestVersionNumber = 1;
             const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
@@ -83,25 +81,27 @@ class MongoHandler {
     }
 
 
-    // ======================== PUBLIC ==================
-
+    // ============= PUBLIC ==================
     async save(data, id = null, vNum = 1) {
-        
         const versionNumber = vNum;
         const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
         try {
             const result  = await insertOne({
                 ...data,
                 versionNumber: versionNumber,
-                funcdef_id: id ? ObjectID(id) : ObjectID()
+                [this.keyName]: id ? ObjectID(id) : ObjectID()
             })
            
             const arr =  result.ops
             const object = arr.pop();
+            return object;
+            
+            /* VC collections är avstängda just nu
             if(object) {
                 const versionEntry = await this.addToVersionControl(object[this.keyName]);
                 return object;
             }
+            */
         } catch (err) {
             console.log("ERROR WHILE SAVING", err);
         } 
@@ -109,26 +109,19 @@ class MongoHandler {
         return null;
     } 
 
-    async addToVersionControl() {} // overridden
+    async addToVersionControl() {} // overridden Never used
+
+
+    async getLatestVersion(id) {
+        const data = await this._getById(id);
+        return data.versionNumber;
+    }
 
     async addVersion(data) {
         const versionNumber = (await this.getLatestVersion(data[this.keyName])) + 1
         const result = await this.save(data.content, data[this.keyName], versionNumber);
         return result;
     }
-
-
-    async old_save (data)  {
-        const latestVersionNumber = 1;
-        const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
-        const result     =  await insertOne({
-            ...data,
-            [this.keyName]: ObjectID()
-        }).then(a  => a.ops)
-           .catch(e => console.log("SAVE ERRROOORO", e))
-        return result;
-    }
-
 
     async getOne(id, versionNumber) {
         if(versionNumber) {
@@ -139,68 +132,35 @@ class MongoHandler {
         }
     }
 
-    // async getAll() {
-    //     const data = this.collection.find();
-    //     return await data.toArray();
-    // }
-
     async getAll() {
 
         const findAll    = _promisify((...args) => { this.collection.aggregate(...args) });
         const result     =  await findAll([
-            {
-                $project: 
-                {
-                    latestVersionNumber: 1,
-                    latestVersion: { $arrayElemAt: ["$versions", -1]} 
-                }
-            }
-        
+            {$sort: { _id: -1 }},
+            {$group: {_id:  `$${this.keyName}`, data: { $first: "$$ROOT" }}},
+            {$project: { _id: 0, "data._id":0 }}
         ]).then(a  => a)
           .catch(e => console.log(e))
         const all = await result.toArray();
-        return all;//await result.limit(1).next();
-    }
-
-
-    async old_addVersion(data) {
-        const update = _promisify((...args) => { this.collection.update(...args) });
-        console.log("I addversion i mongohandler: ", data)
-        const oldEntry       = await this._getById(data.id);
-        const updatedVersion = oldEntry.latestVersionNumber + 1;
-        const versionEntry   = { ...data.content, versionNumber: updatedVersion }
-
-        const result = await update(
-            // ID
-            {_id: ObjectID(data.id)},
-            {
-                $set:  { "latestVersionNumber": updatedVersion },
-                $push: { versions: versionEntry }
-            }
-        ).catch(err => { console.log(err); 
-                         return null 
-                       });
-
-        return {_id: data._id, ...versionEntry};
+        const flatAll = all.map(d =>{ return {...d.data} }); 
+        return flatAll;//await result.limit(1).next();
     }
 
     async getVersionSnpashot(id) {
-        const aggregateVersion  = _promisify((...args) => { this.collection.aggregate(...args) });
-        const result            =  await aggregateVersion([
-            
-            {
-                $match: {_id:  ObjectID(id) }
-            }, 
-            { 
-                $addFields: { "versionNumbers": "$versions.versionNumber" } },
-            {
-              $project:  {versions: 0},
-            }
-        
-        ]).then(a  => a)
-          .catch(e => console.log(e))
-        const data = await result.toArray();
-        return data
+       const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
+       // Det som kommer in här som ID är "all"
+       try {
+           const result =  await findById([
+               { $match: {[this.keyName]:  ObjectID(id) } },
+               { $project: {versionNumber: 1, _id: 0}}
+           ]);
+           const data = await result.toArray();//limit(1).next();
+           const flatData = data.map(e => e.versionNumber);
+           return flatData;
+       } catch(e) {
+           console.log("ERROR Getting the version snapshot failed: ", e)
+           return null;
+       }
     }
 
 }

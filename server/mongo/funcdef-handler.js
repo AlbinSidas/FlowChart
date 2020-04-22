@@ -17,11 +17,6 @@ class FuncDefHandler extends MongoHandler {
         return await this.funcDefVCHandler.upsertVersion(id);
     }
 
-    async getLatestVersion(id) {
-        const data = await this.funcDefVCHandler._getById(id);
-        return data.latestVersionNumber;
-    }
-
 }
 
 module.exports = FuncDefHandler

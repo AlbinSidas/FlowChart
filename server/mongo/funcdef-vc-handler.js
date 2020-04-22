@@ -4,7 +4,8 @@ const MongoHandler  = require('./mongo-handler');
 // A Mongo handler that is MongoProtocol
 class FuncDefVCHandler extends MongoHandler {
     constructor(db, collectionName, controller) {
-        super(db, collectionName)
+        super(db, collectionName);
+        this.keyName = "_id"
         this.controller = controller;
     }
 }

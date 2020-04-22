@@ -17,11 +17,6 @@ class FlowchartHandler extends MongoHandler {
         return await this.flowchartVCHandler.upsertVersion(id);
     }
 
-    async getLatestVersion(id) {
-        const data = await this.flowchartVCHandler._getById(id);
-        return data.latestVersionNumber;
-    }
-
     async getView() {
      
         const findAll   = _promisify((...args) => { this.collection.aggregate(...args) });
