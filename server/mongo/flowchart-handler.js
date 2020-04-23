@@ -18,24 +18,20 @@ class FlowchartHandler extends MongoHandler {
     }
 
     async getView() {
+
      
         const findAll   = _promisify((...args) => { this.collection.aggregate(...args) });
         const result     =  await findAll([
-            {
-                $project: 
-                {
-                    latestVersionNumber: 1,
-                    latestVersion: { $arrayElemAt: ["$versions", -1]}
-                }
-            },
-            {
-                $project: { "latestVersion.nodes": 0}
-            }
+
+            {$sort: { _id: -1 }},
+            {$group: {_id:  `$${this.keyName}`, data: { $first: "$$ROOT" }}},
+            {$project: { _id: 0, "data.nodes":0 }}
         
         ]).then(a  => a)
           .catch(e => console.log(e))
         const all = await result.toArray();
-        return all;//await result.limit(1).next();
+        const flatAll = all.map(d =>{ return {...d.data} }); 
+        return flatAll;//await result.limit(1).next();
      
      
         //   const data = this.collection.find({}, {nodes:0})
