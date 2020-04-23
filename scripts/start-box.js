@@ -48,6 +48,7 @@ class StartBox extends View
 
 
   async openFlow(name, id){
+    console.log(id);
     const loadedData = await API.flowchartAPI.getById(id);
     eventEmitter.emit('openedFlowchart', loadedData);
     this.close();

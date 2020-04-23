@@ -58,7 +58,7 @@ class Network {
 
     async getById(id) {
         const data = await fetch(`${this.baseURL}/${id}`).then(res  => res.json())
-                                                         .then(res => res.data)
+                                                         .then(res => res.data);
         return data;
     }
 
