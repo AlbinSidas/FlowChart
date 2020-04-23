@@ -49,14 +49,15 @@ class Save
     async loadFlow() {
 		let resultArray = [];
 		const jsonData = await API.flowchartAPI.getNameList();
+		console.log(jsonData);
 		let a = 0;
-		let trash ="";
+		let flowchartNamesbuffer ="";
 		for (a = 0; a < jsonData.length; a++){
-			trash += jsonData[a].name + "\n"
+			flowchartNamesbuffer += jsonData[a].name + "\n"
 		}
 
-		let filename = prompt("skriv in namnet på filen du vill ladda\n" +trash)
-		let foundId  = jsonData.find(element => element.name == filename)._id;
+		let filename = prompt("skriv in namnet på filen du vill ladda\n" + flowchartNamesbuffer)
+		let foundId  = jsonData.find(element => element.name == filename).flowchart_id;
 		const loadedData = await API.flowchartAPI.getById(foundId);
 		let nodes = loadedData.nodes;
 		return loadedData
