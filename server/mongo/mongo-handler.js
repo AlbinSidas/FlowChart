@@ -24,13 +24,11 @@ class MongoHandler {
             { $project : { _id: 0 } }
         ]).then(a  => a)
           .catch(e => console.log(e))
-          
         const data = await result.limit(1).next();
-        //console.log(data)
         return data
     }
 
-    
+
     async _getById (id) {
         const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
         console.log("ID ÄR: ", id)
@@ -144,6 +142,7 @@ class MongoHandler {
         const all = await result.toArray();
         const flatAll = all.map(d =>{ return {...d.data} }); 
         return flatAll;//await result.limit(1).next();
+
     }
 
     async getVersionSnpashot(id) {

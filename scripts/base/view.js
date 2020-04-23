@@ -21,7 +21,6 @@ function ViewInterface(object) {
     },
     // TODO: Sånt bör finnas i Button Interface
     enable: function(bool = true) {
-      console.log()
       this.element.disabled = !bool
     }
   }
