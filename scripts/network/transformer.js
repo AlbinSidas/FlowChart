@@ -20,7 +20,7 @@ class TransformerInterface {
 
 export class FlowchartTransformer extends TransformerInterface {
     resObject(serverResponse) {
-        return serverResponse;
+        return serverResponse.data;
     }
 
     resArray(serverResponse) {

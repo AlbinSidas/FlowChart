@@ -74,7 +74,7 @@ class Save
 		}
 
 		let filename = prompt("skriv in namnet på filen du vill ladda\n" + flowchartNamesbuffer)
-		let foundId  = jsonData.find(element => element.name == filename)._id;
+		let foundId  = jsonData.find(element => element.name == filename).flowchart_id;
 		const loadedData = await API.flowchartAPI.getById(foundId);
 		let nodes = loadedData.nodes;
 		return loadedData
