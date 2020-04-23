@@ -251,8 +251,9 @@ class Modal extends View
   }
 
   async _updateVersion(requestVersion) {
+    console.log("INNAN SKICKA", this.currentFunctionDefinition.obj.id)
     let funcDef = await this._getVersionSnapShot(this.currentFunctionDefinition.obj.id, requestVersion);
-
+    console.log("I uppdatera version jämför svar  ", funcDef, this.obj.functionDefinitionInstance.id)
     this.close();
     this.obj.functionDefinitionInstance = funcDef.targetVersion;
     if(funcDef.targetVersion.versionNumber == 1) {
@@ -277,6 +278,7 @@ class Modal extends View
                             <ul id="cVarList"></ul>
                          `;
   }
+
   _changeAndAddButtonsFooter(footer) {  
     let saveVersionButton = '<button style="background-color: var(--button-color)" class="saveFunctionVersionButton btn"> Save as new version </button>';
     let saveNewFunctionButton = '<button style="background-color: var(--button-color)" class="saveFunctionDefButton btn"> Save as new function </button>';
@@ -442,22 +444,22 @@ class Modal extends View
   }
 
   async _saveNewFuncDef(saveObject) {
-      try {
-          const res = await funcDefAPI.save( saveObject );
-          return res;
-      } catch(e) {
-        throw new Error('Failed to save functiondefinition');
-      }
+    try {
+        const res = await funcDefAPI.save( saveObject );
+        return res;
+    } catch(e) {
+      throw new Error('Failed to save functiondefinition');
+    }
   }
 
   async _saveVersionFuncDef(saveObject) {
     try {
-        let data = {
-          "id": saveObject.id,
-          "content": { ...saveObject }
-        };
-        let res =  await funcDefAPI.saveVersion(data);
-        return res;
+      let data = {
+        "id": saveObject.id,
+        "content": { ...saveObject }
+      };
+      let res =  await funcDefAPI.saveVersion(data);
+      return res;
     } catch(e) {
       throw new Error('Failed to save version');
     }
@@ -480,7 +482,7 @@ class Modal extends View
     if (this.obj.functionDefinitionInstance) {
       let definitionVariables = this.obj.functionDefinitionInstance.functionVariables;
       for (let i = 0; i < definitionVariables.length; i++) {
-          definitionVariables[i].value = document.getElementById(definitionVariables[i].name).value;
+        definitionVariables[i].value = document.getElementById(definitionVariables[i].name).value;
       }
     }
   }
@@ -528,14 +530,14 @@ class Modal extends View
 
 class LoadButton extends Button {
   constructor() {
-      super();
-      this.setHtml(document.getElementById('loadModalButton'));
-      this.element = document.getElementById('loadModalButton');
-      this.render = this.render.bind(this);
-      this.onClick = this.onClick.bind(this);
-      this.element.onclick = this.onClick;
-      this.element.classList.add(styleClasses.buttonLoad);
-    }
+    super();
+    this.setHtml(document.getElementById('loadModalButton'));
+    this.element = document.getElementById('loadModalButton');
+    this.render = this.render.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.element.onclick = this.onClick;
+    this.element.classList.add(styleClasses.buttonLoad);
+  }
 
   onClick() {
     eventEmitter.emit('loadFunciton');
