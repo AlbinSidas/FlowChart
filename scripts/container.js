@@ -70,7 +70,6 @@ class Container extends View {
             this.flowchartName = name;
         })
         eventEmitter.on("openedFlowchart", (chosenFlowchart) => {   
-                console.log(chosenFlowchart);
                 const looseNodes = chosenFlowchart.nodes;
                 looseNodes.forEach((looseNode) => {
                       this.objects.push(FlowchartNode.CreateExternal(looseNode)) 

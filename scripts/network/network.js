@@ -61,7 +61,7 @@ class Network {
     }
 
     async getById(id) {
-        const data = await fetch(`${this.baseURL}/${id}`).then(res  => res.json())
+        const data = await fetch(`${this.baseURL}/${id}`).then(res  => res.json());
         return this.transformerInterface.resObject(data);
     }
 
@@ -81,6 +81,11 @@ class FuncDefAPI extends Network {
 class FlowchartAPI extends Network {
     constructor(destination, apiRoute) {
         super(destination, apiRoute, new FlowchartTransformer())
+    }
+
+    async tempGetById(id){
+        const data = await fetch(`${this.baseURL}/all`).then(res  => res.json())
+        return this.transformerInterface.findById(data, id);
     }
 
     async getNameList() {

@@ -11,19 +11,21 @@ class Save
     }
 
     saveFlow(obj, name){
-		let filename = name;
-		let saveObjectList = [];
-		let i = 0;
-		for (i = 1; i < obj.length; i++) {
-			let saveObj = obj[i].getMetaInfo();
-			saveObjectList.push(saveObj);
-		}
-		const data = {
-			"nodes": saveObjectList,
-			"name": filename,
-		};
+		if(this.validateSave(obj)){
+			let filename = name;
+			let saveObjectList = [];
+			let i = 0;
+			for (i = 1; i < obj.length; i++) {
+				let saveObj = obj[i].getMetaInfo();
+				saveObjectList.push(saveObj);
+			}
+			const data = {
+				"nodes": saveObjectList,
+				"name": filename,
+			};
 
-		API.flowchartAPI.save(data);
+			API.flowchartAPI.save(data);
+		}
 	}
 
 

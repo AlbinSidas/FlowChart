@@ -48,22 +48,19 @@ class StartBox extends View
 
 
   async openFlow(name, id){
-    console.log(id);
-    const loadedData = await API.flowchartAPI.getById(id);
+    const loadedData = await API.flowchartAPI.tempGetById(id);
     eventEmitter.emit('openedFlowchart', loadedData);
     this.close();
   }
 
   async loadFileNameList(){
     const jsonData = await API.flowchartAPI.getNameList();
-    console.log(jsonData);
     let dropdown = document.getElementById('modalDropdown');
     while( dropdown.childElementCount > 1) {
       dropdown.removeChild(dropdown.lastChild); 
     }
     for (let a = 0; a < jsonData.length; a++){
-        console.log(jsonData[a])
-      let listItem = new ListItem(jsonData[a].name, jsonData[a]._id);
+      let listItem = new ListItem(jsonData[a].name, jsonData[a].flowchart_id);
       dropdown.appendChild(listItem.render());
     }
     dropdown.style.height = 'auto';
@@ -101,8 +98,8 @@ class NewButton extends Button {
   class ListItem extends View {
     constructor(name, id) { 
         super();
-        this.setHtml(`<li class='loadDropdownItem'>${id}</li>`);
-        //this.name = name;
+        this.setHtml(`<li class='loadDropdownItem'>${name}</li>`);
+        this.name = name;
         this.id = id;
         this.onClick         = this.onClick.bind(this)
         this.element.onclick = this.onClick;
