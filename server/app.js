@@ -34,15 +34,12 @@ async function main() {
         "preflightContinue": true
     }))
     
-    console.log("Back to main generated function")
     app.get('/', (req, res) => res.json({'apa':'Hello World!'}))
 
 
 
 // ================ FLOWCHART ====================
     app.post('/flowchart/save', async function (req, res) {
-        console.log(req.body);
-       
         const databaseOps = await mongoController.flowchartHandler.save(req.body)
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
@@ -61,7 +58,6 @@ async function main() {
     });
 
     app.get('/flowchart/:id/:version?', async function (req, res) {
-        console.log("PARAMS", req.params)
         const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
