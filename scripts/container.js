@@ -62,7 +62,7 @@ class Container extends View {
         eventEmitter.on("clicked", this.objectClicked);
         eventEmitter.on("connectorClicked", this.connectorClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
-        eventEmitter.on("inputClicked", this.inputClicked); //behöver nog veta om den ska köra eller inte beroende på om en outputclicked eller en if/elseclicked kom innan
+        eventEmitter.on("inputClicked", this.inputClicked);
         eventEmitter.on("ifClicked", this.ifClicked);
         eventEmitter.on("elseClicked", this.elseClicked);
         eventEmitter.on("parallelClicked", this.parallelClicked);
@@ -83,6 +83,7 @@ class Container extends View {
         
         this.objectClick = e;
         // Finds the correct node in the created nodes.
+
         let obj = this.objects.find((obj) => {
             return obj.id == id;
         });

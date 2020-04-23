@@ -31,8 +31,6 @@ function main() {
         workspaceObject.addBox(flowObjPara);
         flowObjPara.print();
     }
-
-    //should use the same function with different inputs?
     document.querySelector("#newObject").addEventListener("click", createNewObject)
 
     document.querySelector('#newIfObject').addEventListener("click", createIfNewObject)
