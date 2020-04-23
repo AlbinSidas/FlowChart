@@ -76,19 +76,6 @@ class FuncDefAPI extends Network {
         const data = await fetch(`${this.baseURL}/${id}/${version}`).then(res  => res.json());
         return this.transformerInterface.resObject(data);
     }
-
-    /*
-    async getAll() {
-        const data = await super.getAll();
-        const p = data.map(d => new FunctionDefinition(d.funcdef_id, d.name, d.description, d.versionNumber, d.functionVariables));
-        return p;
-    }
-
-    async save(obj) {
-        const result = await super.save(obj)
-        const data = result.data
-        return new FunctionDefinition(data.funcdef_id, data.name, data.description, data.versionNumber, data.functionVariables);
-    }*/
 }
 
 class FlowchartAPI extends Network {
