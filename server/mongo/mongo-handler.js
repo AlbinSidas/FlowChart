@@ -80,6 +80,8 @@ class MongoHandler {
 
 
     // ============= PUBLIC ==================
+    async addToVersionControl() {} // overridden Never used
+
     async save(data, id = null, vNum = 1) {
         const versionNumber = vNum;
         const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
@@ -106,9 +108,6 @@ class MongoHandler {
         
         return null;
     } 
-
-    async addToVersionControl() {} // overridden Never used
-
 
     async getLatestVersion(id) {
         const data = await this._getById(id);
@@ -161,7 +160,6 @@ class MongoHandler {
            return null;
        }
     }
-
 }
 
 module.exports = MongoHandler
