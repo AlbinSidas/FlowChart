@@ -130,7 +130,6 @@ class MongoHandler {
     }
 
     async getAll() {
-
         const findAll    = _promisify((...args) => { this.collection.aggregate(...args) });
         const result     =  await findAll([
             {$sort: { _id: -1 }},
@@ -141,7 +140,6 @@ class MongoHandler {
         const all = await result.toArray();
         const flatAll = all.map(d =>{ return {...d.data} }); 
         return flatAll;//await result.limit(1).next();
-
     }
 
     async getVersionSnpashot(id) {
