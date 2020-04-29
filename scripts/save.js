@@ -57,8 +57,8 @@ class Save
 		}
 
 		let filename = prompt("skriv in namnet på filen du vill ladda\n" +trash)
-		//let foundId  = jsonData.find(element => element.name == filename)._id;
-		let foundId = "5ea03eb25ce39159ae907f43"; //hardcoded for making the load work for a specificly saved ID
+		let foundId  = jsonData.find(element => element.name == filename)._id;
+		//let foundId = "5ea03eb25ce39159ae907f43"; //hardcoded for making the load work for a specificly saved ID
 		const loadedData = await API.flowchartAPI.getById(foundId);
 		console.log(loadedData);
 		let nodes = loadedData.nodes;

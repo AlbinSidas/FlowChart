@@ -7,7 +7,7 @@ import { InlineView } from './base/view.js';
 class ConditionalNode extends FlowchartNode {
     constructor(id, functionDefinitionInstance = null) {
         super()
-        this.setHtml('<div></div>')
+        this.setHtml('<div class="ifnode"></div>')
 
         //functions
         this.onClick          = this.onClick.bind(this);

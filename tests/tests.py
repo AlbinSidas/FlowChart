@@ -12,6 +12,8 @@ from selenium.webdriver.common.alert import Alert
 # https://selenium-python.readthedocs.io/api.html
 
 flowchart_square = "IlIxhmMyTdSCZV1cxWXFv"
+ifnode = "_1lZFkq37vdYP-6J_D044hl"
+paranode = "_2PkgzkF4QW7ixfm5l0-Xz9"
 
 class FlowChartTest(unittest.TestCase):
     
@@ -401,10 +403,15 @@ class FlowChartTest(unittest.TestCase):
 
         func_name = modalcontent.find_element_by_id("name")
         func_name.click()
-        action = ActionChains(self.browser)
-        action.send_keys("Test2")
-        action.perform()
-        time.sleep(0.2)
+        action6 = ActionChains(self.browser)
+        action6.send_keys("Test2")
+        action6.perform()
+        func_desc = modalcontent.find_element_by_id("funcdescBox")
+        func_desc.click()
+        action8 = ActionChains(self.browser)
+        action8.send_keys("Description for test 2")
+        action8.perform()
+        time.sleep(0.5)
 
         save_func_btn = self.browser.find_element_by_class_name("saveFunctionDefButton")
         save_func_btn.click()
@@ -418,10 +425,15 @@ class FlowChartTest(unittest.TestCase):
 
         func_name = modalcontent.find_element_by_id("name")
         func_name.click()
-        action = ActionChains(self.browser)
-        action.send_keys("Test3")
-        action.perform()
-        time.sleep(0.2)
+        action7 = ActionChains(self.browser)
+        action7.send_keys("Test3")
+        action7.perform()
+        func_desc = modalcontent.find_element_by_id("funcdescBox")
+        func_desc.click()
+        action9 = ActionChains(self.browser)
+        action9.send_keys("Description for test 3")
+        action9.perform()
+        time.sleep(0.5)
 
         save_func_btn = self.browser.find_element_by_class_name("saveFunctionDefButton")
         save_func_btn.click()
@@ -430,10 +442,11 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.2)
 
         load_func_btn.click()
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         search_load = self.browser.find_element_by_id('loadFunctionInput')
         search_load.click()
+        time.sleep(0.2)
         action5 = ActionChains(self.browser)
         action5.send_keys("Test2")
         action5.perform()
@@ -448,25 +461,28 @@ class FlowChartTest(unittest.TestCase):
         square3 = self.browser.find_element_by_class_name(flowchart_square)
         square3.click()
         square3.click()
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         modal_func_def = self.browser.find_element_by_id("functionDefinition").text
         self.assertEqual(modal_func_def, "Function: Test2")
 
         #test function version number buttons
+        #save doesn't work yet
+    
+        #funcVUp = modalcontent.find_element_by_id("functionVersionUp")
+        #funcVUp.click()
+        #time.sleep(0.2)
+        #funcVUp.click()
+        #modal_version = modalcontent.find_element_by_id("versionNumber")
+        #self.assertEqual(modal_version.text, "2")
+        #funcVDown = modalcontent.find_element_by_id("functionVersionDown")
+        #funcVDown.click()
+        #modal_version = modalcontent.find_element_by_id("versionNumber")
+        #self.assertEqual(modal_version.text, "1")
+        #time.sleep(0.5)
 
-        funcVUp = modalcontent.find_element_by_id("functionVersionUp")
-        funcVUp.click()
-        funcVUp.click()
-        modal_version = modalcontent.find_element_by_id("versionNumber")
-        self.assertEqual(modal_version.text, "2")
-        funcVDown = modalcontent.find_element_by_id("functionVersionDown")
-        funcVDown.click()
-        modal_version = modalcontent.find_element_by_id("versionNumber")
-        self.assertEqual(modal_version.text, "1") """
 
-
-    """ def test_click_on_connector(self):
+    def test_click_on_connector(self):
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -533,7 +549,7 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.5)
         action_chain_3 = ActionChains(self.browser)
         action_chain_3.key_down(Keys.CONTROL).send_keys('d').key_up(Keys.CONTROL)
-        action_chain_3.perform() """ 
+        action_chain_3.perform()
 
     def test_saving_flow(self):
         new_obj_btn = self.browser.find_element_by_id("newObject")
@@ -594,9 +610,84 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.5)
         alert.accept()
 
-        time.sleep(1.5)
+    def test_if_and_parallel_nodes(self):
+        new_obj_btn = self.browser.find_element_by_id("newObject")
+        new_obj_btn.click()
+        new_ifobj_btn = self.browser.find_element_by_id("newIfObject")
+        new_ifobj_btn.click()
+        new_paraobj_btn = self.browser.find_element_by_id("newParallelObject")
+        new_paraobj_btn.click()
+        time.sleep(0.2)
 
+        conditional = self.browser.find_element_by_class_name(ifnode)
+        action = ActionChains(self.browser)
+        action.drag_and_drop_by_offset(conditional, 400, 0).perform()
+        parallel = self.browser.find_element_by_class_name(paranode)
+        action2 = ActionChains(self.browser)
+        action2.drag_and_drop_by_offset(conditional, 800, 0).perform()
+        square = self.browser.find_element_by_class_name(flowchart_square)
         
+        action_chain = ActionChains(self.browser)
+        start_node_output_id = "start-nodebox-start"
+        start_node_output = self.browser.find_element_by_id(start_node_output_id)
+        action_chain.click(start_node_output).perform()
+
+        time.sleep(0.2)
+        action_chain_2 = ActionChains(self.browser)
+        input_id = parallel.get_attribute("id") + "box-input"
+        parallel_input = self.browser.find_element_by_id(input_id)
+        action_chain_2.click(parallel_input).perform()
+
+        wroot = self.browser.find_element_by_id('workspace-root')
+        wroot.click()
+
+        action_chain_3 = ActionChains(self.browser)
+        output_id = parallel.get_attribute("id") + "box-parallel"
+        output = self.browser.find_element_by_id(output_id)
+        action_chain_3.click(output).perform()
+
+        time.sleep(0.2)
+        action_chain_4 = ActionChains(self.browser)
+        input_id_2 = conditional.get_attribute("id") + "box-input"
+        conditional_input = self.browser.find_element_by_id(input_id_2)
+        action_chain_4.click(conditional_input).perform()
+
+        wroot = self.browser.find_element_by_id('workspace-root')
+        wroot.click()
+        
+        action_chain_5 = ActionChains(self.browser)
+        cond_output_id = conditional.get_attribute("id") + "box-outputIf"
+        cond_output = self.browser.find_element_by_id(cond_output_id)
+        action_chain_5.click(cond_output).perform()
+
+        time.sleep(0.2)
+        action_chain_6 = ActionChains(self.browser)
+        input_id_3 = square.get_attribute("id") + "box-input"
+        square_input = self.browser.find_element_by_id(input_id_3)
+        action_chain_6.click(square_input).perform()
+        """
+
+    def test_stress_1(self):
+        new_obj_btn = self.browser.find_element_by_id("newObject")
+        for i in range(10):
+            new_obj_btn.click()
+            all_squares = self.browser.find_elements(By.CLASS_NAME, flowchart_square)
+            
+            action_chain = ActionChains(self.browser)
+            start_node_output_id = "start-nodebox-start"
+            start_node_output = self.browser.find_element_by_id(start_node_output_id)
+            action_chain.click(start_node_output).perform()
+            action_chain.reset_actions()
+
+            action_chain2 = ActionChains(self.browser)
+            input_id = all_squares[i].get_attribute("id") + "box-input"
+            square_input = self.browser.find_element_by_id(input_id)
+            action_chain2.click(square_input).perform()
+            action_chain2.reset_actions()
+
+
+
+        time.sleep(1000)
         
 
     def tearDown(self):
