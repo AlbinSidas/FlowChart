@@ -11,6 +11,23 @@ class Save
     }
 
     saveFlow(obj, name){
+		let filename = name;
+		let saveObjectList = [];
+		let i = 0;
+		for (i = 1; i < obj.length; i++) {
+			let saveObj = obj[i].getMetaInfo();
+			saveObjectList.push(saveObj);
+		}
+		const data = {
+			"nodes": saveObjectList,
+			"name": filename,
+		};
+		console.log(data);
+		API.flowchartAPI.save(data);
+		
+	}
+
+	saveFlowVer(obj, name, id){
 		if(this.validateSave(obj)){
 			let filename = name;
 			let saveObjectList = [];
@@ -24,10 +41,14 @@ class Save
 				"name": filename,
 			};
 
-			API.flowchartAPI.save(data);
+			API.flowchartAPI.saveVersion({
+				"flowchart_id": id,
+			
+				"content": data
+			});
 		}
 	}
-
+	
 
 	validateSave(obj){
 		if(obj.length < 2){
@@ -79,6 +100,12 @@ class Save
 		let foundId  = jsonData.find(element => element.name == filename).flowchart_id;
 		const loadedData = await API.flowchartAPI.getById(foundId);
 		let nodes = loadedData.nodes;
+		return loadedData
+	}
+	async loadFlowVer(id, ver) {
+		console.log("load ver initiated id: ", id, " ver: ", ver)
+		const loadedData = await API.flowchartAPI.getFlowVersion(id, ver);
+		console.log("loaded data: ", loadedData)
 		return loadedData
     }
 

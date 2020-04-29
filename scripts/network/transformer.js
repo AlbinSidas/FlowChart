@@ -26,14 +26,9 @@ export class FlowchartTransformer extends TransformerInterface {
     resArray(serverResponse) {
         return serverResponse;
     }
-
-    findById(serverResponse, id){
-        for(let i = 0; i < serverResponse.data.length; i++){
-            if(serverResponse.data[i].flowchart_id == id){
-                return serverResponse.data[i];
-            }
-        }
-        return -1;
+    
+    findVerNumbers(serverResponse){
+        return serverResponse.data;
     }
 }
 

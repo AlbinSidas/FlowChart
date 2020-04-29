@@ -31,7 +31,6 @@ class StartBox extends View
   didAttach(parent) {
     this.attach(this.modalContent);
     this.attach(this.modalFooter);
-
     this.newButton  = new NewButton();
     eventEmitter.on("openFlowchart",(name, id) => {  
         this.openFlow(name, id);
@@ -48,13 +47,14 @@ class StartBox extends View
 
 
   async openFlow(name, id){
-    const loadedData = await API.flowchartAPI.tempGetById(id);
+    const loadedData = await API.flowchartAPI.getById(id);
     eventEmitter.emit('openedFlowchart', loadedData);
     this.close();
   }
 
   async loadFileNameList(){
     const jsonData = await API.flowchartAPI.getNameList();
+    console.log(jsonData);
     let dropdown = document.getElementById('modalDropdown');
     while( dropdown.childElementCount > 1) {
       dropdown.removeChild(dropdown.lastChild); 

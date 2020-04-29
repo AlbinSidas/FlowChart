@@ -1,7 +1,7 @@
 
 import styleClasses from 'Styles/toolbox.css'
 import Button from 'Base/button.js'
-import View,  {InlineClickableView} from 'Base/view.js'
+import View,  {InlineClickableView, InlineView} from 'Base/view.js'
 import eventEmitter from 'Singletons/event-emitter.js'
 import SaveButton from './save-button';
 
@@ -13,6 +13,7 @@ class Toolbox extends View
     this.boxEventhandlerDelegate = boxEventhandlerDelegate;
     this.setHtml('<div></div>');
     this.element.setAttribute('id', 'toolbox');
+    let verList = [];
   }
 
   didAttach(parent) {
@@ -26,6 +27,23 @@ class Toolbox extends View
     //Save
     this.saveButton = new SaveButton();
     this.attach(this.saveButton);
+    //Version
+    this.decreaseVerBtn = InlineClickableView(
+      '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; margin-right:10%; width:10%;" name="button">\<</button>', 
+      this.boxEventhandlerDelegate.decVer
+      )
+    this.attach(this.decreaseVerBtn);
+
+    this.verCounter = InlineView(
+      '<button class="btn" style="background-color:var(--button-color); margin:5%; margin-right:10%; width:10%;" id="vercounter">0</button>'
+      )
+    this.attach(this.verCounter);
+
+    this.increaseVerBtn = InlineClickableView(
+      '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; margin-right:5%; width:10%;" name="button">\></button>', 
+      this.boxEventhandlerDelegate.incVer
+      )
+    this.attach(this.increaseVerBtn);
     //Vertical
     this.increaseSizeBtn = new IncreaseSizeButton();
     this.attach(this.increaseSizeBtn);
@@ -38,9 +56,15 @@ class Toolbox extends View
     this.attach(this.decreaseHorizontalSizeBtn);
 
   }
-
+  /*
+<div id="functionVersion"> Version: 
+                                <button id="functionVersionDown" class="btn"></button> 
+                                <span id="versionNumber"> ${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.versionNumber : 0} </span>
+                                <button id="functionVersionUp" class="btn"></button>
+                              </div>*/
   show() {
     this.element.setAttribute("style", "visibility:visible");
+    document.getElementById("vercounter").innerHTML = this.boxEventhandlerDelegate.currentFlowchartVer;
   }
 
   hide() {
@@ -52,6 +76,10 @@ class Toolbox extends View
     this.element.classList.add(styleClasses.tool_box);
     return this.element;
   }
+/*
+  async updateVerList(){
+    verList = await API.flowchartAPI.getVerNums(this.boxEventhandlerDelegate.getCurrFlowId());
+  }*/
 }
 
 

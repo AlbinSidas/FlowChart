@@ -82,10 +82,14 @@ class FlowchartAPI extends Network {
     constructor(destination, apiRoute) {
         super(destination, apiRoute, new FlowchartTransformer())
     }
-
-    async tempGetById(id){
-        const data = await fetch(`${this.baseURL}/all`).then(res  => res.json())
-        return this.transformerInterface.findById(data, id);
+    
+    async getVerNums(id){
+        const data = await fetch(`${this.baseURL}/version/snapshot/${id}`).then(res  => res.json());
+        return this.transformerInterface.findVerNumbers(data, id);
+    }
+    async getFlowVersion(id, ver){
+        const data = await fetch(`${this.baseURL}/${id}/${ver}`).then(res  => res.json());
+        return this.transformerInterface.resObject(data);
     }
 
     async getNameList() {
