@@ -101,9 +101,7 @@ async function main() {
     });
 
     app.get('/funcdef/:id/:version?', async(req, res) => {
-        console.log("ID: " ,req.params.id)
         const databaseOps = await mongoController.funcDefHandler.getOne(req.params.id, req.params.version); // kan behöva kallas på från någon annanstans om det blir större
-        console.log("DATABASSVAR:", databaseOps)
         res.json(Response("", databaseOps))
     });
 

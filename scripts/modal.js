@@ -116,20 +116,17 @@ class Modal extends View
     })
 
     eventEmitter.on('saveNewFunctionDef', async () => {
-      let funcDef = await this._save();
+      let funcDef = FunctionDefinition.CreateLocal(
+        document.getElementById("name").value,
+        document.getElementById("funcdescBox").value,
+        this._saveScreenVariables());
       try {
-        // Gör kontroll att det inte finns en funktion med namnet sedan tidigare
+        const data = await funcDefAPI.save( funcDef ); // transform
 
-        const data = await this._saveNewFuncDef(funcDef);
-        const versionObject = data.data[0];
-        let funcDefObject = versionObject.versions[0];
-        funcDefObject.id = versionObject._id;
-
-        this.functionDefinitions.push(funcDefObject);
-        this.loadList.push(funcDefObject);
+        this.functionDefinitions.push(data);
+        this.loadList.push(data);
         this.updateLoadListDOM();
-        this.currentFunctionDefinition.obj = funcDefObject;
-       
+        this.currentFunctionDefinition.obj = data;
       }
       catch(e){
         console.log(`Save failed due to ${e}`);
@@ -143,11 +140,11 @@ class Modal extends View
         
         funcDef.name = document.getElementById("name").value;
         funcDef.description = document.getElementById("funcdescBox").value;
-        funcDef.functionVariables = this._saveScreenVariables();        
+        funcDef.functionVariables = this._saveScreenVariables();
         let data = await this._saveVersionFuncDef(funcDef);
         
-        if(this.currentFunctionDefinition.obj.versionNumber < data.data.versionNumber) {
-          this.currentFunctionDefinition.obj.versionNumber = data.data.versionNumber;
+        if(this.currentFunctionDefinition.obj.versionNumber < data.versionNumber) {
+          this.currentFunctionDefinition.obj.versionNumber = data.versionNumber;
         }
 
         this.functionDefinitions.forEach(function(def, i) { 
@@ -251,13 +248,11 @@ class Modal extends View
   }
 
   async _updateVersion(requestVersion) {
-    console.log("INNAN SKICKA", this.currentFunctionDefinition.obj.id)
     let funcDef = await this._getVersionSnapShot(this.currentFunctionDefinition.obj.id, requestVersion);
-    console.log("I uppdatera version jämför svar  ", funcDef, this.obj.functionDefinitionInstance.id)
     this.close();
-    this.obj.functionDefinitionInstance = funcDef.targetVersion;
-    if(funcDef.targetVersion.versionNumber == 1) {
-      funcDef.targetVersion.id = funcDef._id;
+    this.obj.functionDefinitionInstance = funcDef;
+    if(funcDef.versionNumber == 1) {
+      funcDef.id = funcDef.id;
     }
     this.show(this.obj);
   }
@@ -305,9 +300,9 @@ class Modal extends View
   async setupDropdownList() {
     const data = await funcDefAPI.getAll();
     data.forEach(funcdef => {
-      funcdef.latestVersion.id = funcdef._id;
-      this.functionDefinitions.push(funcdef.latestVersion);
-      this.loadList.push(funcdef.latestVersion);
+      //funcdef.latestVersion.id = funcdef.id;
+      this.functionDefinitions.push(funcdef);
+      this.loadList.push(funcdef);
     })
     this.updateLoadListDOM();
   }
@@ -315,7 +310,6 @@ class Modal extends View
   updateList() {
     let ul = document.getElementById("cVarList");
     if(this.currentFunctionDefinition.obj == {} || this.currentFunctionDefinition.obj == undefined || this.currentFunctionDefinition.obj.functionVariables == null) {return;};
-    console.log("Detta är objektet: ",this.currentFunctionDefinition.obj)
     for (let i = 0; i < this.currentFunctionDefinition.obj.functionVariables.length; i++){
       this._addVariable(ul, this.currentFunctionDefinition.obj.functionVariables[i]);
     }
@@ -454,12 +448,12 @@ class Modal extends View
 
   async _saveVersionFuncDef(saveObject) {
     try {
-      let data = {
-        "id": saveObject.id,
-        "content": { ...saveObject }
-      };
-      let res =  await funcDefAPI.saveVersion(data);
-      return res;
+        let data = {
+          "funcdef_id": saveObject.id,
+          "content": { ...saveObject }
+        };
+        let res =  await funcDefAPI.saveVersion(data);
+        return res;
     } catch(e) {
       throw new Error('Failed to save version');
     }
@@ -501,13 +495,6 @@ class Modal extends View
       );
     }
     return variableList;
-  }
-
-  _save() {
-    let funcDef = FunctionDefinition.CreateLocal(document.getElementById("name").value,
-                                     document.getElementById("funcdescBox").value,
-                                     this._saveScreenVariables());
-    return funcDef;
   }
 
   close() {
