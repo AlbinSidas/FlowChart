@@ -80,6 +80,8 @@ class MongoHandler {
 
 
     // ============= PUBLIC ==================
+    async addToVersionControl() {} // overridden Never used
+
     async save(data, id = null, vNum = 1) {
         const versionNumber = vNum;
         const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
@@ -107,9 +109,6 @@ class MongoHandler {
         return null;
     } 
 
-    async addToVersionControl() {} // overridden Never used
-
-
     async getLatestVersion(id) {
         const data = await this._getById(id);
         return data.versionNumber;
@@ -131,7 +130,6 @@ class MongoHandler {
     }
 
     async getAll() {
-
         const findAll    = _promisify((...args) => { this.collection.aggregate(...args) });
         const result     =  await findAll([
             {$sort: { _id: -1 }},
@@ -142,7 +140,6 @@ class MongoHandler {
         const all = await result.toArray();
         const flatAll = all.map(d =>{ return {...d.data} }); 
         return flatAll;//await result.limit(1).next();
-
     }
 
     async getVersionSnpashot(id) {
@@ -161,7 +158,6 @@ class MongoHandler {
            return null;
        }
     }
-
 }
 
 module.exports = MongoHandler

@@ -88,6 +88,7 @@ class Save
     async loadFlow() {
 		let resultArray = [];
 		const jsonData = await API.flowchartAPI.getNameList();
+		console.log(jsonData);
 		let a = 0;
 		let flowchartNamesbuffer ="";
 		for (a = 0; a < jsonData.length; a++){
