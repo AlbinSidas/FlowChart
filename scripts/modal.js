@@ -135,7 +135,6 @@ class Modal extends View
 
     eventEmitter.on('saveVersionFunctionDef', async () => {
       try {
-        
         let funcDef = this.currentFunctionDefinition.obj;
         
         funcDef.name = document.getElementById("name").value;
@@ -193,7 +192,7 @@ class Modal extends View
       typeInput.value = 'Type';
     })
 
-    eventEmitter.on('removeVariable', (removed) => {
+    /*eventEmitter.on('removeVariable', (removed) => {
       if(this.currentFunctionDefinition.obj) {
         let indxOf;
         this.currentFunctionDefinition.obj.functionVariables.forEach(function(fvariable, i) { 
@@ -203,9 +202,27 @@ class Modal extends View
         this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1); 
       }
       this._removeElement(removed.type+removed.name);  
-    })
+    })*/
   
   }
+
+
+  removeVariable (removed) {
+    if(this.currentFunctionDefinition.obj) {
+      let indxOf;
+      this.currentFunctionDefinition.obj.functionVariables.forEach(function(fvariable, i) { 
+        if (fvariable.id == removed) indxOf = i;
+      });
+      
+      this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1); 
+    }
+    this._removeElement(removed.type+removed.name);  
+  }
+
+
+
+
+
 
   _removeElement(elementId) {
     let elem = document.getElementById(elementId)
@@ -336,10 +353,13 @@ class Modal extends View
       let removeButton = document.createElement('button');
       removeButton.innerHTML = "Remove variable";
       removeButton.setAttribute("style", "background-color: var(--button-color);");
-      removeButton.classList.add("btn");
+      removeButton.classList.add("btn");      
       
-      removeButton = new FuncDefVariableRemove(removeButton, variableObject);
-      li.insertAdjacentElement('afterbegin', removeButton.element);
+      InlineClickableViewBinding(removeButton, null, styleClasses.removeVariableButton, ()=>{
+        this.removeVariable(variableObject)
+      })
+      
+      li.insertAdjacentElement('afterbegin', removeButton);
 
     }
     list.appendChild(li);
@@ -594,23 +614,6 @@ class EarlierVersionButton extends Button {
 
   onClick() {
     eventEmitter.emit('changeLowerVersion');
-  }
-}
-
-class FuncDefVariableRemove extends View {
-  constructor(element, object = {}) { 
-      super();
-      this.setHtml(element);
-      this.element         = element;
-      this.render          = this.render.bind(this);
-      this.onClick         = this.onClick.bind(this)
-      this.object          = object;
-      this.element.onclick = this.onClick;
-      this.element.classList.add(styleClasses.removeVariableButton);
-  }
-
-  onClick() {
-    eventEmitter.emit('removeVariable', this.object);
   }
 }
 
