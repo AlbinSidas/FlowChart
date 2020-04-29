@@ -191,21 +191,7 @@ class Modal extends View
       nameInput.value = 'Name';
       typeInput.value = 'Type';
     })
-
-    /*eventEmitter.on('removeVariable', (removed) => {
-      if(this.currentFunctionDefinition.obj) {
-        let indxOf;
-        this.currentFunctionDefinition.obj.functionVariables.forEach(function(fvariable, i) { 
-          if (fvariable.id == removed) indxOf = i;
-        });
-        
-        this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1); 
-      }
-      this._removeElement(removed.type+removed.name);  
-    })*/
-  
   }
-
 
   removeVariable (removed) {
     if(this.currentFunctionDefinition.obj) {
@@ -218,11 +204,6 @@ class Modal extends View
     }
     this._removeElement(removed.type+removed.name);  
   }
-
-
-
-
-
 
   _removeElement(elementId) {
     let elem = document.getElementById(elementId)
