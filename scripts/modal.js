@@ -357,11 +357,11 @@ class Modal extends View
       
       InlineClickableViewBinding(removeButton, null, styleClasses.removeVariableButton, ()=>{
         this.removeVariable(variableObject)
-      })
-      
-      li.insertAdjacentElement('afterbegin', removeButton);
+      });
 
+      li.insertAdjacentElement('afterbegin', removeButton);
     }
+
     list.appendChild(li);
   }
 
