@@ -30,3 +30,8 @@
     max-width: 20px;
     max-height: 20px;
 }
+
+.removeVariableButton {
+    color: black;
+    margin: 0px 10px 10px 0px;
+}

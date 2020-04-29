@@ -122,10 +122,6 @@ class Modal extends View
         this._saveScreenVariables());
       try {
         const data = await funcDefAPI.save( funcDef ); // transform
-        //console.log(data)
-        //const versionObject = data.data[0];
-        //let funcDefObject = versionObject.versions[0];
-        //funcDefObject.id = versionObject._id;
 
         this.functionDefinitions.push(data);
         this.loadList.push(data);
@@ -139,12 +135,11 @@ class Modal extends View
 
     eventEmitter.on('saveVersionFunctionDef', async () => {
       try {
-        
         let funcDef = this.currentFunctionDefinition.obj;
         
         funcDef.name = document.getElementById("name").value;
         funcDef.description = document.getElementById("funcdescBox").value;
-        funcDef.functionVariables = this._saveScreenVariables();        
+        funcDef.functionVariables = this._saveScreenVariables();
         let data = await this._saveVersionFuncDef(funcDef);
         
         if(this.currentFunctionDefinition.obj.versionNumber < data.versionNumber) {
@@ -198,6 +193,23 @@ class Modal extends View
     })
   }
 
+  removeVariable (removed) {
+    if(this.currentFunctionDefinition.obj) {
+      let indxOf;
+      this.currentFunctionDefinition.obj.functionVariables.forEach(function(fvariable, i) { 
+        if (fvariable.id == removed) indxOf = i;
+      });
+      
+      this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1); 
+    }
+    this._removeElement(removed.type+removed.name);  
+  }
+
+  _removeElement(elementId) {
+    let elem = document.getElementById(elementId)
+    elem.parentNode.removeChild(elem);
+  }
+
   _updateVersionNumber(upOrDown) {
     let elem = document.getElementById('versionNumber');
     let newValue = "";
@@ -210,7 +222,7 @@ class Modal extends View
       newValue = parseInt(elem.innerHTML) + 1;
       
       // denna kan hitta samma funktionsdefinition i definitionslistan som innehåller senaste versionsvärdet
-      // Kontrollerar endast lokalt
+      // Kontrollerar endast lokalt i nuläget
       let latestVersionNumber = this.functionDefinitions.find(elem => {
         return elem.id == this.currentFunctionDefinition.obj.id;
       }).versionNumber;
@@ -235,7 +247,6 @@ class Modal extends View
 
   async _updateVersion(requestVersion) {
     let funcDef = await this._getVersionSnapShot(this.currentFunctionDefinition.obj.id, requestVersion);
-
     this.close();
     this.obj.functionDefinitionInstance = funcDef;
     if(funcDef.versionNumber == 1) {
@@ -260,6 +271,7 @@ class Modal extends View
                             <ul id="cVarList"></ul>
                          `;
   }
+
   _changeAndAddButtonsFooter(footer) {  
     let saveVersionButton = '<button style="background-color: var(--button-color)" class="saveFunctionVersionButton btn"> Save as new version </button>';
     let saveNewFunctionButton = '<button style="background-color: var(--button-color)" class="saveFunctionDefButton btn"> Save as new function </button>';
@@ -295,25 +307,43 @@ class Modal extends View
 
   updateList() {
     let ul = document.getElementById("cVarList");
-    if(!this.obj.functionDefinitionInstance) { return; }
-    for (let i = 0; i < this.obj.functionDefinitionInstance.functionVariables.length; i++){
-      this._addVariable(ul, this.obj.functionDefinitionInstance.functionVariables[i]);
-      // Lägga till en knapp i listitemet för att kunna ta bort tillagda variabler?
-      // Lägg till dessa varianter till addvariable isåfall.
+    if(this.currentFunctionDefinition.obj == {} || this.currentFunctionDefinition.obj == undefined || this.currentFunctionDefinition.obj.functionVariables == null) {return;};
+    for (let i = 0; i < this.currentFunctionDefinition.obj.functionVariables.length; i++){
+      this._addVariable(ul, this.currentFunctionDefinition.obj.functionVariables[i]);
     }
   }
 
   _addVariable(list, variableObject) {
-      let li = document.createElement("li");
-      li.appendChild(document.createTextNode(variableObject.type + ': ' + variableObject.name));
-      if(this.mode == "Node") {
-        let input = document.createElement("INPUT");
-        input.setAttribute('id', variableObject.name);
-        // TODO Sätt defaultvärden här om det behövs. Förändra defaultvärdet i funktionsvariabler?
-        input.value = variableObject.value ? variableObject.value : "Fill value"; 
-        li.appendChild(input);
-      }
-      list.appendChild(li);
+    // Control to make sure there isn't duplicate type+name in he function. 
+    if(document.getElementById(variableObject.type + variableObject.name)) {
+      alert("The variable is already in the variablelist.");
+      return;
+    }
+
+    let li = document.createElement("li");
+    li.setAttribute("id", variableObject.type + variableObject.name);
+
+    li.appendChild(document.createTextNode(variableObject.type + ': ' + variableObject.name));
+    if(this.mode == "Node") {
+      let input = document.createElement("INPUT");
+      input.setAttribute('id', variableObject.name);
+      // TODO Sätt defaultvärden här om det behövs. Förändra defaultvärdet i funktionsvariabler?
+      input.value = variableObject.value ? variableObject.value : "Fill value";
+      li.appendChild(input);
+    } else if (this.mode == "Function") {
+      let removeButton = document.createElement('button');
+      removeButton.innerHTML = "Remove variable";
+      removeButton.setAttribute("style", "background-color: var(--button-color);");
+      removeButton.classList.add("btn");      
+      
+      InlineClickableViewBinding(removeButton, null, styleClasses.removeVariableButton, ()=>{
+        this.removeVariable(variableObject)
+      });
+
+      li.insertAdjacentElement('afterbegin', removeButton);
+    }
+
+    list.appendChild(li);
   }
 
   loadDefinitionToModal(def) {
@@ -409,12 +439,12 @@ class Modal extends View
   }
 
   async _saveNewFuncDef(saveObject) {
-      try {
-          const res = await funcDefAPI.save( saveObject );
-          return res;
-      } catch(e) {
-        throw new Error('Failed to save functiondefinition');
-      }
+    try {
+        const res = await funcDefAPI.save( saveObject );
+        return res;
+    } catch(e) {
+      throw new Error('Failed to save functiondefinition');
+    }
   }
 
   async _saveVersionFuncDef(saveObject) {
@@ -424,7 +454,6 @@ class Modal extends View
           "content": { ...saveObject }
         };
         let res =  await funcDefAPI.saveVersion(data);
-        console.log("RES=", res)
         return res;
     } catch(e) {
       throw new Error('Failed to save version');
@@ -448,7 +477,7 @@ class Modal extends View
     if (this.obj.functionDefinitionInstance) {
       let definitionVariables = this.obj.functionDefinitionInstance.functionVariables;
       for (let i = 0; i < definitionVariables.length; i++) {
-          definitionVariables[i].value = document.getElementById(definitionVariables[i].name).value;
+        definitionVariables[i].value = document.getElementById(definitionVariables[i].name).value;
       }
     }
   }
@@ -458,7 +487,9 @@ class Modal extends View
     const variables = document.getElementById('cVarList').children;
     for(let i=0; i < variables.length ; i++) {
       let nameAndType = variables[i].textContent.split(": ");
-      let type = nameAndType[0];
+
+      // Substring here because the split also cathes "Remove variable" which is removed here.
+      let type = nameAndType[0].substring(15);
       let name = nameAndType[1];
       variableList.push( 
         new FunctionVariable(name, type, 'Not yet added')
@@ -470,6 +501,7 @@ class Modal extends View
   close() {
     if(this.mode == "Node") {
       // Logik för att se om det finns ickesparade förändringar? 
+      /* När en node öppnas kan en version sparas och jämföras mot nuvarande state av noden */
       this._saveNode();
     }
     this._updateFooterNode();
@@ -486,14 +518,14 @@ class Modal extends View
 
 class LoadButton extends Button {
   constructor() {
-      super();
-      this.setHtml(document.getElementById('loadModalButton'));
-      this.element = document.getElementById('loadModalButton');
-      this.render = this.render.bind(this);
-      this.onClick = this.onClick.bind(this);
-      this.element.onclick = this.onClick;
-      this.element.classList.add(styleClasses.buttonLoad);
-    }
+    super();
+    this.setHtml(document.getElementById('loadModalButton'));
+    this.element = document.getElementById('loadModalButton');
+    this.render = this.render.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.element.onclick = this.onClick;
+    this.element.classList.add(styleClasses.buttonLoad);
+  }
 
   onClick() {
     eventEmitter.emit('loadFunciton');
