@@ -116,18 +116,21 @@ class Modal extends View
     })
 
     eventEmitter.on('saveNewFunctionDef', async () => {
-      let funcDef = await this._save();
+      let funcDef = FunctionDefinition.CreateLocal(
+        document.getElementById("name").value,
+        document.getElementById("funcdescBox").value,
+        this._saveScreenVariables());
       try {
-        const data = await this._saveNewFuncDef(funcDef);
-        const versionObject = data.data[0];
-        let funcDefObject = versionObject.versions[0];
-        funcDefObject.id = versionObject._id;
+        const data = await funcDefAPI.save( funcDef ); // transform
+        //console.log(data)
+        //const versionObject = data.data[0];
+        //let funcDefObject = versionObject.versions[0];
+        //funcDefObject.id = versionObject._id;
 
-        this.functionDefinitions.push(funcDefObject);
-        this.loadList.push(funcDefObject);
+        this.functionDefinitions.push(data);
+        this.loadList.push(data);
         this.updateLoadListDOM();
-        this.currentFunctionDefinition.obj = funcDefObject;
-       
+        this.currentFunctionDefinition.obj = data;
       }
       catch(e){
         console.log(`Save failed due to ${e}`);
@@ -144,8 +147,8 @@ class Modal extends View
         funcDef.functionVariables = this._saveScreenVariables();        
         let data = await this._saveVersionFuncDef(funcDef);
         
-        if(this.currentFunctionDefinition.obj.versionNumber < data.data.versionNumber) {
-          this.currentFunctionDefinition.obj.versionNumber = data.data.versionNumber;
+        if(this.currentFunctionDefinition.obj.versionNumber < data.versionNumber) {
+          this.currentFunctionDefinition.obj.versionNumber = data.versionNumber;
         }
 
         this.functionDefinitions.forEach(function(def, i) { 
@@ -234,9 +237,9 @@ class Modal extends View
     let funcDef = await this._getVersionSnapShot(this.currentFunctionDefinition.obj.id, requestVersion);
 
     this.close();
-    this.obj.functionDefinitionInstance = funcDef.targetVersion;
-    if(funcDef.targetVersion.versionNumber == 1) {
-      funcDef.targetVersion.id = funcDef._id;
+    this.obj.functionDefinitionInstance = funcDef;
+    if(funcDef.versionNumber == 1) {
+      funcDef.id = funcDef.id;
     }
     this.show(this.obj);
   }
@@ -283,9 +286,9 @@ class Modal extends View
   async setupDropdownList() {
     const data = await funcDefAPI.getAll();
     data.forEach(funcdef => {
-      funcdef.latestVersion.id = funcdef._id;
-      this.functionDefinitions.push(funcdef.latestVersion);
-      this.loadList.push(funcdef.latestVersion);
+      //funcdef.latestVersion.id = funcdef.id;
+      this.functionDefinitions.push(funcdef);
+      this.loadList.push(funcdef);
     })
     this.updateLoadListDOM();
   }
@@ -417,10 +420,11 @@ class Modal extends View
   async _saveVersionFuncDef(saveObject) {
     try {
         let data = {
-          "id": saveObject.id,
+          "funcdef_id": saveObject.id,
           "content": { ...saveObject }
         };
         let res =  await funcDefAPI.saveVersion(data);
+        console.log("RES=", res)
         return res;
     } catch(e) {
       throw new Error('Failed to save version');
@@ -461,13 +465,6 @@ class Modal extends View
       );
     }
     return variableList;
-  }
-
-  _save() {
-    let funcDef = FunctionDefinition.CreateLocal(document.getElementById("name").value,
-                                     document.getElementById("funcdescBox").value,
-                                     this._saveScreenVariables());
-    return funcDef;
   }
 
   close() {
