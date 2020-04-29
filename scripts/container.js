@@ -78,7 +78,6 @@ class Container extends View {
             this.saveIdForNewFlowchart(name);
         })
         eventEmitter.on("openedFlowchart", (chosenFlowchart) => {  
-                console.log(chosenFlowchart); 
                 const looseNodes = chosenFlowchart.nodes;
                 looseNodes.forEach((looseNode) => {
                       this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
@@ -203,7 +202,6 @@ class Container extends View {
 
     // ##################
     async loadFlow() {
-        console.log("start ver load");
         this.clearFlowchart();
         const loadedObjects = await this.saveClass.loadFlowVer(this.flowchartId, this.currentFlowchartVer);
         const looseNodes = loadedObjects.nodes;
@@ -517,7 +515,6 @@ class Container extends View {
 
     async saveIdForNewFlowchart(name){
         let nameList = await API.flowchartAPI.getNameList();
-        console.log(nameList);
         for (let i = 0; i < nameList.length; i++){
             if(nameList[i].name == name){
                 this.flowchartId = nameList[i].flowchart_id;
@@ -538,22 +535,18 @@ class Container extends View {
 
     async incVer(){
         let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
-        console.log("inc", this);
         if(this.currentFlowchartVerIndex < ver.length-1){
             this.currentFlowchartVerIndex++;
             this.currentFlowchartVer = ver[this.currentFlowchartVerIndex];
-            console.log(this.currentFlowchartVer, this.currentFlowchartVerIndex);
             document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
         }
     }
 
     async decVer(){
         let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
-        console.log("dec", ver);
         if(this.currentFlowchartVerIndex > 0){
             this.currentFlowchartVerIndex--;
             this.currentFlowchartVer = ver[this.currentFlowchartVerIndex];
-            console.log(this.currentFlowchartVer, this.currentFlowchartVerIndex);
             document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
         }
     }

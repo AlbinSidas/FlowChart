@@ -54,7 +54,6 @@ class StartBox extends View
 
   async loadFileNameList(){
     const jsonData = await API.flowchartAPI.getNameList();
-    console.log(jsonData);
     let dropdown = document.getElementById('modalDropdown');
     while( dropdown.childElementCount > 1) {
       dropdown.removeChild(dropdown.lastChild); 
