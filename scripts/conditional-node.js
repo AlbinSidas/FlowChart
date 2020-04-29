@@ -6,29 +6,14 @@ import { InlineView } from './base/view.js';
 
 class ConditionalNode extends FlowchartNode {
     constructor(id, functionDefinitionInstance = null) {
-        super()
+        super(id, null)
         this.setHtml('<div></div>')
 
-        //functions
-        this.onClick          = this.onClick.bind(this);
-        this.elementDrag      = this.elementDrag.bind(this);
-        this.mouseDown        = this.mouseDown.bind(this);
-        this.closeDragElement = this.closeDragElement.bind(this);
-        this.getMetaInfo      = this.getMetaInfo.bind(this);
-        
         //ui
-        this.posX    = 100;
-        this.posY    = 100;
         this.height  = 150;
-        this.offsetX = 0;
-        this.offsetY = 0;
-        this.idRef   = "";
-        this._connectorUpdaters = {}
         //flow
         this.id    = id;
-        this._name = "";
-
-        this.input  = new NodeIO(this, "box-input");
+        this.output = null;
         this.outputIf = new NodeIO(this, "box-outputIf");
         this.outputElse = new NodeIO(this, "box-outputElse");
         this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id}</p>`);

@@ -9,6 +9,9 @@ import View from 'Base/view.js'
 import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
+import IfConnector from "./if-connector.js";
+import ElseConnector from "./else-connector.js"
+import ParaConnector from "./para-connector.js"
 import ShowHideButton from './showHideButton.js';
 import ConditionalNode from './conditional-node';
 import ParallelNode from './parallel-node';
@@ -135,7 +138,7 @@ class Container extends View {
     
     inputClicked(id) {
         if (id == this.markedOutput || this.markedOutput == "") {
-            return;V
+            return;
         }     
         const currNode = this.objects.find(temp => temp.id == id )
         const prevNode = this.objects.find(temp => temp.id == this.markedOutput )
@@ -145,17 +148,20 @@ class Container extends View {
             currNode.input.connections.push(this.markedOutput);
             if(this.nodeType == ""){
                 prevNode.output.connections.push(currNode.id);
+                connector = new Connector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
             }
             else if(this.nodeType == "if"){
                 prevNode.outputIf.connections.push(currNode.id);
+                connector = new IfConnector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
             }
             else if(this.nodeType == "else"){
                 prevNode.outputElse.connections.push(currNode.id);
+                connector = new ElseConnector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
             }
             else if(this.nodeType == "parallel"){
                 prevNode.outputParallel.connections.push(currNode.id)
+                connector = new ParaConnector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
             };
-            connector = new Connector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
             prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
             currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
             connector.element.classList.add("connector");

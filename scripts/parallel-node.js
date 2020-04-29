@@ -6,7 +6,7 @@ import { InlineView } from './base/view.js'
 
 class ParallelNode extends FlowchartNode{
     constructor(id, functionDefinitionInstance = null) {
-        super()
+        super(id, null)
         this.setHtml('<div></div>')
 
         //functions
@@ -28,7 +28,6 @@ class ParallelNode extends FlowchartNode{
         this.id    = id;
         this._name = "";
 
-        this.input  = new NodeIO(this, "box-input");
         this.outputParallel = new NodeIO(this, "box-parallel");
         this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id}</p>`);
     
