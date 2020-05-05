@@ -4,12 +4,14 @@ import StartNode from './start-node.js'
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
 import Modal from './modal.js'
+import StartBox from './start-box.js'
 import Saving from './save.js'
 import View from 'Base/view.js'
 import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
 import ShowHideButton from './showHideButton.js';
+import API from "Network/network.js"
 
 class Container extends View {
     constructor() {
@@ -24,7 +26,11 @@ class Container extends View {
         this.width = window.innerWidth;
         this.childScrolled = this.childScrolled.bind(this)
 
-	    this.saveClass      = new Saving();
+        this.saveClass      = new Saving();
+        this.flowchartName = "";
+        this.flowchartId = "";
+        this.currentFlowchartVer = 0;
+        this.currentFlowchartVerIndex = 0;
         this.objects        = [];
         this.markedObject   = [];
         this.markedConnector= [];
@@ -51,6 +57,8 @@ class Container extends View {
         
 
         this.loadFlow = this.loadFlow.bind(this)
+        this.incVer = this.incVer.bind(this)
+        this.decVer = this.decVer.bind(this)
 
         // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on("clicked", this.objectClicked);
@@ -64,6 +72,24 @@ class Container extends View {
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
         })
+        eventEmitter.on("newFlowchart", (name) => {   
+            this.flowchartName = name;
+            this.saveClass.saveFlow(this.objects, this.flowchartName);
+            this.saveIdForNewFlowchart(name);
+        })
+        eventEmitter.on("openedFlowchart", (chosenFlowchart) => {  
+            const looseNodes = chosenFlowchart.nodes;
+            looseNodes.forEach((looseNode) => {
+                this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
+            })
+            this.objects.forEach(obj => this.attach(obj))
+            this.connectNodes(looseNodes)
+            this.flowchartName = chosenFlowchart.name;
+            this.flowchartId = chosenFlowchart.flowchart_id;
+            this.currentFlowchartVer = chosenFlowchart.versionNumber;
+            this.syncVerNum();
+        })
+
     }
 
     objectClicked(id, e) {
@@ -172,7 +198,8 @@ class Container extends View {
 
     // ##################
     async loadFlow() {
-        const loadedObjects = await this.saveClass.loadFlow(this);
+        this.clearFlowchart();
+        const loadedObjects = await this.saveClass.loadFlowVer(this.flowchartId, this.currentFlowchartVer);
         const looseNodes = loadedObjects.nodes;
         looseNodes.forEach((looseNode) => {
               this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
@@ -204,12 +231,15 @@ class Container extends View {
         this.modal = new Modal();
         this.attach(this.modal);
         
+        this.startBox = new StartBox();
+        this.attach(this.startBox);
+        this.startBox.show();
         eventEmitter.on('showHide', () => {
             this.showHide();
         })
 
         eventEmitter.on('save', () =>  {
-            this.saveClass.saveFlow(this.objects)
+            this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId)
         })
 
         eventEmitter.on('increaseSize', () =>  {
@@ -264,6 +294,13 @@ class Container extends View {
             this.connectorList[i].unglow();
         }
         this.markedConnector = [];
+    }
+
+    clearFlowchart(){
+        for(let i = 1; i < this.objects.length; i++){
+            this.markedObject[this.markedObject.length] = this.objects[i];
+        }
+        this.removeNode();
     }
 
     removeNode() { // 68
@@ -472,6 +509,43 @@ class Container extends View {
         }
     }
 
+    async saveIdForNewFlowchart(name){
+        let nameList = await API.flowchartAPI.getNameList();
+        for (let i = 0; i < nameList.length; i++){
+            if(nameList[i].name == name){
+                this.flowchartId = nameList[i].flowchart_id;
+            }
+        }
+    }
+    getCurrFlowId(){
+        return this.flowchartId;
+    }
+    async syncVerNum(){
+        let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+        for(let i = 0; i < ver.length; i++){
+            if(ver[i] == this.currentFlowchartVer){
+                this.currentFlowchartVerIndex = i;
+            }
+        }
+    }
+
+    async incVer(){
+        let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+        if(this.currentFlowchartVerIndex < ver.length-1){
+            this.currentFlowchartVerIndex++;
+            this.currentFlowchartVer = ver[this.currentFlowchartVerIndex];
+            document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+        }
+    }
+
+    async decVer(){
+        let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+        if(this.currentFlowchartVerIndex > 0){
+            this.currentFlowchartVerIndex--;
+            this.currentFlowchartVer = ver[this.currentFlowchartVerIndex];
+            document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+        }
+    }
 }
 
 function recursiveFlowchartCreation(id, objects, flowchartList) {

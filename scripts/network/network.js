@@ -61,7 +61,7 @@ class Network {
     }
 
     async getById(id) {
-        const data = await fetch(`${this.baseURL}/${id}`).then(res  => res.json())
+        const data = await fetch(`${this.baseURL}/${id}`).then(res  => res.json());
         return this.transformerInterface.resObject(data);
     }
 
@@ -81,6 +81,15 @@ class FuncDefAPI extends Network {
 class FlowchartAPI extends Network {
     constructor(destination, apiRoute) {
         super(destination, apiRoute, new FlowchartTransformer())
+    }
+    
+    async getVerNums(id){
+        const data = await fetch(`${this.baseURL}/version/snapshot/${id}`).then(res  => res.json());
+        return this.transformerInterface.findVerNumbers(data, id);
+    }
+    async getFlowVersion(id, ver){
+        const data = await fetch(`${this.baseURL}/${id}/${ver}`).then(res  => res.json());
+        return this.transformerInterface.resObject(data);
     }
 
     async getNameList() {
