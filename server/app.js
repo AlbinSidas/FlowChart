@@ -2,6 +2,7 @@ const assert          = require('assert');
 const config          = require('./config.js')
 const express         = require('express')
 const mongo           = require('./mongo/mongo-controller') 
+const logMiddleware   = require('./middleware.js').logMiddleware
 const cors            = require('cors')
 const bodyParser      = require('body-parser')
 const fs              = require('fs');
@@ -34,6 +35,8 @@ async function main() {
         "preflightContinue": true
     }))
     
+    app.use(logMiddleware)
+
     app.get('/', (req, res) => res.json({'apa':'Hello World!'}))
 
 
@@ -49,7 +52,6 @@ async function main() {
     app.get('/flowchart/all', async function (req, res) {
         const databaseOps = await mongoController.flowchartHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
         res.json(Response("", databaseOps))
-
     });
 
     app.get('/flowchart/view', async function(req, res) {
@@ -92,7 +94,6 @@ async function main() {
         res.json(Response("Fetched version numbers", result));
     });
 
-    
     // ORDNINGEN BLIR VIKTIG HÄR! Om funcdef/all ligger under funcdef/:id kommer "all" att
     // identifieras som id och därför gå in i fel path.
     app.get('/funcdef/all', async(req, res) => {
@@ -104,7 +105,6 @@ async function main() {
         const databaseOps = await mongoController.funcDefHandler.getOne(req.params.id, req.params.version); // kan behöva kallas på från någon annanstans om det blir större
         res.json(Response("", databaseOps))
     });
-
 
     app.post('/funcdef/save', async (req, res) => {
         const data = req.body;

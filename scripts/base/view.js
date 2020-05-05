@@ -43,12 +43,16 @@ export function InlineClickableView (elementString, clickCb) {
 
 
 // EN binding är skapad från ene redan existerande element
-export function InlineClickableViewBinding(element, eventName, styleClass) {
+// Eventet triggas sist för det spelar ingen roll om den triggas först
+export function InlineClickableViewBinding(element, eventName, styleClass, cb) {
   const object = {
     element: element
   }
   if(styleClass) { object.element.classList.add(styleClass); }
-  object.element.onclick = () => {eventEmitter.emit(eventName)};
+  object.element.onclick = (e) => {
+    if(cb) {cb(e)}
+    if(eventName) {eventEmitter.emit(eventName)}    
+  };
 
   return Object.assign(object, ViewInterface(object));
 }
