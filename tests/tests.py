@@ -15,7 +15,27 @@ flowchart_square = "IlIxhmMyTdSCZV1cxWXFv"
 ifnode = "_1lZFkq37vdYP-6J_D044hl"
 paranode = "_2PkgzkF4QW7ixfm5l0-Xz9"
 
+def create_many_nodes(self, number):
+        new_obj_btn = self.browser.find_element_by_id("newObject")
+        for i in range(number):
+            print(i)
+            new_obj_btn.click()
+            all_squares = self.browser.find_elements(By.CLASS_NAME, flowchart_square)
+            
+            action_chain = ActionChains(self.browser)
+            start_node_output_id = "start-nodebox-start"
+            start_node_output = self.browser.find_element_by_id(start_node_output_id)
+            action_chain.click(start_node_output).perform()
+            action_chain.reset_actions()
+
+            action_chain2 = ActionChains(self.browser)
+            input_id = all_squares[i].get_attribute("id") + "box-input"
+            square_input = self.browser.find_element_by_id(input_id)
+            action_chain2.click(square_input).perform()
+            action_chain2.reset_actions()
+
 class FlowChartTest(unittest.TestCase):
+    
     
     
     def setUp(self):
@@ -668,27 +688,25 @@ class FlowChartTest(unittest.TestCase):
         """
 
     def test_stress_1(self):
-        new_obj_btn = self.browser.find_element_by_id("newObject")
-        for i in range(10):
-            new_obj_btn.click()
-            all_squares = self.browser.find_elements(By.CLASS_NAME, flowchart_square)
-            
-            action_chain = ActionChains(self.browser)
-            start_node_output_id = "start-nodebox-start"
-            start_node_output = self.browser.find_element_by_id(start_node_output_id)
-            action_chain.click(start_node_output).perform()
-            action_chain.reset_actions()
+        #creates nodes and connects them to the start node, the nodes are stacked on the same spot on the screen/page
+        create_many_nodes(self, 304)
+        #lagging a bit at 800 quite a lot at 900 nodes
+        #100 connected: not lagging at start, with 800 nodes total only 100 connected starting to lag 900 lagging quite a bit
+        #200 connected: not lagging at start, drag delay starting at 600 if above the place with a lot of nodes
+        #300 connected: feels like it might lag a little while dragging a node above the 299 others, quick load
+        #400 connected: feels like it lags above the 399 others, on the other side no lag
+        #1000 connected: lagging if dragging near all nodes
+        #10000 connected: creation slowing down a lot above 1500, couldn't bother running the whole thing, took about 3 sec 
+        # for one creation and connection when above 3000 nodes were on the screen 
 
-            action_chain2 = ActionChains(self.browser)
-            input_id = all_squares[i].get_attribute("id") + "box-input"
-            square_input = self.browser.find_element_by_id(input_id)
-            action_chain2.click(square_input).perform()
-            action_chain2.reset_actions()
-
-
-
+        #cors/fetch fails on saving 305 nodes were all of them are only connected to the start node
+        #need to check if it fails on saving less nodes with more connections
+        
         time.sleep(1000)
         
+    
+
+
 
     def tearDown(self):
         self.browser.quit()

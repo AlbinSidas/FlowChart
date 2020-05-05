@@ -19,8 +19,8 @@ class FlowchartNode extends View {
         this.getMetaInfo      = this.getMetaInfo.bind(this)
 
         //ui
-        this.posX    = 100;
-        this.posY    = 100;
+        this.posX    = window.scrollX + 100;
+        this.posY    = window.scrollY + 100;
         this.height  = 250;
         this.offsetX = 0;
         this.offsetY = 0;

@@ -62,7 +62,7 @@ class Save
 		const loadedData = await API.flowchartAPI.getById(foundId);
 		console.log(loadedData);
 		let nodes = loadedData.nodes;
-		return loadedData.latestVersion
+		return loadedData
     }
 
 }
