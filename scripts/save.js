@@ -64,26 +64,8 @@ class Save
 				return false;
 			} 
 		}
-			return true;
+		return true;
 	}
-/*
-    saveFlow(obj){
-		if(this.validateSave(obj)){
-			let filename = prompt("Please enter the name for your save file")
-			let saveObjectList = [];
-			let i = 0;
-			for (i = 1; i < obj.length; i++) {
-				let saveObj = obj[i].getMetaInfo();
-				saveObjectList.push(saveObj);
-			}
-			const data = {
-				"nodes": saveObjectList,
-				"name": filename,
-			};
-
-			API.flowchartAPI.save(data);
-		}
-	}*/
 	
     async loadFlow() {
 		let resultArray = [];

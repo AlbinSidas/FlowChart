@@ -56,12 +56,6 @@ class Toolbox extends View
     this.attach(this.decreaseHorizontalSizeBtn);
 
   }
-  /*
-<div id="functionVersion"> Version: 
-                                <button id="functionVersionDown" class="btn"></button> 
-                                <span id="versionNumber"> ${this.obj.functionDefinitionInstance ? this.obj.functionDefinitionInstance.versionNumber : 0} </span>
-                                <button id="functionVersionUp" class="btn"></button>
-                              </div>*/
   show() {
     this.element.setAttribute("style", "visibility:visible");
     document.getElementById("vercounter").innerHTML = this.boxEventhandlerDelegate.currentFlowchartVer;
@@ -76,10 +70,6 @@ class Toolbox extends View
     this.element.classList.add(styleClasses.tool_box);
     return this.element;
   }
-/*
-  async updateVerList(){
-    verList = await API.flowchartAPI.getVerNums(this.boxEventhandlerDelegate.getCurrFlowId());
-  }*/
 }
 
 

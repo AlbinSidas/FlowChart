@@ -78,20 +78,16 @@ class Container extends View {
             this.saveIdForNewFlowchart(name);
         })
         eventEmitter.on("openedFlowchart", (chosenFlowchart) => {  
-                const looseNodes = chosenFlowchart.nodes;
-                looseNodes.forEach((looseNode) => {
-                      this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
-                })
-        
-                this.objects.forEach(obj => this.attach(obj))
-                this.connectNodes(looseNodes)
-                this.flowchartName = chosenFlowchart.name;
-                this.flowchartId = chosenFlowchart.flowchart_id;
-                this.currentFlowchartVer = chosenFlowchart.versionNumber;
-                this.syncVerNum();
-
-                
-        
+            const looseNodes = chosenFlowchart.nodes;
+            looseNodes.forEach((looseNode) => {
+                this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
+            })
+            this.objects.forEach(obj => this.attach(obj))
+            this.connectNodes(looseNodes)
+            this.flowchartName = chosenFlowchart.name;
+            this.flowchartId = chosenFlowchart.flowchart_id;
+            this.currentFlowchartVer = chosenFlowchart.versionNumber;
+            this.syncVerNum();
         })
 
     }
