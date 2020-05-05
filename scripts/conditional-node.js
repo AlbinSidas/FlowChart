@@ -1,25 +1,38 @@
-import FlowchartNode from './flowchart-node';
-import style from 'Styles/style.css';
-import NodeIO from './nodeIO.js';
-import NodeMetaInfo from 'Model/node-meta-info.js'
+import FlowchartNode  from './flowchart-node';
+import style          from 'Styles/style.css';
+import NodeIO         from './nodeIO.js';
+import NodeMetaInfo   from 'Model/node-meta-info.js'
 import { InlineView } from './base/view.js';
+import eventEmitter   from 'Singletons/event-emitter.js';
+import IfConnector    from './if-connector.js';
+import ElseConnector  from './else-connector.js';
 
 class ConditionalNode extends FlowchartNode {
     constructor(id, functionDefinitionInstance = null) {
         super(id, null)
         this.setHtml('<div></div>')
+        
+        
+        // Binding
+        this.onDestElseClicked   = this.onDestElseClicked.bind(this);
+        this.onDestIfClicked     = this.onDestIfClicked.bind(this);
+        this.onOutputElseClicked = this.onOutputElseClicked.bind(this);
+        this.onOutputIfClicked   = this.onOutputIfClicked.bind(this);
+
+
 
         //ui
         this.height  = 150;
         //flow
         this.id    = id;
         this.output = null;
-        this.outputIf = new NodeIO(this, "box-outputIf");
-        this.outputElse = new NodeIO(this, "box-outputElse");
+        this.outputIf = new NodeIO(this, "box-outputIf", this.onOutputIfClicked);
+        this.outputElse = new NodeIO(this, "box-outputElse", this.onOutputElseClicked);
         this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id}</p>`);
 
         this.element.classList.add(style.conditionalnode);
         this.element.id = id;
+
     }
 
     didAttach(parent) {
@@ -48,8 +61,50 @@ class ConditionalNode extends FlowchartNode {
                 null); 
     }
 
+
+    onOutputElseClicked(myId) {
+        // väntar jag på att en annan ska tryckas
+        // jag blev tryckt innan nästa
+        eventEmitter.emit("prevClicked", this.onDestElseClicked, this.id)
+    }
+
+    onOutputIfClicked(myId) {
+        eventEmitter.emit("prevClicked", this.onDestIfClicked, this.id)
+    }
     
-    
+    onDestElseClicked(currNode) {
+        currNode.input.connections.push(this.outputElse.id);
+        this.outputElse.connections.push(currNode.id)
+        const connector = new ElseConnector(currNode.id + this.id, this, currNode, null);
+        this.registerConnectorUpdater(connector.id, connector.updateConnections);
+        currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
+        connector.element.classList.add("connector");
+        return connector;
+    }
+
+    onDestIfClicked(currNode) {
+        currNode.input.connections.push(this.outputIf.id);
+        this.outputIf.connections.push(currNode.id)
+        const connector = new IfConnector(currNode.id + this.id, this, currNode, null);
+        this.registerConnectorUpdater(connector.id, connector.updateConnections);
+        currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
+        connector.element.classList.add("connector");
+        return connector;
+    }
+
+
+    reconnect(connectorsHandler) {
+        this.outputIfConnectionsList.forEach((output) => {
+            this.onOutputIfClicked(this.id);
+            this.connectorsHandler(output)
+        });
+
+        this.outputElseConnectionsList.forEach((output) => {
+            this.onOutputElseClicked(this.id);
+            this.connectorsHandler(output)
+        });
+    }
+
     static CreateExternal(object, inputIds, outputIds) {
         console.log(object)
         const node = new ConditionalNode(object.id, object.functionDefinitionInstance);

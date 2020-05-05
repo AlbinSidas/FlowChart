@@ -26,6 +26,7 @@ class Connector extends View
 
   updateConnections(){//prevNode, currNode){
     // Aligning the connector with the input/output of a node
+   
     let outX = this.prevNode.posX + 150;
     let outY = this.prevNode.posY + 250;
     let inX  = this.currNode.posX + 150;

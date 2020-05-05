@@ -5,6 +5,7 @@ import eventEmitter from 'Singletons/event-emitter.js';
 import NodeIO from './nodeIO.js';
 import NodeMetaInfo from 'Model/node-meta-info.js'
 import { InlineView } from './base/view.js';
+import Connector from "./connectors.js";
 
 class FlowchartNode extends View {
     constructor(id, functionDefinitionInstance = null){
@@ -17,7 +18,8 @@ class FlowchartNode extends View {
         this.mouseDown        = this.mouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
         this.getMetaInfo      = this.getMetaInfo.bind(this)
-
+        this.onOutputClicked  = this.onOutputClicked.bind(this);
+        this.onDestClicked    = this.onDestClicked.bind(this);
         //ui
         this.posX    = 100;
         this.posY    = 100;
@@ -26,15 +28,17 @@ class FlowchartNode extends View {
         this.offsetY = 0;
         this.idRef   = "";
         this._connectorUpdaters = {}
+        
         //flow
         this.id    = id;
         this._name = "";
         this.functionDescription = "No function yet";
         this.functionVariables = [];
         this.funcDefId = null;
+        
 
-        this.input  = new NodeIO(this, "box-input");
-        this.output = new NodeIO(this, "box-output");
+        this.input  = new NodeIO(this, "box-input", this.onInputClicked);
+        this.output = new NodeIO(this, "box-output", this.onOutputClicked);
         //this.functionName = "";
         this.functionDefinitionInstance = functionDefinitionInstance;//{};
         this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id} \n has no function</p>`);
@@ -42,6 +46,34 @@ class FlowchartNode extends View {
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
         
+    }
+
+    reconnect(connectorsHandler) {
+        this.outputConnectionList.forEach((output) => {
+            this.onOutputClicked(this.id);
+            this.connectorsHandler(output)
+            //eventEmitter.emit("outputClicked", item.id);
+            //eventEmitter.emit("inputClicked", output);
+        })
+    }
+    
+    onInputClicked(id) {
+        eventEmitter.emit("inputClicked", id);
+    }
+
+    onOutputClicked(markedOutputId) { 
+        //if else vem som är previous , jag väntar på nästa click
+        eventEmitter.emit("prevClicked", this.onDestClicked, this.id)
+    }
+    
+    onDestClicked(destNode) {
+        destNode.input.connections.push(this.output.id);
+        this.output.connections.push(destNode.id)
+        const connector = new Connector(destNode.id + this.id, this, destNode, null);
+        this.registerConnectorUpdater(connector.id, connector.updateConnections);
+        destNode.registerConnectorUpdater(connector.id, connector.updateConnections);
+        connector.element.classList.add("connector");
+        return connector;
     }
 
     refreshPreview(){

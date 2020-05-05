@@ -54,10 +54,7 @@ class Container extends View {
         this.objectClicked    = this.objectClicked.bind(this);
         this.connectorClicked = this.connectorClicked.bind(this);
         this.inputClicked     = this.inputClicked.bind(this);
-        this.ifClicked        = this.ifClicked.bind(this);
-        this.elseClicked      = this.elseClicked.bind(this);
-        this.parallelClicked  = this.parallelClicked.bind(this);
-        
+        this.prevClicked      = this.prevClicked.bind(this);
 
         this.loadFlow = this.loadFlow.bind(this)
 
@@ -66,9 +63,7 @@ class Container extends View {
         eventEmitter.on("connectorClicked", this.connectorClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
         eventEmitter.on("inputClicked", this.inputClicked);
-        eventEmitter.on("ifClicked", this.ifClicked);
-        eventEmitter.on("elseClicked", this.elseClicked);
-        eventEmitter.on("parallelClicked", this.parallelClicked);
+        eventEmitter.on("prevClicked", this.prevClicked);
         eventEmitter.on("createRunnable", (id) => {   
             
             this.flowchartList = [];
@@ -137,62 +132,37 @@ class Container extends View {
     }
     
     inputClicked(id) {
-        if (id == this.markedOutput || this.markedOutput == "") {
-            return;
-        }     
-        const currNode = this.objects.find(temp => temp.id == id )
-        const prevNode = this.objects.find(temp => temp.id == this.markedOutput )
-    
-        let connector = {};
-        if (!currNode.input.connections.includes(this.markedOutput)) {
-            currNode.input.connections.push(this.markedOutput);
-            if(this.nodeType == ""){
-                prevNode.output.connections.push(currNode.id);
-                connector = new Connector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
-            }
-            else if(this.nodeType == "if"){
-                prevNode.outputIf.connections.push(currNode.id);
-                connector = new IfConnector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
-            }
-            else if(this.nodeType == "else"){
-                prevNode.outputElse.connections.push(currNode.id);
-                connector = new ElseConnector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
-            }
-            else if(this.nodeType == "parallel"){
-                prevNode.outputParallel.connections.push(currNode.id)
-                connector = new ParaConnector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
-            };
-            prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
-            currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
-            connector.element.classList.add("connector");
+        if (id == this.markedOutput || this.markedOutput == "") { return; }     
+
+        const currNode = this.objects.find(iter => iter.id == id )
+        let connector;
+        
+        if(!currNode.input.connections.includes(this.markedOutput)) {//connector != null) {
+            connector = this.sourceNodeHandler(currNode);
             this.attach(connector);
             this.connectorList.push(connector);
-        }
-        else {
+        } else {
+            //const prevNode = this.objects.find(iter => iter.id == this.markedOutput )
+            /*
+            sålänge markeOuptut har ett värde, så borde det vara garanterat att den finns
+            */
             connector = this.connectorList.find((c) => {
-                return c.id == currNode.id + prevNode.id; 
+                return c.id == currNode.id + this.markedOutput // prevNode.id; // TODO FIXA DENNa
             });
         }
+
+        this.sourceNodeHandler = () => null;
         this.markedOutput = "";
-        this.nodeType = "";
+        //this.nodeType = "";
         connector.updateConnections();
-        
     }
 
-    ifClicked(id){
-        this.markedOutput = id;
-        this.nodeType = "if";
+    prevClicked(func, id) {
+        this.markedOutput      = id;
+        this.sourceNodeHandler = func;
     }
 
-    elseClicked(id){
-        this.markedOutput = id;
-        this.nodeType = "else";
-    }
 
-    parallelClicked(id){
-        this.markedOutput = id;
-        this.nodeType = "parallel";
-    }
 
     connectNodes(looseObjects) {
 
@@ -201,6 +171,8 @@ class Container extends View {
 				eventEmitter.emit("outputClicked", "start-node");
 				eventEmitter.emit("inputClicked", item.id);
             }
+            item.reconnect(this.inputClicked);
+            /*
             if(item.type == "flowchart_node"){
                 item.outputConnectionList.forEach((output) => {
 				    eventEmitter.emit("outputClicked", item.id);
@@ -223,6 +195,7 @@ class Container extends View {
                     eventEmitter.emit("inputClicked", outputParallel);
                 })
             }
+            */
         })
     }
 
@@ -384,8 +357,8 @@ class Container extends View {
                 }
                 this.addBox(pasteObject);
                 tempRef[i] = pasteObject;
-                
             }
+
             if(tempRef.length > 1){
                 for(let i = 0; i < this.copyObject.length; i++){    
                     for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
@@ -396,12 +369,10 @@ class Container extends View {
                                     eventEmitter.emit("inputClicked", tempRef[k].id);
                                 }
                             }
-                            
                         }
                     }
                 }
-            }
-            
+            }       
         }
     }
 
