@@ -342,41 +342,52 @@ class Container extends View {
 
     pasteNode() {
         if (this.copyObject.length != 0) {
-            //Create new objects based on the copies and add them to the workspace
             let tempRef = [];
-            for(let i = 0; i < this.copyObject.length; i++){
-                let pasteObject = new FlowchartNode(uuidv1());
-                if(i == 0){
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX, this.mouseY, []);
-                }
-                else {
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY), []);
-                }
-                this.addBox(pasteObject);
-                tempRef[i] = pasteObject;
-                
-            }
+            this.pasteCopiedNodes(tempRef);
             if(tempRef.length > 1){
-                for(let i = 0; i < this.copyObject.length; i++){    
-                    for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
-                        if(this.idsbeforepaste.includes(this.copyObject[i].output.connections[j])){                           
-                            for(let k = 0; k < tempRef.length; k++){
-                                if(tempRef[k].idRef == this.copyObject[i].output.connections[j]){
-                                    eventEmitter.emit("outputClicked", tempRef[i].id);
-                                    eventEmitter.emit("inputClicked", tempRef[k].id);
-                                }
-                            }
-                            
-                        }
-                    }
+                for(let i = 0; i < this.copyObject.length; i++){  
+                    this.drawConnectorsBetweenPastedNodes(tempRef, i);
                 }
             }
-            
         }
     }
 
-    onKeyPress(e){
+    pasteCopiedNodes(tempRef){
+        
+        //Create new objects based on the copies and add them to the workspace
+        
+        for(let i = 0; i < this.copyObject.length; i++){
+            let pasteObject = new FlowchartNode(uuidv1());
+            if(i == 0){
+                pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX, this.mouseY, []);
+            }
+            else {
+                pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY), []);
+            }
+            this.addBox(pasteObject);
+            tempRef[i] = pasteObject;
+            
+        }
+            
+            
+        
+    }
 
+    drawConnectorsBetweenPastedNodes(tempRef,i){
+        for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
+            if(this.idsbeforepaste.includes(this.copyObject[i].output.connections[j])){                           
+                for(let k = 0; k < tempRef.length; k++){
+                    if(tempRef[k].idRef == this.copyObject[i].output.connections[j]){
+                        eventEmitter.emit("outputClicked", tempRef[i].id);
+                        eventEmitter.emit("inputClicked", tempRef[k].id);
+                    }
+                }
+            }
+        }     
+    }
+
+    onKeyPress(e){
+        console.log(e);
         if(e.ctrlKey){
             switch(e.keyCode) {
                 case 67: 

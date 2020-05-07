@@ -8,7 +8,8 @@ function logMiddleware(req, res,  next) {
     let jsonPaint;
     if(Object.entries(req.body).length > 0) {
         jsonPaint = '\nJSON data:\n' + chalk.magenta(JSON.stringify(req.body, null, 4)) + '\n';
-    } else {
+    } 
+    else {
         jsonPaint = chalk.yellow('[no json]');
     }
 
@@ -16,7 +17,8 @@ function logMiddleware(req, res,  next) {
     const params = Object.entries(req.params);
     if(params.length > 0) {
         paramsPaint = chalk.blue(params.reduce((acc, element) => acc + `${element[0]}: ${element[1]} `, ''));
-    } else {
+    } 
+    else {
         paramsPaint = chalk.yellow('[no params]');
     }
 

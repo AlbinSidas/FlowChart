@@ -110,7 +110,8 @@ async function main() {
         const data = req.body;
         try {
             await Schema.validate(data, Schema.jsonSchemas.funcDefSchema);
-        } catch (InvalidTypeError) {
+        } 
+        catch (InvalidTypeError) {
             console.log(InvalidTypeError.message)
             res.status(400);
             res.send(InvalidTypeError.message);

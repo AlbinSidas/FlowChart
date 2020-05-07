@@ -1,12 +1,12 @@
 @import "style.css";
 
 .size_button {
-  position: fixed;
-  width: 230px;
-  bottom: 0px;
-  padding: 13px;
-  left: 0px;
-  background-color: var(--accent-color);
-  visibility: hidden;
-  z-index: 10;
+    position: fixed;
+    width: 230px;
+    bottom: 0px;
+    padding: 13px;
+    left: 0px;
+    background-color: var(--accent-color);
+    visibility: hidden;
+    z-index: 10;
 }

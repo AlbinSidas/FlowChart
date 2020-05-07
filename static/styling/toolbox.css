@@ -1,13 +1,13 @@
 @import "style.css";
 
 .tool_box {
-  position: fixed;
-  width: 16vw;
-  bottom: 0px;
-  padding: 13px;
-  left: 0px;
-  background-color: var(--accent-color);
-  visibility: hidden;
-  z-index: 10;
-  font-size: 4%;
+    position: fixed;
+    width: 16vw;
+    bottom: 0px;
+    padding: 13px;
+    left: 0px;
+    background-color: var(--accent-color);
+    visibility: hidden;
+    z-index: 10;
+    font-size: 4%;
 }
