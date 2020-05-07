@@ -4,7 +4,7 @@ import Button from 'Base/button.js'
 import View,  {InlineClickableView, InlineView} from 'Base/view.js'
 import eventEmitter from 'Singletons/event-emitter.js'
 import SaveButton from './save-button';
-
+import style from 'Styles/style.css';
 
 class Toolbox extends View
 {
@@ -24,26 +24,29 @@ class Toolbox extends View
                                 this.boxEventhandlerDelegate.loadFlow
                       ) //new LoadButton();
     this.attach(this.loadButton);
+    this.loadButton.element.classList.add(style.buttonVisual)
     //Save
     this.saveButton = new SaveButton();
     this.attach(this.saveButton);
     //Version
     this.decreaseVerBtn = InlineClickableView(
-      '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; margin-right:10%; width:10%;" name="button">\<</button>', 
+      '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; float:left; width:10%;" name="button">\<</button>', 
       this.boxEventhandlerDelegate.decVer
       )
     this.attach(this.decreaseVerBtn);
+    this.decreaseVerBtn.element.classList.add(style.buttonVisual);
 
     this.verCounter = InlineView(
-      '<button class="btn" style="background-color:var(--button-color); margin:5%; margin-right:10%; width:10%;" id="vercounter">0</button>'
+      '<button class="btn" style="background-color:var(--button-color); margin:5%; width:36%; float:left; text-align:center;" id="vercounter">0</button>'
       )
     this.attach(this.verCounter);
 
     this.increaseVerBtn = InlineClickableView(
-      '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; margin-right:5%; width:10%;" name="button">\></button>', 
+      '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; width:10%; float:right;" name="button">\></button>', 
       this.boxEventhandlerDelegate.incVer
       )
     this.attach(this.increaseVerBtn);
+    this.increaseVerBtn.element.classList.add(style.buttonVisual);
     //Vertical
     this.increaseSizeBtn = new IncreaseSizeButton();
     this.attach(this.increaseSizeBtn);
@@ -80,6 +83,7 @@ class IncreaseSizeButton extends Button {
       this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:15%; margin-left: 5%")
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
+      this.element.classList.add(style.buttonVisual)
     }
 
 
@@ -95,6 +99,7 @@ class DecreaseSizeButton extends Button {
     this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:5%; margin-left: 5%")
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.element.classList.add(style.buttonVisual)
   }
 
   onClick(e) {
@@ -109,6 +114,7 @@ class IncreaseHorizontalSizeButton extends Button {
       this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:5%; margin-left: 5%")
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
+      this.element.classList.add(style.buttonVisual)
       
     }
 
@@ -125,6 +131,7 @@ class DecreaseHorizontalSizeButton extends Button {
     this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:5%; margin-left: 5%; margin-bottom: 5%")
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.element.classList.add(style.buttonVisual)
     
   }
 
