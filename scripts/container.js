@@ -72,10 +72,8 @@ class Container extends View {
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
         })
-        eventEmitter.on("newFlowchart", (name) => {   
-            this.flowchartName = name;
-            this.saveClass.saveFlow(this.objects, this.flowchartName);
-            this.saveIdForNewFlowchart(name);
+        eventEmitter.on("newFlowchart", (name) => {
+            this.newFlowSetup(name);   
         })
         eventEmitter.on("openedFlowchart", (chosenFlowchart) => {  
             const looseNodes = chosenFlowchart.nodes;
@@ -239,7 +237,7 @@ class Container extends View {
         })
 
         eventEmitter.on('save', () =>  {
-            this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId)
+            this.asyncFlowSave();
         })
 
         eventEmitter.on('increaseSize', () =>  {
@@ -509,6 +507,16 @@ class Container extends View {
         }
     }
 
+    async asyncFlowSave(){
+        let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+        await this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId);
+        let ehhrghh = 0;
+        while(ver.length == this.currentFlowchartVer || ehhrghh == 1000){
+            await this.uppdateVerNum();
+            ehhrghh++;
+        }
+    }
+
     async saveIdForNewFlowchart(name){
         let nameList = await API.flowchartAPI.getNameList();
         for (let i = 0; i < nameList.length; i++){
@@ -516,6 +524,11 @@ class Container extends View {
                 this.flowchartId = nameList[i].flowchart_id;
             }
         }
+    }
+    async newFlowSetup(name){
+        this.flowchartName = name;
+        await this.saveClass.saveFlow(this.objects, this.flowchartName);
+        this.saveIdForNewFlowchart(name);
     }
     getCurrFlowId(){
         return this.flowchartId;
@@ -527,6 +540,14 @@ class Container extends View {
                 this.currentFlowchartVerIndex = i;
             }
         }
+    }
+
+    async uppdateVerNum(){
+        let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+        this.currentFlowchartVer = ver.length;
+        this.currentFlowchartVerIndex = this.currentFlowchartVer -1;
+        document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+        
     }
 
     async incVer(){
