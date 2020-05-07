@@ -704,8 +704,6 @@ class FlowChartTest(unittest.TestCase):
         
         time.sleep(1000)
         
-    
-
 
 
     def tearDown(self):

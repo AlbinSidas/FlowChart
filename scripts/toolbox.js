@@ -30,19 +30,19 @@ class Toolbox extends View
     this.attach(this.saveButton);
     //Version
     this.decreaseVerBtn = InlineClickableView(
-      '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; float:left; width:10%;" name="button">\<</button>', 
+      '<button type="button" class="btn" style="background-color:var(--verbutton-color); margin:5%; float:left; width:5%;" name="button">\<</button>', 
       this.boxEventhandlerDelegate.decVer
       )
     this.attach(this.decreaseVerBtn);
     this.decreaseVerBtn.element.classList.add(style.buttonVisual);
 
     this.verCounter = InlineView(
-      '<button class="btn" style="background-color:var(--button-color); margin:5%; width:36%; float:left; text-align:center;" id="vercounter">0</button>'
+      '<button class="btn" style="background-color:var(--button-color); margin-top:5%; margin-right:5%; width:57%; float:left; text-align:center;" id="vercounter">0</button>'
       )
     this.attach(this.verCounter);
 
     this.increaseVerBtn = InlineClickableView(
-      '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; width:10%; float:right;" name="button">\></button>', 
+      '<button type="button" class="btn" style="background-color:var(--verbutton-color); margin-top:5%; width:5%; float:left;" name="button">\></button>', 
       this.boxEventhandlerDelegate.incVer
       )
     this.attach(this.increaseVerBtn);
