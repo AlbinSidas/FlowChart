@@ -387,7 +387,6 @@ class Container extends View {
     }
 
     onKeyPress(e){
-        console.log(e);
         if(e.ctrlKey){
             switch(e.keyCode) {
                 case 67: 
