@@ -39,7 +39,7 @@ class StartBox extends View
 
     eventEmitter.on("newFlowchartMade",() => {  
       let filename = prompt("Please enter the name for your new Flowchart")
-      if(filename != null){
+      if(filename != null && filename != ""){
         eventEmitter.emit('newFlowchart', filename);
         this.close();
       }
