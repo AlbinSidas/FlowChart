@@ -5,6 +5,7 @@ import NodeMetaInfo   from 'Model/node-meta-info.js'
 import { InlineView } from './base/view.js'
 import eventEmitter   from 'Singletons/event-emitter.js'
 import ParaConnector  from './para-connector.js'
+const uuidv1 = require('uuid/v1');
 
 class ParallelNode extends FlowchartNode{
     constructor(id, functionDefinitionInstance = null) {
@@ -39,29 +40,49 @@ class ParallelNode extends FlowchartNode{
     }
 
 
-    didAttach(parent) {
-        this.attach(this.functionNameView);
+    // ======== COPY =========
+
+    copyConnections(other) {
+        this.outputParallel.connections = other.outputParallel.connections;
+    }
+    
+    clone() {
+        return new ParallelNode(uuidv1());
+    }
+
+    // ======== END COPY =======
+
+
+    attachIO() {
         this.attach(this.input);
         this.attach(this.outputParallel);
+    }
+
+    didAttach(parent) {
+        this.attach(this.functionNameView);
+        this.attachIO();
         this.element.onclick     = this.onClick;
         this.element.onmousedown = this.mouseDown;
         this.onScrolledCallbacks = []
     }
 
-    getMetaInfo() {
-        return new NodeMetaInfo(
-                "parallel_node",
-                this.getName(),
-                this.functionDescription,
-                this.id, 
-                this.posX, 
-                this.posY, 
-                this.input.connections, 
-                null,
-                this.functionDefinitionInstance,
+
+    getMetaType() {
+        return "parallel_node"
+    }
+    
+    // Ett hack, det går att lösa på mycket finare sätt om man mechar med NodeIO lite
+    /* 
+        Kan lösas med
+        Allt är input/output
+        när en sak kopplas så vet noden vad en output för sig är 
+        och input osv, .....
+    */
+    getMetaConnections() {
+        return [this.input.connections, null,
                 null, 
                 null,
-                this.outputParallel.connections); 
+                this.outputParallel.connections]
     }
 
 
@@ -80,10 +101,10 @@ class ParallelNode extends FlowchartNode{
         return connector;
     }
 
-    reconnect(connectorsHandler) {
-        this.outputParallelConnectionsList.forEach((output) => {
+    reconnect(connectorsHandler, metaObject) {
+        metaObject.outputParallelConnectionsList.forEach(output => {
             this.onOutputClicked(this.id);
-            this.connectorsHandler(output)
+            connectorsHandler(output)
         })
     }
 

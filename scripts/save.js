@@ -33,7 +33,7 @@ class Save
 			let filename = prompt("Please enter the name for your save file")
 			let saveObjectList = [];
 			let i = 0;
-			for (i = 1; i < obj.length; i++) {
+			for (i = 0; i < obj.length; i++) {
 				let saveObj = obj[i].getMetaInfo();
 				saveObjectList.push(saveObj);
 			}
@@ -63,7 +63,7 @@ class Save
 		const loadedData = await API.flowchartAPI.getById(foundId);
 		console.log(loadedData);
 		let nodes = loadedData.nodes;
-		return loadedData.latestVersion
+		return loadedData
     }
 
 }

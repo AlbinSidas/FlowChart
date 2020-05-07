@@ -165,38 +165,10 @@ class Container extends View {
 
 
     connectNodes(looseObjects) {
-
-        looseObjects.forEach(item => {
-			if(item.inputConnectionList.length !=0 && item.inputConnectionList.includes("start-node")){
-				eventEmitter.emit("outputClicked", "start-node");
-				eventEmitter.emit("inputClicked", item.id);
-            }
-            item.reconnect(this.inputClicked);
-            /*
-            if(item.type == "flowchart_node"){
-                item.outputConnectionList.forEach((output) => {
-				    eventEmitter.emit("outputClicked", item.id);
-				    eventEmitter.emit("inputClicked", output);
-                })
-            }
-            else if(item.type == "conditional_node"){
-                item.outputIfConnectionsList.forEach((outputIf) =>{
-                    eventEmitter.emit("ifClicked", item.id);
-                    eventEmitter.emit("inputClicked", outputIf);
-                })
-                item.outputElseConnectionsList.forEach((outputElse) =>{
-                    eventEmitter.emit("elseClicked", item.id);
-                    eventEmitter.emit("inputClicked", outputElse);
-                })
-            }
-            else if(item.type == "parallel_node"){
-                item.outputParallelConnectionsList.forEach((outputParallel) =>{
-                    eventEmitter.emit("parallelClicked", item.id);
-                    eventEmitter.emit("inputClicked", outputParallel);
-                })
-            }
-            */
-        })
+        looseObjects.forEach(iter => {
+            const source = this.objects.find(i=> iter.id == i.id);
+            source.reconnect(this.inputClicked, iter);
+        });
     }
 
 
@@ -204,10 +176,11 @@ class Container extends View {
     async loadFlow() {
         const loadedObjects = await this.saveClass.loadFlow(this);
         const looseNodes = loadedObjects.nodes;
+        console.log(this.objects)
         looseNodes.forEach((looseNode) => {
             if(looseNode.type == "flowchart_node"){
-              this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
-            }
+              this.objects.push(FlowchartNode.CreateExternal(looseNode))  
+            } 
             else if(looseNode.type == "conditional_node"){
                 this.objects.push(ConditionalNode.CreateExternal(looseNode))
             }
@@ -215,7 +188,6 @@ class Container extends View {
                 this.objects.push(ParallelNode.CreateExternal(looseNode))
             }
         })
-
         this.objects.forEach(obj => this.attach(obj))
         this.connectNodes(looseNodes)
     }
@@ -335,8 +307,8 @@ class Container extends View {
             
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
             for(let i = 0; i < this.markedObject.length; i++){
-                this.copyObject[i] = new FlowchartNode(uuidv1());
-                this.copyObject[i].copyOther(this.markedObject[i], this.markedObject[i].id);
+                this.copyObject[i] = this.markedObject[i].clone();//new FlowchartNode(uuidv1());
+                this.copyObject[i].copyOther(this.markedObject[i], this.markedObject[i].id, true);
                 this.idsbeforepaste[i] = this.markedObject[i].id; 
             }
             
@@ -348,25 +320,22 @@ class Container extends View {
             //Create new objects based on the copies and add them to the workspace
             let tempRef = [];
             for(let i = 0; i < this.copyObject.length; i++){
-                let pasteObject = new FlowchartNode(uuidv1());
-                if(i == 0){
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX, this.mouseY, []);
-                }
-                else {
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY), []);
-                }
+                const pasteObject = this.copyObject[i].clone();
+                let offsetX = i > 0 ? (this.copyObject[i].posX-this.copyObject[0].posX) : 0;
+                let offsetY = i > 0 ? (this.copyObject[i].posY-this.copyObject[0].posY) : 0;
+                pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, false, this.mouseX + offsetX, this.mouseY + offsetY); //[]);
                 this.addBox(pasteObject);
                 tempRef[i] = pasteObject;
             }
 
-            if(tempRef.length > 1){
-                for(let i = 0; i < this.copyObject.length; i++){    
+            if(tempRef.length > 1) {
+                for(let i = 0; i < this.copyObject.length; i++) {    
                     for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
                         if(this.idsbeforepaste.includes(this.copyObject[i].output.connections[j])){                           
                             for(let k = 0; k < tempRef.length; k++){
                                 if(tempRef[k].idRef == this.copyObject[i].output.connections[j]){
                                     eventEmitter.emit("outputClicked", tempRef[i].id);
-                                    eventEmitter.emit("inputClicked", tempRef[k].id);
+                                    eventEmitter.emit("inputClicked",  tempRef[k].id);
                                 }
                             }
                         }

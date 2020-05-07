@@ -6,6 +6,8 @@ import { InlineView } from './base/view.js';
 import eventEmitter   from 'Singletons/event-emitter.js';
 import IfConnector    from './if-connector.js';
 import ElseConnector  from './else-connector.js';
+const uuidv1 = require('uuid/v1');
+
 
 class ConditionalNode extends FlowchartNode {
     constructor(id, functionDefinitionInstance = null) {
@@ -34,33 +36,45 @@ class ConditionalNode extends FlowchartNode {
         this.element.id = id;
 
     }
+    // ======== COPY ========
 
-    didAttach(parent) {
-        this.attach(this.functionNameView);
+    copyConnections(other) {
+        this.outputIf.connections = other.outputIf.connections;
+        this.outputElse.connections = other.outputElse.connections;
+    }
+
+    clone() {
+        return new ConditionalNode(uuidv1());
+    }
+
+    // ======== END COPY =======
+
+    attachIO() {
         this.attach(this.input);
         this.attach(this.outputIf);
         this.attach(this.outputElse);
+    }
+
+
+    didAttach(parent) {
+        this.attach(this.functionNameView);
+        this.attachIO();
         this.element.onclick     = this.onClick;
         this.element.onmousedown = this.mouseDown;
         this.onScrolledCallbacks = []
     }
      
-    getMetaInfo() {
-        return new NodeMetaInfo(
-                "conditional_node",
-                this.getName(),
-                this.functionDescription,
-                this.id, 
-                this.posX, 
-                this.posY, 
-                this.input.connections, 
-                null,
-                this.functionDefinitionInstance,
-                this.outputIf.connections, 
-                this.outputElse.connections,
-                null); 
+
+    getMetaType() {
+        return "conditional_node";
     }
 
+    getMetaConnections() {
+        return [this.input.connections, null,
+                this.outputIf.connections, 
+                this.outputElse.connections, null]
+
+    }
 
     onOutputElseClicked(myId) {
         // väntar jag på att en annan ska tryckas
@@ -93,15 +107,15 @@ class ConditionalNode extends FlowchartNode {
     }
 
 
-    reconnect(connectorsHandler) {
-        this.outputIfConnectionsList.forEach((output) => {
+    reconnect(connectorsHandler, metaObject) {
+        metaObject.outputIfConnectionsList.forEach(output => {
             this.onOutputIfClicked(this.id);
-            this.connectorsHandler(output)
+            connectorsHandler(output)
         });
 
-        this.outputElseConnectionsList.forEach((output) => {
+        metaObject.outputElseConnectionsList.forEach(output => {
             this.onOutputElseClicked(this.id);
-            this.connectorsHandler(output)
+            connectorsHandler(output)
         });
     }
 
