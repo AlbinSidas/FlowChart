@@ -1,6 +1,7 @@
 const _promisify = require('../util/promisify')
 const ObjectID   = require('mongodb').ObjectID;
 const ServerError = require('../api/api_auxiliary').ServerError;
+
 // Handlers extend MongoProtocol
 class MongoHandler {
 
@@ -24,7 +25,9 @@ class MongoHandler {
             { $match   : { "versionNumber": parseInt(versionNumber)} },
             { $project : { _id: 0 } }
         ]).then(a  => a)
-          .catch(e => console.log(e))
+          .catch(e => { 
+              throw(ServerError('Failed to get by version', e)); 
+        });
         const data = await result.limit(1).next();
         return data
     }
@@ -32,8 +35,6 @@ class MongoHandler {
 
     async _getById (id) {
         const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
-        console.log("ID ÄR: ", id)
-        // Det som kommer in här som ID är "all"
         try {
             const result =  await findById([
                 { $match: {[this.keyName]:  ObjectID(id) } },
@@ -43,36 +44,38 @@ class MongoHandler {
             const data = await result.limit(1).next();
             return data;
         } catch(e) {
-            throw(ServerError("_getById Failed", e))
+            throw(ServerError("Failed to _getById", e));
         }
     }
 
 
     // ======= UPSERT ====== id är ObjeectId redan, DEPRICATED
     async upsertVersion(id) {
-        const entry = await this._getById(id);
-        if(entry) {
-            //update();
-            const latestVersionNumber = entry.latestVersionNumber + 1;
-            const updateOne  = _promisify((...args) => { this.collection.updateOne(...args) });
-            const result = await updateOne(
-                {_id: ObjectID(id)},
-                { $set: { "latestVersionNumber": latestVersionNumber }}
-            );
-            const data = result;
-            return data;
-        } else {
-            const latestVersionNumber = 1;
-            const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
-            const result = await insertOne({
-                _id: id, // TODO: kommer den behöva bli objectID eller är det allid bara en intermediary steg som mongo lägger på som lager?
-                latestVersionNumber: latestVersionNumber
-            });
-            
-            const data = await result.ops;
-            console.log("FINNS EJ", data)
-            return data;
-            //insert();
+        try {
+            const entry = await this._getById(id);
+            if(entry) {
+                const latestVersionNumber = entry.latestVersionNumber + 1;
+                const updateOne  = _promisify((...args) => { this.collection.updateOne(...args) });
+                const result = await updateOne(
+                    {_id: ObjectID(id)},
+                    { $set: { "latestVersionNumber": latestVersionNumber }}
+                    );
+                    const data = result;
+                    return data;
+            } else {
+                const latestVersionNumber = 1;
+                const insertOne  = _promisify((...args) => { this.collection.insertOne(...args) });
+                const result = await insertOne({
+                    _id: id, // TODO: kommer den behöva bli objectID eller är det allid bara en intermediary steg som mongo lägger på som lager?
+                    latestVersionNumber: latestVersionNumber
+                });
+                
+                const data = await result.ops;
+                console.log("FINNS EJ", data)
+                return data;
+            }
+        } catch(e) {
+            throw(ServerError("Failed to updated version", e));
         }
     }
 
@@ -93,13 +96,6 @@ class MongoHandler {
             const arr =  result.ops
             const object = arr.pop();
             return object;
-            
-            /* VC collections är avstängda just nu
-            if(object) {
-                const versionEntry = await this.addToVersionControl(object[this.keyName]);
-                return object;
-            }
-            */
         } catch (err) {
             throw(ServerError("Save failed", err));
         } 
@@ -113,16 +109,19 @@ class MongoHandler {
     }
 
     async addVersion(data) {
-        const versionNumber = (await this.getLatestVersion(data[this.keyName])) + 1
-        const result = await this.save(data.content, data[this.keyName], versionNumber);
-        return result;
+        try {
+            const versionNumber = (await this.getLatestVersion(data[this.keyName])) + 1
+            const result = await this.save(data.content, data[this.keyName], versionNumber);
+            return result;
+        } catch(e) {
+            throw(ServerError("Failed to add version", e))
+        }
     }
 
     async getOne(id, versionNumber) {
         if(versionNumber) {
             return await this._getByVersion(id, versionNumber);
         } else {
-            // Denna gör så det inte returneras från all
             return await this._getById(id);
         }
     }
@@ -134,21 +133,22 @@ class MongoHandler {
             {$group: {_id:  `$${this.keyName}`, data: { $first: "$$ROOT" }}},
             {$project: { _id: 0, "data._id":0 }}
         ]).then(a  => a)
-          .catch(e => console.log(e))
+          .catch(e => {
+            throw(ServerError('Failed to get all', e)); 
+          })
         const all = await result.toArray();
         const flatAll = all.map(d =>{ return {...d.data} }); 
-        return flatAll;//await result.limit(1).next();
+        return flatAll;
     }
 
     async getVersionSnpashot(id) {
        const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
-       // Det som kommer in här som ID är "all"
        try {
            const result =  await findById([
                { $match: {[this.keyName]:  ObjectID(id) } },
                { $project: {versionNumber: 1, _id: 0}}
            ]);
-           const data = await result.toArray();//limit(1).next();
+           const data = await result.toArray();
            const flatData = data.map(e => e.versionNumber);
            return flatData;
        } catch(e) {

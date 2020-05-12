@@ -1,7 +1,6 @@
 const MongoHandler  = require('./mongo-handler');
 const FuncDefVCHandler  = require('./funcdef-vc-handler');
-
-//const protocolAssign = require('./mongo_protocol').assign
+const ServerError = require('../api/api_auxiliary').ServerError;
 
 // A Mongo handler that is MongoProtocol
 class FuncDefHandler extends MongoHandler {
@@ -13,8 +12,11 @@ class FuncDefHandler extends MongoHandler {
     }
 
     async addToVersionControl(id) {
-        //this.controller.addToFuncdefVersionControl(id)
-        return await this.funcDefVCHandler.upsertVersion(id);
+        try {
+            return await this.funcDefVCHandler.upsertVersion(id);
+        } catch(e) {
+            throw ServerError("Failed to add to version control for Funcdef", e);
+        }
     }
 
 }

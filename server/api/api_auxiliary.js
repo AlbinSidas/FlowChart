@@ -1,12 +1,8 @@
 const logError = require('../util/logger').error;
 
-const Response = (message, data = null, error = null) => {
+const Response = (message, data = null) => {
     const res = {
         message
-    }
-
-    if (error) {
-        res.error = error;
     }
 
     if(data) {
