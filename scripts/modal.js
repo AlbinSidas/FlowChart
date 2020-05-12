@@ -52,7 +52,6 @@ class Modal extends View
                                     <button class="btn" id="createFunctionButton" style="background-color: var(--button-color)"> Create function </button>
                                     <button class="btn" id="closeModalButton" style="background-color: var(--button-color)">Close</button>
                                   </div>`;
-    this.setupDropdownList();
   }
 
   didAttach(parent) {
@@ -298,7 +297,6 @@ class Modal extends View
   async setupDropdownList() {
     const data = await funcDefAPI.getAll();
     data.forEach(funcdef => {
-      //funcdef.latestVersion.id = funcdef.id;
       this.functionDefinitions.push(funcdef);
       this.loadList.push(funcdef);
     })
@@ -373,7 +371,7 @@ class Modal extends View
     let dropdown = document.getElementById('modalDropdown');
 
     while( dropdown.childElementCount > 1) {
-      dropdown.removeChild(dropdown.lastChild); 
+      dropdown.removeChild(dropdown.lastChild);
     }
 
     for (let i = 0; i < this.loadList.length; i++) {
@@ -385,6 +383,7 @@ class Modal extends View
   }
 
   show(object) {
+      this.setupDropdownList();
       this.mode = "Node";
       this.obj = object;
 
@@ -528,7 +527,7 @@ class LoadButton extends Button {
   }
 
   onClick() {
-    eventEmitter.emit('loadFunciton');
+    eventEmitter.emit('loadFunction');
   }
 }
 
