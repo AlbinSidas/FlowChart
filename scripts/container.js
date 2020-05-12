@@ -86,7 +86,15 @@ class Container extends View {
         eventEmitter.on("openedFlowchart", (chosenFlowchart) => {  
             const looseNodes = chosenFlowchart.nodes;
             looseNodes.forEach((looseNode) => {
-                this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
+                if(looseNode.type == "flowchart_node"){
+                  this.objects.push(FlowchartNode.CreateExternal(looseNode))  
+                } 
+                else if(looseNode.type == "conditional_node"){
+                    this.objects.push(ConditionalNode.CreateExternal(looseNode))
+                }
+                else if(looseNode.type == "parallel_node"){
+                    this.objects.push(ParallelNode.CreateExternal(looseNode))
+                }
             })
             this.objects.forEach(obj => this.attach(obj))
             this.connectNodes(looseNodes)
@@ -201,7 +209,6 @@ class Container extends View {
         this.clearFlowchart();
         const loadedObjects = await this.saveClass.loadFlowVer(this.flowchartId, this.currentFlowchartVer);
         const looseNodes = loadedObjects.nodes;
-        console.log(this.objects)
         looseNodes.forEach((looseNode) => {
             if(looseNode.type == "flowchart_node"){
               this.objects.push(FlowchartNode.CreateExternal(looseNode))  
@@ -555,6 +562,7 @@ class Container extends View {
         let flowObj = await this.saveClass.saveFlow(this.objects, this.flowchartName);
 
         await this.saveIdForNewFlowchart(name, flowObj);
+        await this.uppdateVerNum();
     }
     
     getCurrFlowId(){
