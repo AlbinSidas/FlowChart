@@ -4,6 +4,7 @@ import View, {InlineView}                     from 'Base/view.js';
 import eventEmitter                           from 'Singletons/event-emitter.js';
 import styleClasses                           from 'Styles/modal-buttons.css';
 import API                                    from "Network/network.js"
+import style                                  from 'Styles/style.css'
 import { on } from 'events';
 
 
@@ -37,8 +38,10 @@ class StartBox extends View
 
     eventEmitter.on("newFlowchartMade",() => {  
       let filename = prompt("Please enter the name for your new Flowchart")
-      eventEmitter.emit('newFlowchart', filename);
-      this.close();
+      if(filename != null && filename != ""){
+        eventEmitter.emit('newFlowchart', filename);
+        this.close();
+      }
     })
 
     this.loadFileNameList();
@@ -65,7 +68,7 @@ class StartBox extends View
   }
 
   show() {
-      this.element.style.display = "block";
+    this.element.style.display = "block";
   }
 
   close() {
@@ -78,35 +81,36 @@ class StartBox extends View
 }
 
 class NewButton extends Button {
-    constructor() {
-        super();
-        this.setHtml(document.getElementById('newButton'));
-        this.element = document.getElementById('newButton');
-        this.render = this.render.bind(this);
-        this.onClick = this.onClick.bind(this);
-        this.element.onclick = this.onClick;
-        this.element.classList.add(styleClasses.backButton);
-    }
-  
-    onClick() {
-      eventEmitter.emit('newFlowchartMade');
-    }
+  constructor() {
+    super();
+    this.setHtml(document.getElementById('newButton'));
+    this.element = document.getElementById('newButton');
+    this.render = this.render.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.element.onclick = this.onClick;
+    this.element.classList.add(styleClasses.backButton);
+    this.element.classList.add(style.buttonVisual);
   }
 
-  class ListItem extends View {
-    constructor(name, id) { 
-        super();
-        this.setHtml(`<li class='loadDropdownItem'>${name}</li>`);
-        this.name = name;
-        this.id = id;
-        this.onClick         = this.onClick.bind(this)
-        this.element.onclick = this.onClick;
-    }
-  
-    onClick() {
-      eventEmitter.emit('openFlowchart', this.name, this.id);
-    }
+  onClick() {
+    eventEmitter.emit('newFlowchartMade');
   }
+}
+
+class ListItem extends View {
+  constructor(name, id) { 
+    super();
+    this.setHtml(`<li class='loadDropdownItem'>${name}</li>`);
+    this.name = name;
+    this.id = id;
+    this.onClick         = this.onClick.bind(this)
+    this.element.onclick = this.onClick;
+  }
+
+  onClick() {
+    eventEmitter.emit('openFlowchart', this.name, this.id);
+  }
+}
 
 
  

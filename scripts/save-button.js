@@ -1,6 +1,6 @@
 import Button from 'Base/button.js'
 import eventEmitter from 'Singletons/event-emitter.js'
-
+import style from 'Styles/style.css';
 
 class SaveButton extends Button
 {
@@ -10,6 +10,7 @@ class SaveButton extends Button
     this.render = this.render.bind(this)
     this.name = "Save"
     this.onClick = this.onClick.bind(this);
+    this.element.classList.add(style.buttonVisual)
   }
 
   didAttach(parent) {

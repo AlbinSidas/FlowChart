@@ -2,6 +2,17 @@
 .buttonFooter {
     color: black;
     margin: 1%;
+    box-shadow: 0 6px rgb(128, 128, 128);
+}
+
+.buttonFooter:hover{
+    box-shadow: 0 6px rgb(128, 128, 128);
+}
+
+.buttonFooter:active{
+    box-shadow: 0 4px rgb(105, 105, 105);
+    transform: translateY(3px);
+    -webkit-transform: translateY(3px);
 }
 
 .buttonLoad {
