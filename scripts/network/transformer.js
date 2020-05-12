@@ -26,6 +26,10 @@ export class FlowchartTransformer extends TransformerInterface {
     resArray(serverResponse) {
         return serverResponse;
     }
+    
+    findVerNumbers(serverResponse){
+        return serverResponse.data;
+    }
 }
 
 export class FuncDefTransformer extends TransformerInterface {

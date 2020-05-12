@@ -10,6 +10,46 @@ class Save
 		this.obj = [];
     }
 
+    saveFlow(obj, name){
+		let filename = name;
+		let saveObjectList = [];
+		let i = 0;
+		for (i = 1; i < obj.length; i++) {
+			let saveObj = obj[i].getMetaInfo();
+			saveObjectList.push(saveObj);
+		}
+		const data = {
+			"nodes": saveObjectList,
+			"name": filename,
+		};
+		API.flowchartAPI.save(data);
+		
+	}
+
+	saveFlowVer(obj, name, id){
+		if(this.validateSave(obj)){
+			let filename = name;
+			let saveObjectList = [];
+			let i = 0;
+			for (i = 0; i < obj.length; i++) {
+				let saveObj = obj[i].getMetaInfo();
+				saveObjectList.push(saveObj);
+			}
+			const data = {
+				"nodes": saveObjectList,
+				"name": filename,
+			};
+			console.log(saveObjectList);
+
+			API.flowchartAPI.saveVersion({
+				"flowchart_id": id,
+			
+				"content": data
+			});
+		}
+	}
+	
+
 	validateSave(obj){
 		if(obj.length < 2){
 			let saveEmpty = confirm("It looks like you are trying to save a empty flowchart.\n Are you sure you want to do that?");
@@ -25,26 +65,7 @@ class Save
 				return false;
 			} 
 		}
-			return true;
-	}
-
-    saveFlow(obj){
-		if(this.validateSave(obj)){
-			let filename = prompt("Please enter the name for your save file")
-			let saveObjectList = [];
-			let i = 0;
-			for (i = 0; i < obj.length; i++) {
-				let saveObj = obj[i].getMetaInfo();
-				saveObjectList.push(saveObj);
-			}
-			const data = {
-				"nodes": saveObjectList,
-				"name": filename,
-			};
-			console.log(saveObjectList);
-
-			API.flowchartAPI.save(data);
-		}
+		return true;
 	}
 	
     async loadFlow() {
@@ -63,6 +84,10 @@ class Save
 		const loadedData = await API.flowchartAPI.getById(foundId);
 		console.log(loadedData);
 		let nodes = loadedData.nodes;
+		return loadedData
+	}
+	async loadFlowVer(id, ver) {
+		const loadedData = await API.flowchartAPI.getFlowVersion(id, ver);
 		return loadedData
     }
 
