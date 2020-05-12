@@ -35,6 +35,11 @@ class Network {
     }
 
     async saveVersion(obj) {
+
+        if(obj.content[0]) {
+            delete(obj.content[0])
+        }
+
         return fetch(`${this.baseURL}/version/add`, 
         {
             method:   'POST',
@@ -97,7 +102,6 @@ class FlowchartAPI extends Network {
             const data = await fetch(`${this.baseURL}/view`)
                 .then(res  => res.json())
                 .then(res => res.data)
-                console.log(data)
             return data;
         } 
         catch(e) {

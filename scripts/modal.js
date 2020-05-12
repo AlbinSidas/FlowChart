@@ -142,7 +142,7 @@ class Modal extends View
         funcDef.description = document.getElementById("funcdescBox").value;
         funcDef.functionVariables = this._saveScreenVariables();
         let data = await this._saveVersionFuncDef(funcDef);
-        
+
         if(this.currentFunctionDefinition.obj.versionNumber < data.versionNumber) {
           this.currentFunctionDefinition.obj.versionNumber = data.versionNumber;
         }

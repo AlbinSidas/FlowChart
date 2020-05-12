@@ -71,7 +71,6 @@ class Node extends View {
     }
     
     onInputClicked(id) {
-        console.log("INPUT CLICKED 2", id)
         eventEmitter.emit("inputClicked", id);
     }
 

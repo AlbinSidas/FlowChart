@@ -129,7 +129,6 @@ class ConditionalNode extends FlowchartNode {
     }
 
     static CreateExternal(object, inputIds, outputIds) {
-        console.log(object)
         const node = new ConditionalNode(object.id, object.functionDefinitionInstance);
         node.fillNode(object);
         return node;

@@ -115,7 +115,6 @@ class ParallelNode extends FlowchartNode{
 
 
     static CreateExternal(object, inputIds, outputIds) {
-        console.log(object)
         const node = new ParallelNode(object.id, object.functionDefinitionInstance);
         node.fillNode(object);
         return node;

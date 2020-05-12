@@ -201,7 +201,6 @@ class Container extends View {
         this.clearFlowchart();
         const loadedObjects = await this.saveClass.loadFlowVer(this.flowchartId, this.currentFlowchartVer);
         const looseNodes = loadedObjects.nodes;
-        console.log(this.objects)
         looseNodes.forEach((looseNode) => {
             if(looseNode.type == "flowchart_node"){
               this.objects.push(FlowchartNode.CreateExternal(looseNode))  
