@@ -45,7 +45,7 @@ async function main() {
     app.post('/flowchart/save', async function (req, res) {
         const databaseOps = await mongoController.flowchartHandler.save(req.body)
         res.status(200)
-        res.json(Response("Save function definition", databaseOps));
+        res.json(Response("Save flowchart definition", databaseOps));
 
     });
 
@@ -59,24 +59,26 @@ async function main() {
         res.json(Response("", databaseOps))
     });
 
-    app.get('/flowchart/:id/:version?', async function (req, res) {
-        const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
-        res.status(200)
-        res.json(Response("Save function definition", databaseOps));
-    });
+    
 
    app.post('/flowchart/version/add', async (req, res) => {
         const data = req.body;
         // SCHEMA VALIDATION?
         const databaseOps = await mongoController.flowchartHandler.addVersion(data)
         res.status(200)
-        res.json(Response("Versioned function definition", databaseOps));
+        res.json(Response("Versioned flowchart version", databaseOps));
     });
 
     app.get('/flowchart/version/snapshot/:id', async(req, res) => {
         const result = await mongoController.flowchartHandler.getVersionSnpashot(req.params.id);
         res.status(200)
         res.json(Response("Fetched version numbers", result));
+    });
+
+    app.get('/flowchart/:id/:version?', async function (req, res) {
+        const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
+        res.status(200)
+        res.json(Response("Get specific flowchart version", databaseOps));
     });
 
 // ================= FUNCDEF =====================

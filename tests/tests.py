@@ -35,9 +35,6 @@ def create_many_nodes(self, number):
             action_chain2.reset_actions()
 
 class FlowChartTest(unittest.TestCase):
-    
-    
-    
     def setUp(self):
         self.browser = webdriver.Chrome()
         self.browser.maximize_window()

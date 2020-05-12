@@ -3,15 +3,16 @@ import eventEmitter from 'Singletons/event-emitter.js';
 import style from 'Styles/style.css';
 
 class NodeIO extends View {
-    constructor(parent, inputOutput) {
+    constructor(parent, inputOutput, handler) {
         super()
         this.setHtml('<div></div>')
         this.type = inputOutput;
         this.parent = parent;
+        this.addConnectionPoint = this.addConnectionPoint.bind(this);
         this.onClick = this.onClick.bind(this);
         this.id = parent.id;
         this._value = "";
-
+        this.handler = handler;
         switch (inputOutput) {
             case 'box-input':
                 this.element.classList.add(style.boxInput);
@@ -54,28 +55,33 @@ class NodeIO extends View {
         return this._value;
     }
 
+    addConnectionPoint() {
+        this.handler(this.id);
+    }
+
     onClick(e) {
-        if (this.type == "box-output") {
-            eventEmitter.emit("outputClicked", this.id);
-        }
-        else if (this.type == "box-input") {
-            eventEmitter.emit("inputClicked", this.id);
-        }
-        else if (this.type == "box-start") {
-            eventEmitter.emit("outputClicked", this.id);
-        }
-        else if (this.type == "box-outputIf") {
-            eventEmitter.emit("ifClicked", this.id);
-        }
-        else if (this.type == "box-outputElse") {
-            eventEmitter.emit("elseClicked", this.id);
-        }
-        else if (this.type == "box-parallel") {
-            eventEmitter.emit("parallelClicked", this.id);
-        }
-        else if (this.type == "box-dummy") {
-            return;
-        }
+        this.addConnectionPoint()
+        // if (this.type == "box-output") {
+        //     eventEmitter.emit("outputClicked", this.id);
+        // }
+        // else if (this.type == "box-input") {
+        //     eventEmitter.emit("inputClicked", this.id);
+        // }
+        // else if (this.type == "box-start") {
+        //     eventEmitter.emit("outputClicked", this.id);
+        // }
+        // else if (this.type == "box-outputIf") {
+        //     eventEmitter.emit("ifClicked", this.id);
+        // }
+        // else if (this.type == "box-outputElse") {
+        //     eventEmitter.emit("elseClicked", this.id);
+        // }
+        // else if (this.type == "box-parallel") {
+        //     eventEmitter.emit("parallelClicked", this.id);
+        // }
+        // else if (this.type == "box-dummy") {
+        //     return;
+        // }
     }
 
 }

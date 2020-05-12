@@ -21,11 +21,10 @@ class StartBox extends View
     this.modalFooter  = InlineView`<div class="modalFooter">
                                     <button class="btn" id="newButton" style="background-color: var(--button-color)"> Create New Flowchart </button>
                                     <a class='dropdown-trigger btn' style="background-color: var(--button-color); margin:1%; color:black" 
-                                      id="loadModalButton" href='#' data-target='modalDropdown'>Open Flowchart</a>
-                                      <ul id='modalDropdown' class='dropdown-content' style="max-height: 500px; ">
-                                        <li style="border-bottom:1px solid black"><a href="#!"><input id="loadFunctionInput"> </input></a></li>
+                                      id="loadStartModalButton" href='#' data-target='modalStartDropdown'>Open Flowchart</a>
+                                      <ul id='modalStartDropdown' class='dropdown-content' style="max-height: 500px; ">
                                       </ul>
-                                  </div>`;
+                                      </div>`;
     
   }
 
@@ -57,7 +56,7 @@ class StartBox extends View
 
   async loadFileNameList(){
     const jsonData = await API.flowchartAPI.getNameList();
-    let dropdown = document.getElementById('modalDropdown');
+    let dropdown = document.getElementById('modalStartDropdown');
     while( dropdown.childElementCount > 1) {
       dropdown.removeChild(dropdown.lastChild); 
     }

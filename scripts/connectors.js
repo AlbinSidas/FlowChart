@@ -26,26 +26,16 @@ class Connector extends View
 
   updateConnections(){//prevNode, currNode){
     // Aligning the connector with the input/output of a node
+   
     let outX = this.prevNode.posX + 150;
     let outY = this.prevNode.posY + 250;
     let inX  = this.currNode.posX + 150;
     let inY  = this.currNode.posY - 15;
-
     
     if (this.prevNode.id == "start-node"){
       outX = this.prevNode.posX + 50;
       outY = this.prevNode.posY + 50;
     }
-    else if(this.nodeType == "if"){
-      outX = this.prevNode.posX;
-      outY = this.prevNode.posY + 75;
-    }
-    else if(this.nodeType == "else"){
-      outX = this.prevNode.posX + 300;
-      outY = this.prevNode.posY + 75;
-    }
- 
-    
     // line contains the length, position x and y, and the angle
     let line = this._calculateLine(outX, outY, inX, inY);
     this.element.setAttribute("style", `width:${line[0]}px; left:${line[1]}px; top:${line[2]}px; transform:rotate(${line[3]}deg); `);

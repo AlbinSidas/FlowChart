@@ -10,10 +10,14 @@ import View from 'Base/view.js'
 import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
+import IfConnector from "./if-connector.js";
+import ElseConnector from "./else-connector.js"
+import ParaConnector from "./para-connector.js"
 import ShowHideButton from './showHideButton.js';
 import ConditionalNode from './conditional-node';
 import ParallelNode from './parallel-node';
-import API from "Network/network.js";
+import API from "Network/network.js"
+
 
 class Container extends View {
     constructor() {
@@ -57,10 +61,7 @@ class Container extends View {
         this.objectClicked    = this.objectClicked.bind(this);
         this.connectorClicked = this.connectorClicked.bind(this);
         this.inputClicked     = this.inputClicked.bind(this);
-        this.ifClicked        = this.ifClicked.bind(this);
-        this.elseClicked      = this.elseClicked.bind(this);
-        this.parallelClicked  = this.parallelClicked.bind(this);
-        
+        this.prevClicked      = this.prevClicked.bind(this);
 
         this.loadFlow = this.loadFlow.bind(this)
         this.incVer = this.incVer.bind(this)
@@ -71,9 +72,7 @@ class Container extends View {
         eventEmitter.on("connectorClicked", this.connectorClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
         eventEmitter.on("inputClicked", this.inputClicked);
-        eventEmitter.on("ifClicked", this.ifClicked);
-        eventEmitter.on("elseClicked", this.elseClicked);
-        eventEmitter.on("parallelClicked", this.parallelClicked);
+        eventEmitter.on("prevClicked", this.prevClicked);
         eventEmitter.on("createRunnable", (id) => {   
             
             this.flowchartList = [];
@@ -81,10 +80,8 @@ class Container extends View {
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
         })
-        eventEmitter.on("newFlowchart", (name) => {   
-            this.flowchartName = name;
-            this.saveClass.saveFlow(this.objects, this.flowchartName);
-            this.saveIdForNewFlowchart(name);
+        eventEmitter.on("newFlowchart", (name) => {
+            this.newFlowSetup(name);   
         })
         eventEmitter.on("openedFlowchart", (chosenFlowchart) => {  
             const looseNodes = chosenFlowchart.nodes;
@@ -140,6 +137,7 @@ class Container extends View {
             }
         }
     }
+
     highlightConnector(obj){
         for(let i =0; i < this.connectorList.length; i++){
             if(this.connectorList[i].currNode.id == obj.id){
@@ -160,90 +158,41 @@ class Container extends View {
     }
     
     inputClicked(id) {
-        if (id == this.markedOutput || this.markedOutput == "") {
-            return;V
-        }     
-        const currNode = this.objects.find(temp => temp.id == id )
-        const prevNode = this.objects.find(temp => temp.id == this.markedOutput )
-    
-        let connector = {};
-        if (!currNode.input.connections.includes(this.markedOutput)) {
-            currNode.input.connections.push(this.markedOutput);
-            if(this.nodeType == ""){
-                prevNode.output.connections.push(currNode.id);
-            }
-            else if(this.nodeType == "if"){
-                prevNode.outputIf.connections.push(currNode.id);
-            }
-            else if(this.nodeType == "else"){
-                prevNode.outputElse.connections.push(currNode.id);
-            }
-            else if(this.nodeType == "parallel"){
-                prevNode.outputParallel.connections.push(currNode.id)
-            };
-            connector = new Connector(currNode.id + prevNode.id, prevNode, currNode, this.nodeType);
-            prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
-            currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
-            connector.element.classList.add("connector");
+        if (id == this.markedOutput || this.markedOutput == "") { return; }     
+
+        const currNode = this.objects.find(iter => iter.id == id )
+        let connector;
+        
+        if(!currNode.input.connections.includes(this.markedOutput)) {//connector != null) {
+            connector = this.sourceNodeHandler(currNode);
             this.attach(connector);
             this.connectorList.push(connector);
-        }
-        else {
+        } else {
+            //const prevNode = this.objects.find(iter => iter.id == this.markedOutput )
+            /*
+            sålänge markeOuptut har ett värde, så borde det vara garanterat att den finns
+            */
             connector = this.connectorList.find((c) => {
-                return c.id == currNode.id + prevNode.id; 
+                return c.id == currNode.id + this.markedOutput // prevNode.id; // TODO FIXA DENNa
             });
         }
+
+        this.sourceNodeHandler = () => null;
         this.markedOutput = "";
-        this.nodeType = "";
+        //this.nodeType = "";
         connector.updateConnections();
-        
     }
 
-    ifClicked(id){
-        this.markedOutput = id;
-        this.nodeType = "if";
-    }
-
-    elseClicked(id){
-        this.markedOutput = id;
-        this.nodeType = "else";
-    }
-
-    parallelClicked(id){
-        this.markedOutput = id;
-        this.nodeType = "parallel";
+    prevClicked(func, id) {
+        this.markedOutput      = id;
+        this.sourceNodeHandler = func;
     }
 
     connectNodes(looseObjects) {
-
-        looseObjects.forEach(item => {
-			if(item.inputConnectionList.length !=0 && item.inputConnectionList.includes("start-node")){
-				eventEmitter.emit("outputClicked", "start-node");
-				eventEmitter.emit("inputClicked", item.id);
-            }
-            if(item.type == "flowchart_node"){
-                item.outputConnectionList.forEach((output) => {
-				    eventEmitter.emit("outputClicked", item.id);
-				    eventEmitter.emit("inputClicked", output);
-                })
-            }
-            else if(item.type == "conditional_node"){
-                item.outputIfConnectionsList.forEach((outputIf) =>{
-                    eventEmitter.emit("ifClicked", item.id);
-                    eventEmitter.emit("inputClicked", outputIf);
-                })
-                item.outputElseConnectionsList.forEach((outputElse) =>{
-                    eventEmitter.emit("elseClicked", item.id);
-                    eventEmitter.emit("inputClicked", outputElse);
-                })
-            }
-            else if(item.type == "parallel_node"){
-                item.outputParallelConnectionsList.forEach((outputParallel) =>{
-                    eventEmitter.emit("parallelClicked", item.id);
-                    eventEmitter.emit("inputClicked", outputParallel);
-                })
-            }
-        })
+        looseObjects.forEach(iter => {
+            const source = this.objects.find(i=> iter.id == i.id);
+            source.reconnect(this.inputClicked, iter);
+        });
     }
 
 
@@ -252,10 +201,11 @@ class Container extends View {
         this.clearFlowchart();
         const loadedObjects = await this.saveClass.loadFlowVer(this.flowchartId, this.currentFlowchartVer);
         const looseNodes = loadedObjects.nodes;
+        console.log(this.objects)
         looseNodes.forEach((looseNode) => {
             if(looseNode.type == "flowchart_node"){
-              this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
-            }
+              this.objects.push(FlowchartNode.CreateExternal(looseNode))  
+            } 
             else if(looseNode.type == "conditional_node"){
                 this.objects.push(ConditionalNode.CreateExternal(looseNode))
             }
@@ -263,7 +213,6 @@ class Container extends View {
                 this.objects.push(ParallelNode.CreateExternal(looseNode))
             }
         })
-
         this.objects.forEach(obj => this.attach(obj))
         this.connectNodes(looseNodes)
     }
@@ -298,7 +247,7 @@ class Container extends View {
         })
 
         eventEmitter.on('save', () =>  {
-            this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId)
+            this.asyncFlowSave();
         })
 
         eventEmitter.on('increaseSize', () =>  {
@@ -393,8 +342,8 @@ class Container extends View {
             
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
             for(let i = 0; i < this.markedObject.length; i++){
-                this.copyObject[i] = new FlowchartNode(uuidv1());
-                this.copyObject[i].copyOther(this.markedObject[i], this.markedObject[i].id);
+                this.copyObject[i] = this.markedObject[i].clone();//new FlowchartNode(uuidv1());
+                this.copyObject[i].copyOther(this.markedObject[i], this.markedObject[i].id, true);
                 this.idsbeforepaste[i] = this.markedObject[i].id; 
             }
             
@@ -402,38 +351,34 @@ class Container extends View {
     }
 
     pasteNode() {
-        if (this.copyObject.length != 0) {
-            //Create new objects based on the copies and add them to the workspace
-            let tempRef = [];
-            for(let i = 0; i < this.copyObject.length; i++){
-                let pasteObject = new FlowchartNode(uuidv1());
-                if(i == 0){
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX, this.mouseY, []);
-                }
-                else {
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY), []);
-                }
-                this.addBox(pasteObject);
-                tempRef[i] = pasteObject;
-                
-            }
-            if(tempRef.length > 1){
-                for(let i = 0; i < this.copyObject.length; i++){    
-                    for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
-                        if(this.idsbeforepaste.includes(this.copyObject[i].output.connections[j])){                           
-                            for(let k = 0; k < tempRef.length; k++){
-                                if(tempRef[k].idRef == this.copyObject[i].output.connections[j]){
-                                    eventEmitter.emit("outputClicked", tempRef[i].id);
-                                    eventEmitter.emit("inputClicked", tempRef[k].id);
-                                }
+        if (this.copyObject.length == 0) { return; }
+        //Create new objects based on the copies and add them to the workspace
+        let tempRef = [];
+        for(let i = 0; i < this.copyObject.length; i++) {
+            const pasteObject = this.copyObject[i].clone();
+            let offsetX = i > 0 ? (this.copyObject[i].posX-this.copyObject[0].posX) : 0;
+            let offsetY = i > 0 ? (this.copyObject[i].posY-this.copyObject[0].posY) : 0;
+            pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, false, this.mouseX + offsetX, this.mouseY + offsetY); //[]);
+            this.addBox(pasteObject);
+            tempRef[i] = pasteObject;
+        }
+        
+        if(tempRef.length <= 1) { return; }       
+        
+        this.copyObject.forEach((copiedNode, i) => {
+            copiedNode.getOutputNodeIOs().forEach((nodeIO, z) => {
+                nodeIO.connections.forEach((connection, j) => {
+                    if(this.idsbeforepaste.includes(connection)) {
+                        for(let k = 0; k < tempRef.length; k++) {
+                            if(tempRef[k].idRef == connection) {
+                                tempRef[i].getOutputNodeIOs()[z].addConnectionPoint();
+                                this.inputClicked(tempRef[k].id);
                             }
-                            
                         }
                     }
-                }
-            }
-            
-        }
+                })
+            });
+        });
     }
 
     onKeyPress(e){
@@ -579,14 +524,39 @@ class Container extends View {
         }
     }
 
-    async saveIdForNewFlowchart(name){
+    async asyncFlowSave(){
+        try {
+            let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+            await this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId);
+            let max_num_requests = 0;
+            while(ver.length == this.currentFlowchartVer || max_num_requests == 1000){
+                await this.uppdateVerNum();
+                max_num_requests++;
+            }
+        } catch(e) {
+            console.log(e);
+        }   
+    }
+
+    async saveIdForNewFlowchart(name, saveObj){
         let nameList = await API.flowchartAPI.getNameList();
         for (let i = 0; i < nameList.length; i++){
             if(nameList[i].name == name){
                 this.flowchartId = nameList[i].flowchart_id;
             }
         }
+        if(this.flowchartId == "") {
+            this.flowchartId = saveObj.data.flowchart_id;
+        }
     }
+
+    async newFlowSetup(name){
+        this.flowchartName = name;
+        let flowObj = await this.saveClass.saveFlow(this.objects, this.flowchartName);
+
+        await this.saveIdForNewFlowchart(name, flowObj);
+    }
+    
     getCurrFlowId(){
         return this.flowchartId;
     }
@@ -597,6 +567,14 @@ class Container extends View {
                 this.currentFlowchartVerIndex = i;
             }
         }
+    }
+
+    async uppdateVerNum(){
+        let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+        this.currentFlowchartVer = ver.length;
+        this.currentFlowchartVerIndex = this.currentFlowchartVer -1;
+        document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+        
     }
 
     async incVer(){

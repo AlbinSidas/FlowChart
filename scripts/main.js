@@ -6,12 +6,13 @@ import 'Styles/style.css';
 import StartNode from './start-node.js'
 import ConditionalNode from "./conditional-node";
 import ParallelNode from './parallel-node';
+import SNode from './s_node'
 
 function main() {
     const workspaceObject = new Container();
     const rootContainer  = new Root(workspaceObject);
     
-    const startNode = new StartNode("start-node");
+    const startNode = new SNode("start-node");
     workspaceObject.addBox(startNode);
 
     function createNewObject(){
