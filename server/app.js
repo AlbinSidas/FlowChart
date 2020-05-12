@@ -43,9 +43,14 @@ async function main() {
 
 // ================ FLOWCHART ====================
     app.post('/flowchart/save', async function (req, res) {
-        const databaseOps = await mongoController.flowchartHandler.save(req.body)
-        res.status(200)
-        res.json(Response("Save function definition", databaseOps));
+        try{
+            const databaseOps = await mongoController.flowchartHandler.save(req.body)
+            res.status(200)
+            res.json(Response("Save function definition", databaseOps));
+        }
+        catch(error){
+            res.json(Response("Här har det blit fel", error));
+        }
 
     });
 
