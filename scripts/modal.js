@@ -7,6 +7,7 @@ import styleClasses                           from 'Styles/modal-buttons.css';
 import FunctionVariable                       from 'Model/function-variable.js';
 import FunctionDefinition                     from 'Model/function-definition.js';
 import NetworkAPIs                            from 'Network/network.js';
+import style                                  from 'Styles/style.css';
 const funcDefAPI = NetworkAPIs.funcDefAPI;
 
 class Modal extends View
@@ -82,9 +83,11 @@ class Modal extends View
 
     this.closeButton  = InlineClickableViewBinding(document.getElementById('closeModalButton'), 
                                                   'closeModal', styleClasses.buttonFooter);
+    this.closeButton.element.classList.add(style.buttonVisual);
     this.loadButton   = new LoadButton();
     this.createButton = InlineClickableViewBinding(document.getElementById('createFunctionButton'), 
                                                   'createFunction', styleClasses.buttonFooter);
+    this.createButton.element.classList.add(style.buttonVisual);
 
     
     eventEmitter.on('listClick', (listObject) => {
@@ -294,6 +297,7 @@ class Modal extends View
 
     footer.insertAdjacentHTML('afterbegin', addButton);
     this.addButton    = new AddButton();
+
   }
 
   async setupDropdownList() {
@@ -428,6 +432,8 @@ class Modal extends View
       footer.insertAdjacentHTML('afterbegin', createButton);
       this.createButton = InlineClickableViewBinding(document.getElementById('createFunctionButton'), 
                           'createFunction', styleClasses.buttonFooter);
+      this.createButton.element.classList.add(style.buttonVisual);
+      
     }
   }
 
@@ -525,6 +531,7 @@ class LoadButton extends Button {
     this.onClick = this.onClick.bind(this);
     this.element.onclick = this.onClick;
     this.element.classList.add(styleClasses.buttonLoad);
+    this.element.classList.add(style.buttonVisual);
   }
 
   onClick() {
@@ -541,6 +548,7 @@ class AddButton extends Button {
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
       this.element.classList.add(styleClasses.buttonFooterAdd);
+      this.element.classList.add(style.buttonVisual);
   }
 
   onClick() {
@@ -557,6 +565,7 @@ class BackButton extends Button {
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
       this.element.classList.add(styleClasses.backButton);
+      this.element.classList.add(style.buttonVisual);
   }
 
   onClick() {

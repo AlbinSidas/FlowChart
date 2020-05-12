@@ -489,6 +489,12 @@ class Container extends View {
         if (this.toolboxVisible) {
             this.toolbox.hide();
             this.toolboxVisible = false;
+            console.log("ScreenX: " + window.screenX);
+            console.log("ScreenY: " + window.screenY);
+            console.log("ScrollX: " + window.scrollX);
+            console.log("ScrollY: " + window.scrollY);
+
+
         }
         else {
             this.toolbox.show();
