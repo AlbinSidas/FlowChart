@@ -10,7 +10,7 @@ class Save
 		this.obj = [];
     }
 
-    saveFlow(obj, name){
+    async saveFlow(obj, name){
 		let filename = name;
 		let saveObjectList = [];
 		let i = 0;
@@ -22,11 +22,11 @@ class Save
 			"nodes": saveObjectList,
 			"name": filename,
 		};
-		API.flowchartAPI.save(data);
+		return API.flowchartAPI.save(data);
 		
 	}
 
-	saveFlowVer(obj, name, id){
+	async saveFlowVer(obj, name, id){
 		if(this.validateSave(obj)){
 			let filename = name;
 			let saveObjectList = [];
@@ -71,7 +71,6 @@ class Save
     async loadFlow() {
 		let resultArray = [];
 		const jsonData = await API.flowchartAPI.getNameList();
-		console.log(jsonData);
 		let a = 0;
 		let flowchartNamesbuffer ="";
 		for (a = 0; a < jsonData.length; a++){

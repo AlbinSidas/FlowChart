@@ -80,10 +80,8 @@ class Container extends View {
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
         })
-        eventEmitter.on("newFlowchart", (name) => {   
-            this.flowchartName = name;
-            this.saveClass.saveFlow(this.objects, this.flowchartName);
-            this.saveIdForNewFlowchart(name);
+        eventEmitter.on("newFlowchart", (name) => {
+            this.newFlowSetup(name);   
         })
         eventEmitter.on("openedFlowchart", (chosenFlowchart) => {  
             const looseNodes = chosenFlowchart.nodes;
@@ -249,7 +247,7 @@ class Container extends View {
         })
 
         eventEmitter.on('save', () =>  {
-            this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId)
+            this.asyncFlowSave();
         })
 
         eventEmitter.on('increaseSize', () =>  {
@@ -520,14 +518,39 @@ class Container extends View {
         }
     }
 
-    async saveIdForNewFlowchart(name){
+    async asyncFlowSave(){
+        try {
+            let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+            await this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId);
+            let max_num_requests = 0;
+            while(ver.length == this.currentFlowchartVer || max_num_requests == 1000){
+                await this.uppdateVerNum();
+                max_num_requests++;
+            }
+        } catch(e) {
+            console.log(e);
+        }   
+    }
+
+    async saveIdForNewFlowchart(name, saveObj){
         let nameList = await API.flowchartAPI.getNameList();
         for (let i = 0; i < nameList.length; i++){
             if(nameList[i].name == name){
                 this.flowchartId = nameList[i].flowchart_id;
             }
         }
+        if(this.flowchartId == "") {
+            this.flowchartId = saveObj.data.flowchart_id;
+        }
     }
+
+    async newFlowSetup(name){
+        this.flowchartName = name;
+        let flowObj = await this.saveClass.saveFlow(this.objects, this.flowchartName);
+
+        await this.saveIdForNewFlowchart(name, flowObj);
+    }
+    
     getCurrFlowId(){
         return this.flowchartId;
     }
@@ -538,6 +561,14 @@ class Container extends View {
                 this.currentFlowchartVerIndex = i;
             }
         }
+    }
+
+    async uppdateVerNum(){
+        let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+        this.currentFlowchartVer = ver.length;
+        this.currentFlowchartVerIndex = this.currentFlowchartVer -1;
+        document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+        
     }
 
     async incVer(){
