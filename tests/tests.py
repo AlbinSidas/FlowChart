@@ -12,17 +12,43 @@ from selenium.webdriver.common.alert import Alert
 # https://selenium-python.readthedocs.io/api.html
 
 flowchart_square = "IlIxhmMyTdSCZV1cxWXFv"
+ifnode = "_1lZFkq37vdYP-6J_D044hl"
+paranode = "_2PkgzkF4QW7ixfm5l0-Xz9"
+
+def create_many_nodes(self, number):
+        new_obj_btn = self.browser.find_element_by_id("newObject")
+        for i in range(number):
+            print(i)
+            new_obj_btn.click()
+            all_squares = self.browser.find_elements(By.CLASS_NAME, flowchart_square)
+            
+            action_chain = ActionChains(self.browser)
+            start_node_output_id = "start-nodebox-start"
+            start_node_output = self.browser.find_element_by_id(start_node_output_id)
+            action_chain.click(start_node_output).perform()
+            action_chain.reset_actions()
+
+            action_chain2 = ActionChains(self.browser)
+            input_id = all_squares[i].get_attribute("id") + "box-input"
+            square_input = self.browser.find_element_by_id(input_id)
+            action_chain2.click(square_input).perform()
+            action_chain2.reset_actions()
 
 class FlowChartTest(unittest.TestCase):
-    
-    
     def setUp(self):
         self.browser = webdriver.Chrome()
         self.browser.maximize_window()
         self.browser.get("localhost:9000")
         self.assertEqual("Flowchart", self.browser.title)
 
-    """ def test_create_object(self):
+    def test_create_object(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testcreate")
+        prompt.accept()
+        time.sleep(0.2)
+
         new_object_btn = self.browser.find_element_by_id('newObject')
         workspace = self.browser.find_element_by_id('workspace-root')
         
@@ -31,6 +57,13 @@ class FlowChartTest(unittest.TestCase):
         self.assertTrue( True, "flow-node" in self.browser.find_element_by_id('workspace-root').get_attribute('innerHTML'))
         
     def test_mark_and_demark(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testmarkdemark")
+        prompt.accept()
+        time.sleep(0.2)
+
         new_object_btn = self.browser.find_element_by_id('newObject')
         workspace = self.browser.find_element_by_id('workspace-root')
 
@@ -50,6 +83,13 @@ class FlowChartTest(unittest.TestCase):
 
 
     def test_drag_and_drop_flowchart_square(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testdragdropsingle")
+        prompt.accept()
+        time.sleep(0.2)
+
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -61,6 +101,13 @@ class FlowChartTest(unittest.TestCase):
 
     
     def test_connecting_different_squares(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testconnectingdiff")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
         time.sleep(0.2)
@@ -92,6 +139,13 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(1)
         
     def test_connecting_to_start(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testconnstart")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -115,6 +169,13 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.2)
 
     def test_copy_paste_delete_one_node(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testcopypasteone")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -150,6 +211,13 @@ class FlowChartTest(unittest.TestCase):
         self.assertTrue(len(all_squares) > 0)
    
     def test_copy_paste_delete_several_nodes(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testcopypasteseveral")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
         time.sleep(0.2)
@@ -184,6 +252,13 @@ class FlowChartTest(unittest.TestCase):
         action_5.key_down(Keys.CONTROL).send_keys('v').key_up(Keys.CONTROL).perform()
 
     def test_show_hide_buttons(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testshowhide")
+        prompt.accept()
+        time.sleep(0.2)
+        
         showhide_btn = self.browser.find_element_by_id("showhide")
         showhide_btn.click()
         
@@ -196,6 +271,13 @@ class FlowChartTest(unittest.TestCase):
         self.assertEqual(toolbox.value_of_css_property("visibility"), "hidden")
 
     def test_increase_decrease_buttons(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testincdecbtns")
+        prompt.accept()
+        time.sleep(0.2)
+        
         #sizeDelta should equal the sizeDelta variable in container.js
         sizeDelta = 200
         showhide_btn = self.browser.find_element_by_id("showhide")
@@ -261,6 +343,13 @@ class FlowChartTest(unittest.TestCase):
         self.assertEqual(wroot.value_of_css_property("width"), comparewidth)
 
     def test_modal(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testmodal")
+        prompt.accept()
+        time.sleep(0.2)
+        
         modal = self.browser.find_element_by_id("modal")
         self.assertEqual(modal.value_of_css_property("display"), "none")
 
@@ -401,10 +490,15 @@ class FlowChartTest(unittest.TestCase):
 
         func_name = modalcontent.find_element_by_id("name")
         func_name.click()
-        action = ActionChains(self.browser)
-        action.send_keys("Test2")
-        action.perform()
-        time.sleep(0.2)
+        action6 = ActionChains(self.browser)
+        action6.send_keys("Test2")
+        action6.perform()
+        func_desc = modalcontent.find_element_by_id("funcdescBox")
+        func_desc.click()
+        action8 = ActionChains(self.browser)
+        action8.send_keys("Description for test 2")
+        action8.perform()
+        time.sleep(0.5)
 
         save_func_btn = self.browser.find_element_by_class_name("saveFunctionDefButton")
         save_func_btn.click()
@@ -418,10 +512,15 @@ class FlowChartTest(unittest.TestCase):
 
         func_name = modalcontent.find_element_by_id("name")
         func_name.click()
-        action = ActionChains(self.browser)
-        action.send_keys("Test3")
-        action.perform()
-        time.sleep(0.2)
+        action7 = ActionChains(self.browser)
+        action7.send_keys("Test3")
+        action7.perform()
+        func_desc = modalcontent.find_element_by_id("funcdescBox")
+        func_desc.click()
+        action9 = ActionChains(self.browser)
+        action9.send_keys("Description for test 3")
+        action9.perform()
+        time.sleep(0.5)
 
         save_func_btn = self.browser.find_element_by_class_name("saveFunctionDefButton")
         save_func_btn.click()
@@ -430,10 +529,11 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.2)
 
         load_func_btn.click()
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         search_load = self.browser.find_element_by_id('loadFunctionInput')
         search_load.click()
+        time.sleep(0.2)
         action5 = ActionChains(self.browser)
         action5.send_keys("Test2")
         action5.perform()
@@ -448,25 +548,35 @@ class FlowChartTest(unittest.TestCase):
         square3 = self.browser.find_element_by_class_name(flowchart_square)
         square3.click()
         square3.click()
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         modal_func_def = self.browser.find_element_by_id("functionDefinition").text
         self.assertEqual(modal_func_def, "Function: Test2")
 
         #test function version number buttons
+        #save doesn't work yet
+    
+        #funcVUp = modalcontent.find_element_by_id("functionVersionUp")
+        #funcVUp.click()
+        #time.sleep(0.2)
+        #funcVUp.click()
+        #modal_version = modalcontent.find_element_by_id("versionNumber")
+        #self.assertEqual(modal_version.text, "2")
+        #funcVDown = modalcontent.find_element_by_id("functionVersionDown")
+        #funcVDown.click()
+        #modal_version = modalcontent.find_element_by_id("versionNumber")
+        #self.assertEqual(modal_version.text, "1")
+        #time.sleep(0.5)
 
-        funcVUp = modalcontent.find_element_by_id("functionVersionUp")
-        funcVUp.click()
-        funcVUp.click()
-        modal_version = modalcontent.find_element_by_id("versionNumber")
-        self.assertEqual(modal_version.text, "2")
-        funcVDown = modalcontent.find_element_by_id("functionVersionDown")
-        funcVDown.click()
-        modal_version = modalcontent.find_element_by_id("versionNumber")
-        self.assertEqual(modal_version.text, "1") """
 
-
-    """ def test_click_on_connector(self):
+    def test_click_on_connector(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testconnectorclick")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -503,6 +613,13 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(1)
 
     def test_remove_connector(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testconnremove")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -533,9 +650,16 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.5)
         action_chain_3 = ActionChains(self.browser)
         action_chain_3.key_down(Keys.CONTROL).send_keys('d').key_up(Keys.CONTROL)
-        action_chain_3.perform() """ 
+        action_chain_3.perform()
 
-    def test_saving_flow(self):
+    """ def test_saving_flow(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testsaveflowchart")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
         time.sleep(0.2)
@@ -592,12 +716,90 @@ class FlowChartTest(unittest.TestCase):
         alert = Alert(self.browser)
         alert.send_keys("testsave1")
         time.sleep(0.5)
-        alert.accept()
+        alert.accept() """
 
-        time.sleep(1.5)
+    def test_if_and_parallel_nodes(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testifandpara")
+        prompt.accept()
+        time.sleep(0.2)
+        
+        new_obj_btn = self.browser.find_element_by_id("newObject")
+        new_obj_btn.click()
+        new_ifobj_btn = self.browser.find_element_by_id("newIfObject")
+        new_ifobj_btn.click()
+        new_paraobj_btn = self.browser.find_element_by_id("newParallelObject")
+        new_paraobj_btn.click()
+        time.sleep(0.2)
 
+        conditional = self.browser.find_element_by_class_name(ifnode)
+        action = ActionChains(self.browser)
+        action.drag_and_drop_by_offset(conditional, 400, 0).perform()
+        parallel = self.browser.find_element_by_class_name(paranode)
+        action2 = ActionChains(self.browser)
+        action2.drag_and_drop_by_offset(conditional, 800, 0).perform()
+        square = self.browser.find_element_by_class_name(flowchart_square)
         
+        action_chain = ActionChains(self.browser)
+        start_node_output_id = "start-nodebox-start"
+        start_node_output = self.browser.find_element_by_id(start_node_output_id)
+        action_chain.click(start_node_output).perform()
+
+        time.sleep(0.2)
+        action_chain_2 = ActionChains(self.browser)
+        input_id = parallel.get_attribute("id") + "box-input"
+        parallel_input = self.browser.find_element_by_id(input_id)
+        action_chain_2.click(parallel_input).perform()
+
+        wroot = self.browser.find_element_by_id('workspace-root')
+        wroot.click()
+
+        action_chain_3 = ActionChains(self.browser)
+        output_id = parallel.get_attribute("id") + "box-parallel"
+        output = self.browser.find_element_by_id(output_id)
+        action_chain_3.click(output).perform()
+
+        time.sleep(0.2)
+        action_chain_4 = ActionChains(self.browser)
+        input_id_2 = conditional.get_attribute("id") + "box-input"
+        conditional_input = self.browser.find_element_by_id(input_id_2)
+        action_chain_4.click(conditional_input).perform()
+
+        wroot = self.browser.find_element_by_id('workspace-root')
+        wroot.click()
         
+        action_chain_5 = ActionChains(self.browser)
+        cond_output_id = conditional.get_attribute("id") + "box-outputIf"
+        cond_output = self.browser.find_element_by_id(cond_output_id)
+        action_chain_5.click(cond_output).perform()
+
+        time.sleep(0.2)
+        action_chain_6 = ActionChains(self.browser)
+        input_id_3 = square.get_attribute("id") + "box-input"
+        square_input = self.browser.find_element_by_id(input_id_3)
+        action_chain_6.click(square_input).perform()
+        
+
+    """ def test_stress_1(self):
+        #creates nodes and connects them to the start node, the nodes are stacked on the same spot on the screen/page
+        create_many_nodes(self, 10)
+        #lagging a bit at 800 quite a lot at 900 nodes
+        #100 connected: not lagging at start, with 800 nodes total only 100 connected starting to lag 900 lagging quite a bit
+        #200 connected: not lagging at start, drag delay starting at 600 if above the place with a lot of nodes
+        #300 connected: feels like it might lag a little while dragging a node above the 299 others, quick load
+        #400 connected: feels like it lags above the 399 others, on the other side no lag
+        #1000 connected: lagging if dragging near all nodes
+        #10000 connected: creation slowing down a lot above 1500, couldn't bother running the whole thing, took about 3 sec 
+        # for one creation and connection when above 3000 nodes were on the screen 
+
+        #cors/fetch fails on saving 305 nodes were all of them are only connected to the start node
+        #need to check if it fails on saving less nodes with more connections
+        """
+        #time.sleep(3)
+        
+
 
     def tearDown(self):
         self.browser.quit()

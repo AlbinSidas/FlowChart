@@ -71,7 +71,6 @@ class MongoHandler {
                 });
                 
                 const data = await result.ops;
-                console.log("FINNS EJ", data)
                 return data;
             }
         } catch(e) {

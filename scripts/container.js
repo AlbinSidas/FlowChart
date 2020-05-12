@@ -80,15 +80,21 @@ class Container extends View {
             
             recursiveFlowchartCreation(id, this.objects, this.flowchartList);
         })
-        eventEmitter.on("newFlowchart", (name) => {   
-            this.flowchartName = name;
-            this.saveClass.saveFlow(this.objects, this.flowchartName);
-            this.saveIdForNewFlowchart(name);
+        eventEmitter.on("newFlowchart", (name) => {
+            this.newFlowSetup(name);   
         })
         eventEmitter.on("openedFlowchart", (chosenFlowchart) => {  
             const looseNodes = chosenFlowchart.nodes;
             looseNodes.forEach((looseNode) => {
-                this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
+                if(looseNode.type == "flowchart_node"){
+                  this.objects.push(FlowchartNode.CreateExternal(looseNode))  
+                } 
+                else if(looseNode.type == "conditional_node"){
+                    this.objects.push(ConditionalNode.CreateExternal(looseNode))
+                }
+                else if(looseNode.type == "parallel_node"){
+                    this.objects.push(ParallelNode.CreateExternal(looseNode))
+                }
             })
             this.objects.forEach(obj => this.attach(obj))
             this.connectNodes(looseNodes)
@@ -203,7 +209,6 @@ class Container extends View {
         this.clearFlowchart();
         const loadedObjects = await this.saveClass.loadFlowVer(this.flowchartId, this.currentFlowchartVer);
         const looseNodes = loadedObjects.nodes;
-        console.log(this.objects)
         looseNodes.forEach((looseNode) => {
             if(looseNode.type == "flowchart_node"){
               this.objects.push(FlowchartNode.CreateExternal(looseNode))  
@@ -249,7 +254,7 @@ class Container extends View {
         })
 
         eventEmitter.on('save', () =>  {
-            this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId)
+            this.asyncFlowSave();
         })
 
         eventEmitter.on('increaseSize', () =>  {
@@ -491,6 +496,12 @@ class Container extends View {
         if (this.toolboxVisible) {
             this.toolbox.hide();
             this.toolboxVisible = false;
+            console.log("ScreenX: " + window.screenX);
+            console.log("ScreenY: " + window.screenY);
+            console.log("ScrollX: " + window.scrollX);
+            console.log("ScrollY: " + window.scrollY);
+
+
         }
         else {
             this.toolbox.show();
@@ -520,14 +531,40 @@ class Container extends View {
         }
     }
 
-    async saveIdForNewFlowchart(name){
+    async asyncFlowSave(){
+        try {
+            let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+            await this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId);
+            let max_num_requests = 0;
+            while(ver.length == this.currentFlowchartVer || max_num_requests == 1000){
+                await this.uppdateVerNum();
+                max_num_requests++;
+            }
+        } catch(e) {
+            console.log(e);
+        }   
+    }
+
+    async saveIdForNewFlowchart(name, saveObj){
         let nameList = await API.flowchartAPI.getNameList();
         for (let i = 0; i < nameList.length; i++){
             if(nameList[i].name == name){
                 this.flowchartId = nameList[i].flowchart_id;
             }
         }
+        if(this.flowchartId == "") {
+            this.flowchartId = saveObj.data.flowchart_id;
+        }
     }
+
+    async newFlowSetup(name){
+        this.flowchartName = name;
+        let flowObj = await this.saveClass.saveFlow(this.objects, this.flowchartName);
+
+        await this.saveIdForNewFlowchart(name, flowObj);
+        await this.uppdateVerNum();
+    }
+    
     getCurrFlowId(){
         return this.flowchartId;
     }
@@ -540,12 +577,22 @@ class Container extends View {
         }
     }
 
+    async uppdateVerNum(){
+        let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+        this.currentFlowchartVer = ver.length;
+        this.currentFlowchartVerIndex = this.currentFlowchartVer -1;
+        document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+        
+    }
+
     async incVer(){
         let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
         if(this.currentFlowchartVerIndex < ver.length-1){
             this.currentFlowchartVerIndex++;
             this.currentFlowchartVer = ver[this.currentFlowchartVerIndex];
             document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+            
+            this.loadFlow();
         }
     }
 
@@ -555,6 +602,8 @@ class Container extends View {
             this.currentFlowchartVerIndex--;
             this.currentFlowchartVer = ver[this.currentFlowchartVerIndex];
             document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+
+            this.loadFlow();
         }
     }
 }

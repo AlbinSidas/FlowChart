@@ -21,17 +21,9 @@ class ParallelNode extends FlowchartNode{
         this.onOutputClicked  = this.onOutputClicked.bind(this);
         this.onDestClicked    = this.onDestClicked.bind(this);
         //ui
-        this.posX    = 100;
-        this.posY    = 100;
         this.height  = 250;
-        this.offsetX = 0;
-        this.offsetY = 0;
-        this.idRef   = "";
-        this._connectorUpdaters = {}
         //flow
         this.id    = id;
-        this._name = "";
-
         this.output = null;
         this.outputParallel = new NodeIO(this, "box-parallel", this.onOutputClicked);
         this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id}</p>`);
@@ -115,7 +107,6 @@ class ParallelNode extends FlowchartNode{
 
 
     static CreateExternal(object, inputIds, outputIds) {
-        console.log(object)
         const node = new ParallelNode(object.id, object.functionDefinitionInstance);
         node.fillNode(object);
         return node;

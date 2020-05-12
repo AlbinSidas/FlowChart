@@ -7,6 +7,7 @@ import styleClasses                           from 'Styles/modal-buttons.css';
 import FunctionVariable                       from 'Model/function-variable.js';
 import FunctionDefinition                     from 'Model/function-definition.js';
 import NetworkAPIs                            from 'Network/network.js';
+import style                                  from 'Styles/style.css';
 const funcDefAPI = NetworkAPIs.funcDefAPI;
 
 class Modal extends View
@@ -52,6 +53,8 @@ class Modal extends View
                                     <button class="btn" id="createFunctionButton" style="background-color: var(--button-color)"> Create function </button>
                                     <button class="btn" id="closeModalButton" style="background-color: var(--button-color)">Close</button>
                                   </div>`;
+    this.setupDropdownList();
+
   }
 
   didAttach(parent) {
@@ -80,9 +83,11 @@ class Modal extends View
 
     this.closeButton  = InlineClickableViewBinding(document.getElementById('closeModalButton'), 
                                                   'closeModal', styleClasses.buttonFooter);
+    this.closeButton.element.classList.add(style.buttonVisual);
     this.loadButton   = new LoadButton();
     this.createButton = InlineClickableViewBinding(document.getElementById('createFunctionButton'), 
                                                   'createFunction', styleClasses.buttonFooter);
+    this.createButton.element.classList.add(style.buttonVisual);
 
     
     eventEmitter.on('listClick', (listObject) => {
@@ -140,7 +145,7 @@ class Modal extends View
         funcDef.description = document.getElementById("funcdescBox").value;
         funcDef.functionVariables = this._saveScreenVariables();
         let data = await this._saveVersionFuncDef(funcDef);
-        
+
         if(this.currentFunctionDefinition.obj.versionNumber < data.versionNumber) {
           this.currentFunctionDefinition.obj.versionNumber = data.versionNumber;
         }
@@ -199,7 +204,7 @@ class Modal extends View
         if (fvariable.id == removed) indxOf = i;
       });
       
-      this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1); 
+      this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1);
     }
     this._removeElement(removed.type+removed.name);  
   }
@@ -292,6 +297,7 @@ class Modal extends View
 
     footer.insertAdjacentHTML('afterbegin', addButton);
     this.addButton    = new AddButton();
+
   }
 
   async setupDropdownList() {
@@ -383,7 +389,6 @@ class Modal extends View
   }
 
   show(object) {
-      this.setupDropdownList();
       this.mode = "Node";
       this.obj = object;
 
@@ -427,6 +432,8 @@ class Modal extends View
       footer.insertAdjacentHTML('afterbegin', createButton);
       this.createButton = InlineClickableViewBinding(document.getElementById('createFunctionButton'), 
                           'createFunction', styleClasses.buttonFooter);
+      this.createButton.element.classList.add(style.buttonVisual);
+      
     }
   }
 
@@ -447,15 +454,19 @@ class Modal extends View
   }
 
   async _saveVersionFuncDef(saveObject) {
+    if(saveObject[1]) {
+      // If a there is a previously saved version this must be removed.
+      delete(saveObject[1])
+    }
+    let data = {
+      "funcdef_id": saveObject.id,
+      "content": { ...saveObject }
+    };
     try {
-        let data = {
-          "funcdef_id": saveObject.id,
-          "content": { ...saveObject }
-        };
         let res =  await funcDefAPI.saveVersion(data);
         return res;
     } catch(e) {
-      throw new Error('Failed to save version');
+      throw new Error(e);
     }
   }
 
@@ -524,6 +535,7 @@ class LoadButton extends Button {
     this.onClick = this.onClick.bind(this);
     this.element.onclick = this.onClick;
     this.element.classList.add(styleClasses.buttonLoad);
+    this.element.classList.add(style.buttonVisual);
   }
 
   onClick() {
@@ -540,6 +552,7 @@ class AddButton extends Button {
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
       this.element.classList.add(styleClasses.buttonFooterAdd);
+      this.element.classList.add(style.buttonVisual);
   }
 
   onClick() {
@@ -556,6 +569,7 @@ class BackButton extends Button {
       this.onClick = this.onClick.bind(this);
       this.element.onclick = this.onClick;
       this.element.classList.add(styleClasses.backButton);
+      this.element.classList.add(style.buttonVisual);
   }
 
   onClick() {

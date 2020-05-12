@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha --exit",
+    "test": "test",
     "mongo": "chmod +x start_mongo.sh && ./start_mongo.sh",
     "start": "npm run mongo && node app.js",
     "clear_db": "rm -rf ./data"
@@ -17,9 +17,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mocha": "^7.1.1",
-    "mongodb": "^3.5.3",
-    "nyc": "^15.0.0",
-    "superagent": "^5.2.2"
+    "mongodb": "^3.5.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

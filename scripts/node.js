@@ -22,8 +22,8 @@ class Node extends View {
         this.getMetaConnections = this.getMetaConnections.bind(this);
 
         //ui
-        this.posX    = 100;
-        this.posY    = 100;
+        this.posX    = window.scrollX + 100;
+        this.posY    = window.scrollY + 100;
         this.height  = 250;
         this.offsetX = 0;
         this.offsetY = 0;
@@ -71,7 +71,6 @@ class Node extends View {
     }
     
     onInputClicked(id) {
-        console.log("INPUT CLICKED 2", id)
         eventEmitter.emit("inputClicked", id);
     }
 

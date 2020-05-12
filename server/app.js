@@ -50,7 +50,7 @@ async function main() {
         try{
             const databaseOps = await mongoController.flowchartHandler.save(req.body)
             res.status(200)
-            res.json(Response("Save flowchart", databaseOps));
+            res.json(Response("Save flowchart definition", databaseOps));
         }
         catch(err){
             next(err)
@@ -81,7 +81,7 @@ async function main() {
         try {
             const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
             res.status(200)
-            res.json(Response("Get flowchart: ", databaseOps));
+            res.json(Response("Get specific flowchart version", databaseOps));
         } catch(err) {
             next(err);
         }
@@ -109,6 +109,7 @@ async function main() {
            next(error);
         }
     });
+
 
 // ================= FUNCDEF =====================
     app.post('/funcdef/version/add', async (req, res) => {

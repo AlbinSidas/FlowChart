@@ -1,9 +1,10 @@
 /* ========================= COLORS =============================  */
 :root {
     /* General colors */
-    --background-color: rgb(71, 110, 119);
-    --accent-color:     rgb(91, 79, 131);
-    --button-color:     rgb(226, 179, 51);
+    --background-color:     rgb(71, 110, 119);
+    --accent-color:         rgb(91, 79, 131);
+    --button-color:         rgb(226, 179, 51);
+    --verbutton-color:      #26a69a;
 
     /* Node colors */
     --node-background:      rgb(26, 160, 104);
@@ -19,9 +20,13 @@
     --node-outputParallel:  rgb(197, 172, 125);
 
     /* Modal colors */
-    --modal-bg-color:   rgb(190, 219, 224);
-    --modal-acc-color:  rgb(130, 147, 170);
-    --modal-dropdown:   rgb(236, 221, 173);
+    --modal-bg-color:       rgb(190, 219, 224);
+    --modal-acc-color:      rgb(130, 147, 170);
+    --modal-dropdown:       rgb(236, 221, 173);
+
+    /* Button interactions */
+    --button-shadow:        rgb(128, 128, 128);
+    --button-shadow-click:  rgb(105, 105, 105);   
 }
 
 
@@ -75,6 +80,17 @@ body{
     bottom: 3%;
     background-color: var(--button-color);
     z-index: 10;
+    box-shadow: 0 6px var(--button-shadow);
+}
+
+:global #newObject:hover {
+    box-shadow: 0 6px var(--button-shadow);
+}
+
+:global #newObject:active {
+    box-shadow: 0 4px var(--button-shadow-click);
+    transform: translateY(3px);
+    -webkit-transform: translateY(3px);
 }
 
 :global #newObject img {
@@ -85,6 +101,7 @@ body{
     position: fixed;
     bottom: 8%;
     right: 2%;
+    z-index: 10;
 }
 
 :global #newIfObject {
@@ -96,6 +113,17 @@ body{
     bottom: 3%;
     background-color: var(--button-color);
     z-index: 10;
+    box-shadow: 0 6px var(--button-shadow);
+}
+
+:global #newIfObject:hover {
+    box-shadow: 0 6px var(--button-shadow);
+}
+
+:global #newIfObject:active {
+    box-shadow: 0 4px var(--button-shadow-click);
+    transform: translateY(3px);
+    -webkit-transform: translateY(3px);
 }
 
 :global #newIfObject img {
@@ -106,6 +134,7 @@ body{
     position: fixed;
     bottom: 8%;
     right: 13%;
+    z-index: 10;
 }
 
 :global #newParallelObject {
@@ -117,6 +146,17 @@ body{
     bottom: 3%;
     background-color: var(--button-color);
     z-index: 10;
+    box-shadow: 0 6px var(--button-shadow);
+}
+
+:global #newParallelObject:hover {
+    box-shadow: 0 6px var(--button-shadow);
+}
+
+:global #newParallelObject:active {
+    box-shadow: 0 4px var(--button-shadow-click);
+    transform: translateY(3px);
+    -webkit-transform: translateY(3px);
 }
 
 :global #newParallelObject img {
@@ -127,6 +167,7 @@ body{
     position: fixed;
     bottom: 8%;
     right: 20%;
+    z-index: 10;
 }
 /* används inte atm */
 :global #element-picker { 
@@ -353,6 +394,20 @@ body{
   background-color: var(--modal-acc-color);
 }
 
+:global .modalFooter > a{
+    box-shadow: 0 6px var(--button-shadow);
+}
+
+:global .modalFooter > a:hover{
+    box-shadow: 0 6px var(--button-shadow);
+}
+
+:global .modalFooter > a:active{
+    box-shadow: 0 4px var(--button-shadow);
+    transform: translateY(3px);
+    -webkit-transform: translateY(3px);
+}
+
 /* Modal Content/Box */
 :global .modalContent {
   margin: 0 auto;
@@ -370,4 +425,19 @@ body{
     word-wrap: break-word; 
     border-bottom:1px solid black;
     background-color: var(--modal-dropdown);
+}
+
+/*Buttons*/
+
+.buttonVisual {
+    box-shadow: 0 6px var(--button-shadow);
+}
+
+.buttonVisual:hover {
+    box-shadow: 0 6px var(--button-shadow);
+}
+.buttonVisual:active {
+    box-shadow: 0 4px var(--button-shadow-click);
+    transform: translateY(3px);
+    -webkit-transform: translateY(3px);
 }
