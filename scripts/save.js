@@ -39,7 +39,6 @@ class Save
 				"nodes": saveObjectList,
 				"name": filename,
 			};
-			console.log(saveObjectList);
 
 			API.flowchartAPI.saveVersion({
 				"flowchart_id": id,
@@ -81,7 +80,6 @@ class Save
 		let foundId  = jsonData.find(element => element.name == filename).flowchart_id;
       
 		const loadedData = await API.flowchartAPI.getById(foundId);
-		console.log(loadedData);
 		let nodes = loadedData.nodes;
 		return loadedData
 	}

@@ -145,7 +145,7 @@ class Modal extends View
         funcDef.description = document.getElementById("funcdescBox").value;
         funcDef.functionVariables = this._saveScreenVariables();
         let data = await this._saveVersionFuncDef(funcDef);
-        
+
         if(this.currentFunctionDefinition.obj.versionNumber < data.versionNumber) {
           this.currentFunctionDefinition.obj.versionNumber = data.versionNumber;
         }
@@ -204,7 +204,7 @@ class Modal extends View
         if (fvariable.id == removed) indxOf = i;
       });
       
-      this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1); 
+      this.currentFunctionDefinition.obj.functionVariables.splice(indxOf, 1);
     }
     this._removeElement(removed.type+removed.name);  
   }
@@ -454,15 +454,19 @@ class Modal extends View
   }
 
   async _saveVersionFuncDef(saveObject) {
+    if(saveObject[1]) {
+      // If a there is a previously saved version this must be removed.
+      delete(saveObject[1])
+    }
+    let data = {
+      "funcdef_id": saveObject.id,
+      "content": { ...saveObject }
+    };
     try {
-        let data = {
-          "funcdef_id": saveObject.id,
-          "content": { ...saveObject }
-        };
         let res =  await funcDefAPI.saveVersion(data);
         return res;
     } catch(e) {
-      throw new Error('Failed to save version');
+      throw new Error(e);
     }
   }
 

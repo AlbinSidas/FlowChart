@@ -53,7 +53,6 @@ class SNode extends Node {
     }
 
     static CreateExternal(object, inputIds, outputIds) {
-        console.log(object)
         const node = new SNode(object.id, null);
         node.fillNode(object);
         return node;
