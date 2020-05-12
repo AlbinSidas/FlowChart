@@ -577,6 +577,8 @@ class Container extends View {
             this.currentFlowchartVerIndex++;
             this.currentFlowchartVer = ver[this.currentFlowchartVerIndex];
             document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+            
+            this.loadFlow();
         }
     }
 
@@ -586,6 +588,8 @@ class Container extends View {
             this.currentFlowchartVerIndex--;
             this.currentFlowchartVer = ver[this.currentFlowchartVerIndex];
             document.getElementById("vercounter").innerHTML = this.currentFlowchartVer;
+
+            this.loadFlow();
         }
     }
 }
