@@ -6,11 +6,17 @@
     --button-color:     rgb(226, 179, 51);
 
     /* Node colors */
-    --node-background:  rgb(26, 160, 104);
-    --node-input:       rgb(113, 184, 113);
-    --node-output:      rgb(182, 83, 104);
-    --node-connector:   rgb(72, 163, 175);
-    --node-highlight:   rgb(138, 179, 218);
+    --node-background:      rgb(26, 160, 104);
+    --ifnode-background:    rgb(221, 136, 51);
+    --node-input:           rgb(113, 184, 113);
+    --node-ifinput:         rgb(57, 153, 218);
+    --node-output:          rgb(182, 83, 104);
+    --node-outputif:        rgb(0, 230, 57);
+    --node-outputelse:      rgb(200, 100, 100);
+    --node-connector:       rgb(72, 163, 175);
+    --node-highlight:       rgb(138, 179, 218);
+    --node-parallel:        rgb(77, 124, 255);
+    --node-outputParallel:  rgb(197, 172, 125);
 
     /* Modal colors */
     --modal-bg-color:   rgb(190, 219, 224);
@@ -75,6 +81,53 @@ body{
     width: 100%;
 }
 
+:global #newObjectText {
+    position: fixed;
+    bottom: 8%;
+    right: 2%;
+}
+
+:global #newIfObject {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    position: fixed;
+    right: 12%;
+    bottom: 3%;
+    background-color: var(--button-color);
+    z-index: 10;
+}
+
+:global #newIfObject img {
+    width: 100%;
+}
+
+:global #newIfObjectText {
+    position: fixed;
+    bottom: 8%;
+    right: 13%;
+}
+
+:global #newParallelObject {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    position: fixed;
+    right: 21%;
+    bottom: 3%;
+    background-color: var(--button-color);
+    z-index: 10;
+}
+
+:global #newParallelObject img {
+    width: 100%;
+}
+
+:global #newParallelObjectText {
+    position: fixed;
+    bottom: 8%;
+    right: 20%;
+}
 /* används inte atm */
 :global #element-picker { 
     background-color: orange;
@@ -130,6 +183,18 @@ body{
     position: absolute;
 }
 
+/*Ifnode input circle*/
+.boxIfInput {
+    border-radius: 50px 50px 50px 50px;
+    width: 50px;
+    height: 50px;
+    margin-top: -100px;
+    margin-left: -25px;
+    background-color: var(--node-ifinput);
+    cursor: pointer;
+    position: absolute;
+}
+
 /*Output circle*/
 .boxOutput {
     border-radius: 0 0 50px 50px;
@@ -138,6 +203,43 @@ body{
     margin-top: 250px;
     margin-left: 125px;
     background-color: var(--node-output);
+    cursor: pointer;
+    position: absolute;
+}
+
+/*Output circle*/
+.boxOutputIf {
+    border-radius: 50px 0px 0px 50px;
+    width: 25px;
+    height: 50px;
+    margin-top: 50px;
+    margin-left: -25px;
+    background-color: var(--node-outputif);
+    cursor: pointer;
+    position: absolute;
+}
+
+/*Output circle*/
+.boxOutputElse {
+    border-radius: 0px 50px 50px 0px;
+    width: 25px;
+    height: 50px;
+    /* margin-top: -100px;
+    margin-left: 125px; */
+    margin-top: 50px;
+    margin-left: 300px;
+    background-color: var(--node-outputelse);
+    cursor: pointer;
+    position: absolute;
+}
+
+.boxOutputParallel {
+    border-radius: 0 0 75px 75px;
+    width: 75px;
+    height: 32.5px;
+    margin-top: 250px;
+    margin-left: 112.5px;
+    background-color: var(--node-outputParallel);
     cursor: pointer;
     position: absolute;
 }
@@ -171,6 +273,36 @@ body{
 }
 
 .flowchart_square p {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.conditionalnode {
+    z-index: 9;
+    width: 300px;
+    border-radius: 20px;
+    cursor: move;
+    position: absolute;
+    background-color: var(--ifnode-background);
+}
+
+.conditionalnode p {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.parallelnode {
+    z-index: 9;
+    width: 300px;
+    border-radius: 20px;
+    cursor: move;
+    position: absolute;
+    background-color: var(--node-parallel);
+}
+
+.parallelnode p {
     position: absolute;
     text-align: center;
     width: 100%;

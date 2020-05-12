@@ -31,7 +31,7 @@ class Save
 			let filename = name;
 			let saveObjectList = [];
 			let i = 0;
-			for (i = 1; i < obj.length; i++) {
+			for (i = 0; i < obj.length; i++) {
 				let saveObj = obj[i].getMetaInfo();
 				saveObjectList.push(saveObj);
 			}
@@ -39,6 +39,7 @@ class Save
 				"nodes": saveObjectList,
 				"name": filename,
 			};
+			console.log(saveObjectList);
 
 			API.flowchartAPI.saveVersion({
 				"flowchart_id": id,
@@ -79,7 +80,9 @@ class Save
 
 		let filename = prompt("skriv in namnet på filen du vill ladda\n" + flowchartNamesbuffer)
 		let foundId  = jsonData.find(element => element.name == filename).flowchart_id;
+      
 		const loadedData = await API.flowchartAPI.getById(foundId);
+		console.log(loadedData);
 		let nodes = loadedData.nodes;
 		return loadedData
 	}
