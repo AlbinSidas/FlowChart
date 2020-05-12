@@ -20,7 +20,7 @@ class Toolbox extends View
     super.didAttach(parent);
     //Load
     this.loadButton = InlineClickableView(
-                                '<button type="button" class="btn" style="background-color:var(--button-color); margin:5%; margin-right:10%; width:40%;" name="button">Load</button>', 
+                                '<button type="button" class="btn" id="loadChart" style="background-color:var(--button-color); margin:5%; margin-right:10%; width:40%;" name="button">Load</button>', 
                                 this.boxEventhandlerDelegate.loadFlow
                       ) //new LoadButton();
     this.attach(this.loadButton);
@@ -76,7 +76,7 @@ class Toolbox extends View
 class IncreaseSizeButton extends Button {
   constructor() {
       super();
-      this.setHtml('<button type="button" class="btn" name="button">Increase Height</button>')
+      this.setHtml('<button type="button" class="btn" name="button" id="increase-vertical">Increase Height</button>')
       this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:15%; margin-left: 5%")
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
@@ -91,7 +91,7 @@ class IncreaseSizeButton extends Button {
 class DecreaseSizeButton extends Button {
   constructor() {
     super();
-    this.setHtml('<button type="button" class="btn" name="decrease_button">Decrease Height</button>')
+    this.setHtml('<button type="button" class="btn" name="decrease_button" id="decrease-vertical">Decrease Height</button>')
     this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:5%; margin-left: 5%")
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);
@@ -105,7 +105,7 @@ class DecreaseSizeButton extends Button {
 class IncreaseHorizontalSizeButton extends Button {
   constructor() {
       super();
-      this.setHtml('<button type="button" class="btn" name="button_horizontal">Increase Width</button>')
+      this.setHtml('<button type="button" class="btn" name="button_horizontal" id="increase-horizontal">Increase Width</button>')
       this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:5%; margin-left: 5%")
       this.render = this.render.bind(this);
       this.onClick = this.onClick.bind(this);
@@ -121,7 +121,7 @@ class IncreaseHorizontalSizeButton extends Button {
 class DecreaseHorizontalSizeButton extends Button {
   constructor() {
     super();
-    this.setHtml('<button type="button" class="btn" name="decrease_button_horizontal">Decrease Width</button>')
+    this.setHtml('<button type="button" class="btn" name="decrease_button_horizontal" id="decrease-horizontal">Decrease Width</button>')
     this.element.setAttribute("style", "background-color:var(--button-color); width:90%; margin-top:5%; margin-left: 5%; margin-bottom: 5%")
     this.render = this.render.bind(this);
     this.onClick = this.onClick.bind(this);

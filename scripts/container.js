@@ -10,8 +10,14 @@ import View from 'Base/view.js'
 import elementString from 'Views/container.html'
 import eventEmitter from 'Singletons/event-emitter.js'
 import Connector from "./connectors.js";
+import IfConnector from "./if-connector.js";
+import ElseConnector from "./else-connector.js"
+import ParaConnector from "./para-connector.js"
 import ShowHideButton from './showHideButton.js';
+import ConditionalNode from './conditional-node';
+import ParallelNode from './parallel-node';
 import API from "Network/network.js"
+
 
 class Container extends View {
     constructor() {
@@ -35,6 +41,7 @@ class Container extends View {
         this.markedObject   = [];
         this.markedConnector= [];
         this.markedOutput   = "";
+        this.nodeType       = "";
         this.connectorList  = [];
         this.objectClick    = {};
         this.connectorClick = {};        
@@ -54,7 +61,7 @@ class Container extends View {
         this.objectClicked    = this.objectClicked.bind(this);
         this.connectorClicked = this.connectorClicked.bind(this);
         this.inputClicked     = this.inputClicked.bind(this);
-        
+        this.prevClicked      = this.prevClicked.bind(this);
 
         this.loadFlow = this.loadFlow.bind(this)
         this.incVer = this.incVer.bind(this)
@@ -65,6 +72,7 @@ class Container extends View {
         eventEmitter.on("connectorClicked", this.connectorClicked);
         eventEmitter.on("outputClicked", (id) => this.markedOutput = id );
         eventEmitter.on("inputClicked", this.inputClicked);
+        eventEmitter.on("prevClicked", this.prevClicked);
         eventEmitter.on("createRunnable", (id) => {   
             
             this.flowchartList = [];
@@ -98,6 +106,7 @@ class Container extends View {
         
         this.objectClick = e;
         // Finds the correct node in the created nodes.
+
         let obj = this.objects.find((obj) => {
             return obj.id == id;
         });
@@ -128,6 +137,7 @@ class Container extends View {
             }
         }
     }
+
     highlightConnector(obj){
         for(let i =0; i < this.connectorList.length; i++){
             if(this.connectorList[i].currNode.id == obj.id){
@@ -148,49 +158,41 @@ class Container extends View {
     }
     
     inputClicked(id) {
-        if (id == this.markedOutput || this.markedOutput == "") {
-            return;
-        }
+        if (id == this.markedOutput || this.markedOutput == "") { return; }     
 
-        const currNode = this.objects.find(temp => temp.id == id )
-        const prevNode = this.objects.find(temp => temp.id == this.markedOutput )
-
-        let connector = {};
-        if (!currNode.input.connections.includes(this.markedOutput)) {
-            currNode.input.connections.push(this.markedOutput);
-            prevNode.output.connections.push(currNode.id);
-
-            connector = new Connector(currNode.id + prevNode.id, prevNode, currNode);
-            prevNode.registerConnectorUpdater(connector.id, connector.updateConnections);
-            currNode.registerConnectorUpdater(connector.id, connector.updateConnections);
-            connector.element.classList.add("connector");
+        const currNode = this.objects.find(iter => iter.id == id )
+        let connector;
+        
+        if(!currNode.input.connections.includes(this.markedOutput)) {//connector != null) {
+            connector = this.sourceNodeHandler(currNode);
             this.attach(connector);
             this.connectorList.push(connector);
-        }
-        else {
+        } else {
+            //const prevNode = this.objects.find(iter => iter.id == this.markedOutput )
+            /*
+            sålänge markeOuptut har ett värde, så borde det vara garanterat att den finns
+            */
             connector = this.connectorList.find((c) => {
-                return c.id == currNode.id + prevNode.id; 
+                return c.id == currNode.id + this.markedOutput // prevNode.id; // TODO FIXA DENNa
             });
         }
+
+        this.sourceNodeHandler = () => null;
         this.markedOutput = "";
+        //this.nodeType = "";
         connector.updateConnections();
-        
     }
 
+    prevClicked(func, id) {
+        this.markedOutput      = id;
+        this.sourceNodeHandler = func;
+    }
 
     connectNodes(looseObjects) {
-
-        looseObjects.forEach(item => {
-			if(item.inputConnectionList.length !=0 && item.inputConnectionList.includes("start-node")){
-				eventEmitter.emit("outputClicked", "start-node");
-				eventEmitter.emit("inputClicked", item.id);
-			}
-            item.outputConnectionList.forEach((output) => {
-				eventEmitter.emit("outputClicked", item.id);
-				eventEmitter.emit("inputClicked", output);
-            })
-        })
-
+        looseObjects.forEach(iter => {
+            const source = this.objects.find(i=> iter.id == i.id);
+            source.reconnect(this.inputClicked, iter);
+        });
     }
 
 
@@ -199,10 +201,18 @@ class Container extends View {
         this.clearFlowchart();
         const loadedObjects = await this.saveClass.loadFlowVer(this.flowchartId, this.currentFlowchartVer);
         const looseNodes = loadedObjects.nodes;
+        console.log(this.objects)
         looseNodes.forEach((looseNode) => {
-              this.objects.push(FlowchartNode.CreateExternal(looseNode)) 
+            if(looseNode.type == "flowchart_node"){
+              this.objects.push(FlowchartNode.CreateExternal(looseNode))  
+            } 
+            else if(looseNode.type == "conditional_node"){
+                this.objects.push(ConditionalNode.CreateExternal(looseNode))
+            }
+            else if(looseNode.type == "parallel_node"){
+                this.objects.push(ParallelNode.CreateExternal(looseNode))
+            }
         })
-
         this.objects.forEach(obj => this.attach(obj))
         this.connectNodes(looseNodes)
     }
@@ -309,9 +319,11 @@ class Container extends View {
                 for( let i = this.connectorList.length - 1 ; i >= 0 ; i-- ) {
                     if (this.connectorList[i].id.includes(this.markedObject[j].id) ) {
                         let connector = this.connectorList[i];
-                        this.connectorList.splice(i, 1);
-                        let connectorElement = document.getElementById(connector.id);
-                        connectorElement.parentElement.removeChild(connectorElement);
+                        this.markedConnector[0] = connector;
+                        this.removeConnector();
+                        //this.connectorList.splice(i, 1);
+                        //let connectorElement = document.getElementById(connector.id);
+                        //connectorElement.parentElement.removeChild(connectorElement);
                     }
                 }
                 let nodeElement = document.getElementById(this.markedObject[j].id);
@@ -330,8 +342,8 @@ class Container extends View {
             
             document.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY});
             for(let i = 0; i < this.markedObject.length; i++){
-                this.copyObject[i] = new FlowchartNode(uuidv1());
-                this.copyObject[i].copyOther(this.markedObject[i], this.markedObject[i].id);
+                this.copyObject[i] = this.markedObject[i].clone();//new FlowchartNode(uuidv1());
+                this.copyObject[i].copyOther(this.markedObject[i], this.markedObject[i].id, true);
                 this.idsbeforepaste[i] = this.markedObject[i].id; 
             }
             
@@ -339,38 +351,34 @@ class Container extends View {
     }
 
     pasteNode() {
-        if (this.copyObject.length != 0) {
-            //Create new objects based on the copies and add them to the workspace
-            let tempRef = [];
-            for(let i = 0; i < this.copyObject.length; i++){
-                let pasteObject = new FlowchartNode(uuidv1());
-                if(i == 0){
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX, this.mouseY, []);
-                }
-                else {
-                    pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, this.mouseX+(this.copyObject[i].posX-this.copyObject[0].posX), this.mouseY+(this.copyObject[i].posY-this.copyObject[0].posY), []);
-                }
-                this.addBox(pasteObject);
-                tempRef[i] = pasteObject;
-                
-            }
-            if(tempRef.length > 1){
-                for(let i = 0; i < this.copyObject.length; i++){    
-                    for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
-                        if(this.idsbeforepaste.includes(this.copyObject[i].output.connections[j])){                           
-                            for(let k = 0; k < tempRef.length; k++){
-                                if(tempRef[k].idRef == this.copyObject[i].output.connections[j]){
-                                    eventEmitter.emit("outputClicked", tempRef[i].id);
-                                    eventEmitter.emit("inputClicked", tempRef[k].id);
-                                }
+        if (this.copyObject.length == 0) { return; }
+        //Create new objects based on the copies and add them to the workspace
+        let tempRef = [];
+        for(let i = 0; i < this.copyObject.length; i++) {
+            const pasteObject = this.copyObject[i].clone();
+            let offsetX = i > 0 ? (this.copyObject[i].posX-this.copyObject[0].posX) : 0;
+            let offsetY = i > 0 ? (this.copyObject[i].posY-this.copyObject[0].posY) : 0;
+            pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, false, this.mouseX + offsetX, this.mouseY + offsetY); //[]);
+            this.addBox(pasteObject);
+            tempRef[i] = pasteObject;
+        }
+        
+        if(tempRef.length <= 1) { return; }       
+        
+        this.copyObject.forEach((copiedNode, i) => {
+            copiedNode.getOutputNodeIOs().forEach((nodeIO, z) => {
+                nodeIO.connections.forEach((connection, j) => {
+                    if(this.idsbeforepaste.includes(connection)) {
+                        for(let k = 0; k < tempRef.length; k++) {
+                            if(tempRef[k].idRef == connection) {
+                                tempRef[i].getOutputNodeIOs()[z].addConnectionPoint();
+                                this.inputClicked(tempRef[k].id);
                             }
-                            
                         }
                     }
-                }
-            }
-            
-        }
+                })
+            });
+        });
     }
 
     onKeyPress(e){
@@ -403,29 +411,32 @@ class Container extends View {
             }
         }
     }
+
+    removeConnectorFromNode(first, second, removed_id, array, i){
+        if (this.objects[i].id == second.id && array != undefined) {
+            for(let j = 0; j < array.connections.length; j++){
+                if(array.connections[j] == first.id){
+                    array.connections.splice(j);
+                    this.objects[i].removeConnectorUpdater(removed_id);
+                    return;
+                }
+            }
+        }
+    }
+
     removeConnector(){
-        var removed = this.markedConnector[0];
-        var startNodeTest = RegExp('start-node');
-        // this loop removes the connector id from the two nodes
+        let removed = this.markedConnector[0];
+        let startNodeTest = RegExp('start-node');
+        // this loop removes the connector id from nodes
         for( let i = 0 ; i < this.objects.length; i++ ) {
-            if (this.objects[i].id == removed.currNode.id ) {
-                for(let j = 0; j < this.objects[i].input.connections.length; j++){
-                    if(this.objects[i].input.connections[j] == removed.prevNode.id){
-                        this.objects[i].input.connections.splice(j);
-                        this.objects[i].removeConnectorUpdater(removed.id);
-                        break;
-                    }
-                }
-            }
-            if (this.objects[i].id == removed.prevNode.id) { //&& !startNodeTest.test(removed.id)
-                for(let j = 0; j < this.objects[i].output.connections.length; j++){
-                    if(this.objects[i].output.connections[j] == removed.currNode.id){
-                        this.objects[i].output.connections.splice(j);
-                        this.objects[i].removeConnectorUpdater(removed.id);                    
-                        break;
-                    }
-                }
-            }
+            // For regular nodes
+            this.removeConnectorFromNode(removed.prevNode, removed.currNode, removed.id, this.objects[i].input, i);
+            this.removeConnectorFromNode(removed.currNode, removed.prevNode, removed.id, this.objects[i].output, i);
+            // For if-nodes
+            this.removeConnectorFromNode(removed.currNode, removed.prevNode, removed.id, this.objects[i].outputIf, i);
+            this.removeConnectorFromNode(removed.currNode, removed.prevNode, removed.id, this.objects[i].outputElse, i);
+            // For parallel-nodes
+            this.removeConnectorFromNode(removed.currNode, removed.prevNode, removed.id, this.objects[i].outputParallel, i);
         }
         let connectorElement = document.getElementById(removed.id);
         connectorElement.parentElement.removeChild(connectorElement);

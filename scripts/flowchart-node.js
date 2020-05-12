@@ -5,44 +5,30 @@ import eventEmitter from 'Singletons/event-emitter.js';
 import NodeIO from './nodeIO.js';
 import NodeMetaInfo from 'Model/node-meta-info.js'
 import { InlineView } from './base/view.js';
+import Connector from "./connectors.js";
+import Node from './node'
+const uuidv1 = require('uuid/v1');
 
-class FlowchartNode extends View {
+class FlowchartNode extends Node {
     constructor(id, functionDefinitionInstance = null){
-        super()
+        super(id, functionDefinitionInstance)
         this.setHtml('<div></div>')
-
-        //functions
         this.onClick          = this.onClick.bind(this);
         this.elementDrag      = this.elementDrag.bind(this);
         this.mouseDown        = this.mouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
-        this.getMetaInfo      = this.getMetaInfo.bind(this)
-
-        //ui
-        this.posX    = 100;
-        this.posY    = 100;
-        this.height  = 250;
-        this.offsetX = 0;
-        this.offsetY = 0;
-        this.idRef   = "";
-        this._connectorUpdaters = {}
-        //flow
-        this.id    = id;
-        this._name = "";
-        this.functionDescription = "No function yet";
-        this.functionVariables = [];
-        this.funcDefId = null;
-
-        this.input  = new NodeIO(this, "box-input");
-        this.output = new NodeIO(this, "box-output");
-        //this.functionName = "";
-        this.functionDefinitionInstance = functionDefinitionInstance;//{};
+       
+        //{};
         this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id} \n has no function</p>`);
 
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
-        
     }
+
+    clone() {
+        return new FlowchartNode(uuidv1());
+    }
+
 
     refreshPreview(){
         // NOTE: allt som ska vara tillgängligt i preview dynamiskt ändras här ..
@@ -52,14 +38,19 @@ class FlowchartNode extends View {
 
     didAttach(parent) {
         this.attach(this.functionNameView);
-        this.attach(this.input);
-        this.attach(this.output);
+        this.attachIO();
         this.element.onclick     = this.onClick;
         this.element.onmousedown = this.mouseDown;
         this.onScrolledCallbacks = []
     }
 
-    copyOther(other, rid = other.id, mposX = other.posX, mposY = other.posY, cRef = other.output.connections) {
+    // ======================== COPY ======================
+
+    copyConnections(other) {
+        this.output.connections = other.output.connections;
+    }
+
+    copyOther(other, rid, copyRef = false, mposX = other.posX, mposY = other.posY) {//, cRef = other.output.connections) {
         this.posX = mposX + event.view.scrollX -50;
         this.posY = mposY + event.view.scrollY -50;
         this.offsetX = other.offsetX;
@@ -69,17 +60,20 @@ class FlowchartNode extends View {
         this.idRef = rid;
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
-        this.output.connections = cRef;
+        //this.output.connections = cRef;
+        if(copyRef){
+            this.copyConnections(other);
+        }
+        
         this.functionDefinitionInstance = other.functionDefinitionInstance;
         if(this.functionDefinitionInstance) {
             other.functionDefinitionInstance.functionVariables.forEach((element, i) => {
                 this.functionDefinitionInstance.functionVariables[i] = other.functionDefinitionInstance.functionVariables[i];
             });
-        }
-            
+        }    
     }
 
-
+    // ======================== END COPY ================
     fillNode(other) {
         // incomplete state med this är farligt, vi gör om de här till Static funktioner sen
         //fyller i data för en node baserat på ett metaobjekt från servern
@@ -104,18 +98,17 @@ class FlowchartNode extends View {
         this.functionDescription = other.funDefId;
     }
 
-    registerConnectorUpdater(id, func) {
-        this._connectorUpdaters[id] = func
-    }
-    
-    removeConnectorUpdater(id) {
-        delete this._connectorUpdaters[id] 
+
+    // ==================== Create same connections ====================
+    getOutputNodeIOs() {
+        return [this.output];
     }
 
 
-    getName() {
-        return this._name;
-    }
+
+
+
+    getName() { return this._name; }
     
     getInValue() {
         for (let i = 0; i < this.functionVariables.length; i++){
@@ -125,6 +118,7 @@ class FlowchartNode extends View {
         }
         return "no input found";
     }
+
     getOutValue() {
         for (let i = 0; i < this.functionVariables.length; i++){
             if(this.functionVariables[i].type == "output"){
@@ -212,21 +206,12 @@ class FlowchartNode extends View {
         //eventEmitter.emit("dragged", e);
      }
 
-    getMetaInfo() {
-        return new NodeMetaInfo(
-                this.type,
-                this.getName(), 
-                this.functionDescription,
-                this.id, 
-                this.posX, 
-                this.posY, 
-                this.input.connections, 
-                this.output.connections, 
-                this.functionDefinitionInstance);
+
+    getMetaType() {
+        return "flowchart_node";
     }
 
-    onClick(e) {
-    }
+    onClick(e) {}
 
     static CreateExternal(object, inputIds, outputIds) {
         const node = new FlowchartNode(object.id, object.functionDefinitionInstance);
