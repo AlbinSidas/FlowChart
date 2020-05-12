@@ -41,7 +41,14 @@ class FlowChartTest(unittest.TestCase):
         self.browser.get("localhost:9000")
         self.assertEqual("Flowchart", self.browser.title)
 
-    """ def test_create_object(self):
+    def test_create_object(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testcreate")
+        prompt.accept()
+        time.sleep(0.2)
+
         new_object_btn = self.browser.find_element_by_id('newObject')
         workspace = self.browser.find_element_by_id('workspace-root')
         
@@ -50,6 +57,13 @@ class FlowChartTest(unittest.TestCase):
         self.assertTrue( True, "flow-node" in self.browser.find_element_by_id('workspace-root').get_attribute('innerHTML'))
         
     def test_mark_and_demark(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testmarkdemark")
+        prompt.accept()
+        time.sleep(0.2)
+
         new_object_btn = self.browser.find_element_by_id('newObject')
         workspace = self.browser.find_element_by_id('workspace-root')
 
@@ -69,6 +83,13 @@ class FlowChartTest(unittest.TestCase):
 
 
     def test_drag_and_drop_flowchart_square(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testdragdropsingle")
+        prompt.accept()
+        time.sleep(0.2)
+
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -80,6 +101,13 @@ class FlowChartTest(unittest.TestCase):
 
     
     def test_connecting_different_squares(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testconnectingdiff")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
         time.sleep(0.2)
@@ -111,6 +139,13 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(1)
         
     def test_connecting_to_start(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testconnstart")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -134,6 +169,13 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(0.2)
 
     def test_copy_paste_delete_one_node(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testcopypasteone")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -169,6 +211,13 @@ class FlowChartTest(unittest.TestCase):
         self.assertTrue(len(all_squares) > 0)
    
     def test_copy_paste_delete_several_nodes(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testcopypasteseveral")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
         time.sleep(0.2)
@@ -203,6 +252,13 @@ class FlowChartTest(unittest.TestCase):
         action_5.key_down(Keys.CONTROL).send_keys('v').key_up(Keys.CONTROL).perform()
 
     def test_show_hide_buttons(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testshowhide")
+        prompt.accept()
+        time.sleep(0.2)
+        
         showhide_btn = self.browser.find_element_by_id("showhide")
         showhide_btn.click()
         
@@ -215,6 +271,13 @@ class FlowChartTest(unittest.TestCase):
         self.assertEqual(toolbox.value_of_css_property("visibility"), "hidden")
 
     def test_increase_decrease_buttons(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testincdecbtns")
+        prompt.accept()
+        time.sleep(0.2)
+        
         #sizeDelta should equal the sizeDelta variable in container.js
         sizeDelta = 200
         showhide_btn = self.browser.find_element_by_id("showhide")
@@ -280,6 +343,13 @@ class FlowChartTest(unittest.TestCase):
         self.assertEqual(wroot.value_of_css_property("width"), comparewidth)
 
     def test_modal(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testmodal")
+        prompt.accept()
+        time.sleep(0.2)
+        
         modal = self.browser.find_element_by_id("modal")
         self.assertEqual(modal.value_of_css_property("display"), "none")
 
@@ -500,6 +570,13 @@ class FlowChartTest(unittest.TestCase):
 
 
     def test_click_on_connector(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testconnectorclick")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -536,6 +613,13 @@ class FlowChartTest(unittest.TestCase):
         time.sleep(1)
 
     def test_remove_connector(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testconnremove")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
 
@@ -568,7 +652,14 @@ class FlowChartTest(unittest.TestCase):
         action_chain_3.key_down(Keys.CONTROL).send_keys('d').key_up(Keys.CONTROL)
         action_chain_3.perform()
 
-    def test_saving_flow(self):
+    """ def test_saving_flow(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testsaveflowchart")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
         time.sleep(0.2)
@@ -625,9 +716,16 @@ class FlowChartTest(unittest.TestCase):
         alert = Alert(self.browser)
         alert.send_keys("testsave1")
         time.sleep(0.5)
-        alert.accept()
+        alert.accept() """
 
     def test_if_and_parallel_nodes(self):
+        newFlowChartBtn = self.browser.find_element_by_id("newButton")
+        newFlowChartBtn.click()
+        prompt = Alert(self.browser)
+        prompt.send_keys("testifandpara")
+        prompt.accept()
+        time.sleep(0.2)
+        
         new_obj_btn = self.browser.find_element_by_id("newObject")
         new_obj_btn.click()
         new_ifobj_btn = self.browser.find_element_by_id("newIfObject")
@@ -682,11 +780,11 @@ class FlowChartTest(unittest.TestCase):
         input_id_3 = square.get_attribute("id") + "box-input"
         square_input = self.browser.find_element_by_id(input_id_3)
         action_chain_6.click(square_input).perform()
-        """
+        
 
-    def test_stress_1(self):
+    """ def test_stress_1(self):
         #creates nodes and connects them to the start node, the nodes are stacked on the same spot on the screen/page
-        create_many_nodes(self, 304)
+        create_many_nodes(self, 10)
         #lagging a bit at 800 quite a lot at 900 nodes
         #100 connected: not lagging at start, with 800 nodes total only 100 connected starting to lag 900 lagging quite a bit
         #200 connected: not lagging at start, drag delay starting at 600 if above the place with a lot of nodes
@@ -698,8 +796,8 @@ class FlowChartTest(unittest.TestCase):
 
         #cors/fetch fails on saving 305 nodes were all of them are only connected to the start node
         #need to check if it fails on saving less nodes with more connections
-        
-        time.sleep(1000)
+        """
+        #time.sleep(3)
         
 
 
