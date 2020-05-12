@@ -31,7 +31,6 @@ class MongoHandler {
 
     async _getById (id) {
         const findById   = _promisify((...args) => { this.collection.aggregate(...args) });
-        console.log("ID ÄR: ", id)
         // Det som kommer in här som ID är "all"
         try {
             const result =  await findById([
@@ -51,8 +50,6 @@ class MongoHandler {
     // ======= UPSERT ====== id är ObjeectId redan, DEPRICATED
     async upsertVersion(id) {
         const entry = await this._getById(id);
-        console.log("ENTRY? ", entry)
-        console.log("ID FÖR DENNA ", id)
         if(entry) {
             //update();
             const latestVersionNumber = entry.latestVersionNumber + 1;
@@ -72,7 +69,6 @@ class MongoHandler {
             });
             
             const data = await result.ops;
-            console.log("FINNS EJ", data)
             return data;
             //insert();
         }

@@ -22,7 +22,7 @@ class Save
 			"nodes": saveObjectList,
 			"name": filename,
 		};
-		API.flowchartAPI.save(data);
+		return API.flowchartAPI.save(data);
 		
 	}
 

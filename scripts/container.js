@@ -508,28 +508,38 @@ class Container extends View {
     }
 
     async asyncFlowSave(){
-        let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
-        await this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId);
-        let ehhrghh = 0;
-        while(ver.length == this.currentFlowchartVer || ehhrghh == 1000){
-            await this.uppdateVerNum();
-            ehhrghh++;
-        }
+        try {
+            let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
+            await this.saveClass.saveFlowVer(this.objects, this.flowchartName, this.flowchartId);
+            let max_num_requests = 0;
+            while(ver.length == this.currentFlowchartVer || max_num_requests == 1000){
+                await this.uppdateVerNum();
+                max_num_requests++;
+            }
+        } catch(e) {
+            console.log(e);
+        }   
     }
 
-    async saveIdForNewFlowchart(name){
+    async saveIdForNewFlowchart(name, saveObj){
         let nameList = await API.flowchartAPI.getNameList();
         for (let i = 0; i < nameList.length; i++){
             if(nameList[i].name == name){
                 this.flowchartId = nameList[i].flowchart_id;
             }
         }
+        if(this.flowchartId == "") {
+            this.flowchartId = saveObj.data.flowchart_id;
+        }
     }
+
     async newFlowSetup(name){
         this.flowchartName = name;
-        await this.saveClass.saveFlow(this.objects, this.flowchartName);
-        this.saveIdForNewFlowchart(name);
+        let flowObj = await this.saveClass.saveFlow(this.objects, this.flowchartName);
+
+        await this.saveIdForNewFlowchart(name, flowObj);
     }
+    
     getCurrFlowId(){
         return this.flowchartId;
     }
