@@ -103,7 +103,7 @@ class MongoHandler {
             }
             */
         } catch (err) {
-            console.log("ERROR WHILE SAVING", err);
+            throw(err);
         } 
         
         return null;
@@ -154,8 +154,8 @@ class MongoHandler {
            const flatData = data.map(e => e.versionNumber);
            return flatData;
        } catch(e) {
-           console.log("ERROR Getting the version snapshot failed: ", e)
-           return null;
+           console.log("ERROR Getting the version snapshot failed: ", e);
+           throw(e);
        }
     }
 }
