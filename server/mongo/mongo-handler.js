@@ -70,7 +70,6 @@ class MongoHandler {
             
             const data = await result.ops;
             return data;
-            //insert();
         }
     }
 

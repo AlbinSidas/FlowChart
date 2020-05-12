@@ -52,6 +52,8 @@ class Modal extends View
                                     <button class="btn" id="createFunctionButton" style="background-color: var(--button-color)"> Create function </button>
                                     <button class="btn" id="closeModalButton" style="background-color: var(--button-color)">Close</button>
                                   </div>`;
+    this.setupDropdownList();
+
   }
 
   didAttach(parent) {
@@ -383,7 +385,6 @@ class Modal extends View
   }
 
   show(object) {
-      this.setupDropdownList();
       this.mode = "Node";
       this.obj = object;
 
