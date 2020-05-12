@@ -112,6 +112,7 @@ class Container extends View {
             }
         }
     }
+
     highlightConnector(obj){
         for(let i =0; i < this.connectorList.length; i++){
             if(this.connectorList[i].currNode.id == obj.id){
@@ -161,8 +162,6 @@ class Container extends View {
         this.markedOutput      = id;
         this.sourceNodeHandler = func;
     }
-
-
 
     connectNodes(looseObjects) {
         looseObjects.forEach(iter => {
@@ -316,33 +315,34 @@ class Container extends View {
     }
 
     pasteNode() {
-        if (this.copyObject.length != 0) {
-            //Create new objects based on the copies and add them to the workspace
-            let tempRef = [];
-            for(let i = 0; i < this.copyObject.length; i++){
-                const pasteObject = this.copyObject[i].clone();
-                let offsetX = i > 0 ? (this.copyObject[i].posX-this.copyObject[0].posX) : 0;
-                let offsetY = i > 0 ? (this.copyObject[i].posY-this.copyObject[0].posY) : 0;
-                pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, false, this.mouseX + offsetX, this.mouseY + offsetY); //[]);
-                this.addBox(pasteObject);
-                tempRef[i] = pasteObject;
-            }
-
-            if(tempRef.length > 1) {
-                for(let i = 0; i < this.copyObject.length; i++) {    
-                    for(let j = 0; j < this.copyObject[i].output.connections.length; j++){
-                        if(this.idsbeforepaste.includes(this.copyObject[i].output.connections[j])){                           
-                            for(let k = 0; k < tempRef.length; k++){
-                                if(tempRef[k].idRef == this.copyObject[i].output.connections[j]){
-                                    eventEmitter.emit("outputClicked", tempRef[i].id);
-                                    eventEmitter.emit("inputClicked",  tempRef[k].id);
-                                }
+        if (this.copyObject.length == 0) { return; }
+        //Create new objects based on the copies and add them to the workspace
+        let tempRef = [];
+        for(let i = 0; i < this.copyObject.length; i++) {
+            const pasteObject = this.copyObject[i].clone();
+            let offsetX = i > 0 ? (this.copyObject[i].posX-this.copyObject[0].posX) : 0;
+            let offsetY = i > 0 ? (this.copyObject[i].posY-this.copyObject[0].posY) : 0;
+            pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, false, this.mouseX + offsetX, this.mouseY + offsetY); //[]);
+            this.addBox(pasteObject);
+            tempRef[i] = pasteObject;
+        }
+        
+        if(tempRef.length <= 1) { return; }       
+        
+        this.copyObject.forEach((copiedNode, i) => {
+            copiedNode.getOutputNodeIOs().forEach((nodeIO, z) => {
+                nodeIO.connections.forEach((connection, j) => {
+                    if(this.idsbeforepaste.includes(connection)) {
+                        for(let k = 0; k < tempRef.length; k++) {
+                            if(tempRef[k].idRef == connection) {
+                                tempRef[i].getOutputNodeIOs()[z].addConnectionPoint();
+                                this.inputClicked(tempRef[k].id);
                             }
                         }
                     }
-                }
-            }       
-        }
+                })
+            });
+        });
     }
 
     onKeyPress(e){

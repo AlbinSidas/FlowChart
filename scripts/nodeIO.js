@@ -8,6 +8,7 @@ class NodeIO extends View {
         this.setHtml('<div></div>')
         this.type = inputOutput;
         this.parent = parent;
+        this.addConnectionPoint = this.addConnectionPoint.bind(this);
         this.onClick = this.onClick.bind(this);
         this.id = parent.id;
         this._value = "";
@@ -54,8 +55,12 @@ class NodeIO extends View {
         return this._value;
     }
 
-    onClick(e) {
+    addConnectionPoint() {
         this.handler(this.id);
+    }
+
+    onClick(e) {
+        this.addConnectionPoint()
         // if (this.type == "box-output") {
         //     eventEmitter.emit("outputClicked", this.id);
         // }

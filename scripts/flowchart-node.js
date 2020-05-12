@@ -99,9 +99,16 @@ class FlowchartNode extends Node {
     }
 
 
-    getName() {
-        return this._name;
+    // ==================== Create same connections ====================
+    getOutputNodeIOs() {
+        return [this.output];
     }
+
+
+
+
+
+    getName() { return this._name; }
     
     getInValue() {
         for (let i = 0; i < this.functionVariables.length; i++){
@@ -111,6 +118,7 @@ class FlowchartNode extends Node {
         }
         return "no input found";
     }
+
     getOutValue() {
         for (let i = 0; i < this.functionVariables.length; i++){
             if(this.functionVariables[i].type == "output"){

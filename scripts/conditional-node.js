@@ -36,6 +36,15 @@ class ConditionalNode extends FlowchartNode {
         this.element.id = id;
 
     }
+
+    // ==================== Create same connections ====================
+    getOutputNodeIOs() {
+        return [this.outputIf, this.outputElse];
+    }
+
+
+
+
     // ======== COPY ========
 
     copyConnections(other) {
