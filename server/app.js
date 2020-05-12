@@ -49,7 +49,7 @@ async function main() {
             res.json(Response("Save flowchart", databaseOps));
         }
         catch(error){
-            res.json(Response("Här har det blit fel", error));
+            res.json(Response("Error saving flowchart: ", error.toString()));
         }
 
     });
@@ -67,7 +67,7 @@ async function main() {
     app.get('/flowchart/:id/:version?', async function (req, res) {
         const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
         res.status(200)
-        res.json(Response("Save function definition", databaseOps));
+        res.json(Response("Get flowchart: ", databaseOps));
     });
 
    app.post('/flowchart/version/add', async (req, res) => {
@@ -85,7 +85,7 @@ async function main() {
             res.json(Response("Fetched version numbers", result));
         }
         catch(error){
-            res.json(Response("Fel", error));
+            res.json(Response("Error fetching version numbers", null, error.toString()));
         }
     });
 

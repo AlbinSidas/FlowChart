@@ -1,5 +1,6 @@
 const _promisify = require('../util/promisify')
 const ObjectID   = require('mongodb').ObjectID;
+const ServerError = require('../api/api_auxiliary').ServerError;
 // Handlers extend MongoProtocol
 class MongoHandler {
 
@@ -42,8 +43,7 @@ class MongoHandler {
             const data = await result.limit(1).next();
             return data;
         } catch(e) {
-            console.log(e)
-            return null;
+            throw(ServerError("_getById Failed", e))
         }
     }
 
@@ -51,8 +51,6 @@ class MongoHandler {
     // ======= UPSERT ====== id är ObjeectId redan, DEPRICATED
     async upsertVersion(id) {
         const entry = await this._getById(id);
-        console.log("ENTRY? ", entry)
-        console.log("ID FÖR DENNA ", id)
         if(entry) {
             //update();
             const latestVersionNumber = entry.latestVersionNumber + 1;
@@ -103,7 +101,7 @@ class MongoHandler {
             }
             */
         } catch (err) {
-            throw(err);
+            throw(ServerError("Save failed", err));
         } 
         
         return null;
@@ -154,8 +152,7 @@ class MongoHandler {
            const flatData = data.map(e => e.versionNumber);
            return flatData;
        } catch(e) {
-           console.log("ERROR Getting the version snapshot failed: ", e);
-           throw(e);
+           throw(ServerError("Getting the version snapshot failed", e));
        }
     }
 }
