@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "nyc mocha --exit",
     "mongo": "chmod +x start_mongo.sh && ./start_mongo.sh",
     "start": "npm run mongo && node app.js",
     "clear_db": "rm -rf ./data"
@@ -13,9 +13,13 @@
   "license": "ISC",
   "dependencies": {
     "assert": "^2.0.0",
+    "chai": "^4.2.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mongodb": "^3.5.3"
+    "mocha": "^7.1.1",
+    "mongodb": "^3.5.3",
+    "nyc": "^15.0.0",
+    "superagent": "^5.2.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
