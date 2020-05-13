@@ -454,9 +454,9 @@ class Modal extends View
   }
 
   async _saveVersionFuncDef(saveObject) {
-    if(saveObject[1]) {
+    if(saveObject[0]) {
       // If a there is a previously saved version this must be removed.
-      delete(saveObject[1])
+      delete(saveObject[0])
     }
     let data = {
       "funcdef_id": saveObject.id,
