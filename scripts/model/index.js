@@ -1,4 +1,4 @@
 import FunctionDefinition from './function-definition.js';
-import FunctionVariable   from './function-variable.js';
+import FunctionVariable from './function-variable.js';
 
-export default { FunctionDefinition, FunctionVariable }
+export default { FunctionDefinition, FunctionVariable };
