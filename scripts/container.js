@@ -304,14 +304,9 @@ class Container extends View {
     }
 
     removeMarked() {
-        for (let i = this.markedObject.length - 1; i >= 0; i--) {
-            let css = document.getElementById(this.markedObject[i].id).style
-                .cssText;
-            css = css.split(' box-shadow')[0];
-            document.getElementById(
-                this.markedObject[i].id,
-            ).style.cssText = css;
-        }
+        this.markedObject.forEach(marked => {
+            marked.removeHighlight();
+        });
         this.markedObject = [];
     }
 
