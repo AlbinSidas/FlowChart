@@ -163,4 +163,3 @@ class ConditionalNode extends FlowchartNode {
 }
 
 export default ConditionalNode;
-p;
