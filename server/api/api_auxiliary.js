@@ -15,9 +15,7 @@ const Response = (message, data = null) => {
 
 
 function ServerError(str, error) {
-    const e =  new Error(`${str} :BASED ON: --> ${error.toString()}`);
-    logError(`${str} \n :BASED ON: --> ${error.toString()}`, "\n :STACK TRACE: --> ", error.stack);
-    //logError(error.stack);
+    const e =  new Error(`${str} [BASED ON] --> ${error.toString()}`);
     return e;
 }
 

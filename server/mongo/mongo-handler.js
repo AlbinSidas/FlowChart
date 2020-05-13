@@ -118,10 +118,14 @@ class MongoHandler {
     }
 
     async getOne(id, versionNumber) {
-        if(versionNumber) {
-            return await this._getByVersion(id, versionNumber);
-        } else {
-            return await this._getById(id);
+        try {
+            if(versionNumber) {
+                return await this._getByVersion(id, versionNumber);
+            } else {
+                return await this._getById(id);
+            }
+        } catch(e) {
+            throw(ServerError("Failed to getOne", e))
         }
     }
 
