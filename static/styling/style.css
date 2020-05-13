@@ -254,7 +254,7 @@ body{
     width: 25px;
     height: 50px;
     margin-top: 50px;
-    margin-left: -25px;
+    margin-left: -28px;
     background-color: var(--node-outputif);
     cursor: pointer;
     position: absolute;
@@ -306,6 +306,7 @@ body{
 
 .flowchart_square {
     z-index: 9;
+    border: solid 1px var(--accent-color);
     width: 300px;
     border-radius: 20px;
     cursor: move;
@@ -322,6 +323,7 @@ body{
 .conditionalnode {
     z-index: 9;
     width: 300px;
+    border: solid 1px var(--accent-color);
     border-radius: 20px;
     cursor: move;
     position: absolute;
@@ -337,6 +339,7 @@ body{
 .parallelnode {
     z-index: 9;
     width: 300px;
+    border: solid 1px var(--accent-color);
     border-radius: 20px;
     cursor: move;
     position: absolute;

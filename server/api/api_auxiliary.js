@@ -2,21 +2,19 @@ const logError = require('../util/logger').error;
 
 const Response = (message, data = null) => {
     const res = {
-        message
-    }
+        message,
+    };
 
-    if(data) {
-        res.data = data
+    if (data) {
+        res.data = data;
     }
 
     return res;
-}
-
-
+};
 
 function ServerError(str, error) {
-    const e =  new Error(`${str} [BASED ON] --> ${error.toString()}`);
+    const e = new Error(`${str} [BASED ON] --> ${error.toString()}`);
     return e;
 }
 
-module.exports = {Response, ServerError}
+module.exports = { Response, ServerError };
