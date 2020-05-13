@@ -228,7 +228,7 @@ class FlowchartNode extends Node {
         };
         let x = 0;
         let y = 0;
-        let shadow = `z-index:11; box-shadow: ${x}px ${y}px 40px 20px var(--node-highlight)`;
+        let shadow = ` box-shadow: ${x}px ${y}px 40px 20px var(--node-highlight); z-index:11;`;
         let elementStyle = document.getElementById(this.id).style.cssText;
         document
             .getElementById(this.id)
@@ -236,11 +236,10 @@ class FlowchartNode extends Node {
         //eventEmitter.emit("dragged", e);
     }
 
-
     removeHighlight() {
         let shadow = document.getElementById(this.id).style.cssText;
         shadow = shadow.split(' box-shadow')[0];
-        document.getElementById(this.id).style.cssText = shadow + ' z-index:10;';
+        document.getElementById(this.id).style.cssText = shadow;
     }
 
     getMetaType() {
