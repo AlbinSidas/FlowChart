@@ -1,6 +1,5 @@
 
 import Toolbox from './toolbox.js'
-import StartNode from './start-node.js'
 import FlowchartNode from "./flowchart-node";
 const uuidv1 = require('uuid/v1');
 import Modal from './modal.js'
@@ -221,7 +220,7 @@ class Container extends View {
             }
         })
         this.objects.forEach(obj => this.attach(obj))
-        this.connectNodes(looseNodes)
+        this.connectNodes(looseNodes);
     }
 
     connectorClicked(id, e){
@@ -249,6 +248,7 @@ class Container extends View {
         this.startBox = new StartBox();
         this.attach(this.startBox);
         this.startBox.show();
+        
         eventEmitter.on('showHide', () => {
             this.showHide();
         })

@@ -3,7 +3,6 @@ import Container from "./container";
 const uuidv1 = require('uuid/v1');
 import Root from 'Base/root.js';
 import 'Styles/style.css';
-import StartNode from './start-node.js'
 import ConditionalNode from "./conditional-node";
 import ParallelNode from './parallel-node';
 import SNode from './s_node'
