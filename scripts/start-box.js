@@ -17,19 +17,18 @@ class StartBox extends View
     this.render = this.render.bind(this);
 
 
-    this.modalContent = InlineView`<div class="modalContent"><ul id="hehu"></ul></div>`;
+    //this.modalContent = InlineView`<div class="modalContent"><ul id="hehu"></ul></div>`;
     this.modalFooter  = InlineView`<div class="modalFooter">
                                     <button class="btn" id="newButton" style="background-color: var(--button-color)"> Create New Flowchart </button>
                                     <a class='dropdown-trigger btn' style="background-color: var(--button-color); margin:1%; color:black" 
                                       id="loadStartModalButton" href='#' data-target='modalStartDropdown'>Open Flowchart</a>
-                                      <ul id='modalStartDropdown' class='dropdown-content' style="max-height: 500px; ">
-                                      </ul>
-                                      </div>`;
+                                      <ul id='modalStartDropdown' class='dropdown-content' style="max-height: 500px; "></ul>
+                                  </div>`;
     
   }
 
   didAttach(parent) {
-    this.attach(this.modalContent);
+    //this.attach(this.modalContent);
     this.attach(this.modalFooter);
     this.newButton  = new NewButton();
     eventEmitter.on("openFlowchart",(name, id) => {  
