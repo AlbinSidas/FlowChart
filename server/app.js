@@ -12,7 +12,7 @@ const MongoHandler    = mongo.MongoHanlder;
 const Schema          = require('./schema.js')
 const apiAux          = require('./api/api_auxiliary')
 const Response        = apiAux.Response
-
+const logError        = require('./util/logger').error;
 
 async function main() {
 
@@ -34,81 +34,122 @@ async function main() {
         "allowedHeaders": "Origin, X-Requested-With, Content-Type, Accept",
         "preflightContinue": true
     }))
+
+    function  errorHandler (err, req, res, next) {
+        logError("[STACK TRACE] --> \n ", error.stack);
+        res.status(500).send(err.toString());
+    }
     
     app.use(logMiddleware)
-
-    app.get('/', (req, res) => res.json({'apa':'Hello World!'}))
+    app.use(errorHandler);
+    app.get('/', (req, res, next) => res.json({'apa':'Hello World!'}))
 
 
 
 // ================ FLOWCHART ====================
-    app.post('/flowchart/save', async function (req, res) {
-        const databaseOps = await mongoController.flowchartHandler.save(req.body)
-        res.status(200)
-        res.json(Response("Save flowchart definition", databaseOps));
+    app.post('/flowchart/save', async function (req, res, next) {
+        try{
+            const databaseOps = await mongoController.flowchartHandler.save(req.body)
+            res.status(200)
+            res.json(Response("Save flowchart definition", databaseOps));
+        }
+        catch(err){
+            next(err)
+            //res.json(Response("Error saving flowchart: ", error.toString()));
+        }
 
     });
 
-    app.get('/flowchart/all', async function (req, res) {
-        const databaseOps = await mongoController.flowchartHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
-        res.json(Response("", databaseOps))
+    app.get('/flowchart/all', async function (req, res, next) {
+        try {  
+            const databaseOps = await mongoController.flowchartHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
+            res.json(Response("", databaseOps));
+        } catch(err) {
+            next(err)
+        }
     });
 
-    app.get('/flowchart/view', async function(req, res) {
-        const databaseOps = await mongoController.flowchartHandler.getView();
-        res.json(Response("", databaseOps))
+    app.get('/flowchart/view', async function(req, res, next) {
+        try {
+            const databaseOps = await mongoController.flowchartHandler.getView();
+            res.json(Response("", databaseOps))
+        } catch(err) {
+            next(err);
+        }
     });
 
     
-
-   app.post('/flowchart/version/add', async (req, res) => {
-        const data = req.body;
-        // SCHEMA VALIDATION?
-        const databaseOps = await mongoController.flowchartHandler.addVersion(data)
-        res.status(200)
-        res.json(Response("Versioned flowchart version", databaseOps));
+    app.post('/flowchart/version/add', async (req, res, next) => {
+        try {
+            const data = req.body;
+            // SCHEMA VALIDATION?
+            const databaseOps = await mongoController.flowchartHandler.addVersion(data);
+            res.status(200)
+            res.json(Response("Versioned function definition", databaseOps));
+        } catch(err) {
+            next(err);
+        }
+    });
+    
+    app.get('/flowchart/version/snapshot/:id', async(req, res, next) => {
+        try{
+            const result = await mongoController.flowchartHandler.getVersionSnpashot(req.params.id);
+            res.status(200)
+            res.json(Response("Fetched version numbers", result));
+        }
+        catch(error){
+            next(error);
+        }
+    });
+    
+    app.get('/flowchart/:id/:version?', async function (req, res, next) {
+        try {
+            const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
+            res.status(200)
+            res.json(Response("Get specific flowchart version", databaseOps));
+        } catch(err) {
+            console.log("?")
+            next(err);
+        }
+    });
+    
+    // ================= FUNCDEF =====================
+    app.post('/funcdef/version/add', async (req, res, next) => {
+        try {
+            const data = req.body;
+            // SCHEMA VALIDATION?
+            const databaseOps = await mongoController.funcDefHandler.addVersion(data)
+            res.status(200)
+            res.json(Response("Versioned function definition", databaseOps));
+        } catch(err) {
+            next(err);
+        }
     });
 
-    app.get('/flowchart/version/snapshot/:id', async(req, res) => {
-        const result = await mongoController.flowchartHandler.getVersionSnpashot(req.params.id);
-        res.status(200)
-        res.json(Response("Fetched version numbers", result));
-    });
-
-    app.get('/flowchart/:id/:version?', async function (req, res) {
-        const databaseOps = await mongoController.flowchartHandler.getOne(req.params.id, req.params.version)
-        res.status(200)
-        res.json(Response("Get specific flowchart version", databaseOps));
-    });
-
-// ================= FUNCDEF =====================
-    app.post('/funcdef/version/add', async (req, res) => {
-        const data = req.body;
-        // SCHEMA VALIDATION?
-        const databaseOps = await mongoController.funcDefHandler.addVersion(data)
-        res.status(200)
-        res.json(Response("Versioned function definition", databaseOps));
-    });
-
-    app.get('/funcdef/version/snapshot/:id', async(req, res) => {
-        const result = await mongoController.funcDefHandler.getVersionSnpashot(req.params.id);
-        res.status(200);
-        res.json(Response("Fetched version numbers", result));
+    
+    app.get('/funcdef/version/snapshot/:id', async(req, res, next) => {
+        try {
+            const result = await mongoController.funcDefHandler.getVersionSnpashot(req.params.id);
+            res.status(200);
+            res.json(Response("Fetched version numbers", result));
+        } catch(err) {
+            next(err);
+        }
     });
 
     // ORDNINGEN BLIR VIKTIG HÄR! Om funcdef/all ligger under funcdef/:id kommer "all" att
     // identifieras som id och därför gå in i fel path.
-    app.get('/funcdef/all', async(req, res) => {
-        const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
-        res.json(Response("", databaseOps))
+    app.get('/funcdef/all', async(req, res, next) => {
+        try {
+            const databaseOps = await mongoController.funcDefHandler.getAll(); // kan behöva kallas på från någon annanstans om det blir större
+            res.json(Response("", databaseOps));
+        } catch(err) {
+            next(err);
+        }
     });
 
-    app.get('/funcdef/:id/:version?', async(req, res) => {
-        const databaseOps = await mongoController.funcDefHandler.getOne(req.params.id, req.params.version); // kan behöva kallas på från någon annanstans om det blir större
-        res.json(Response("", databaseOps))
-    });
-
-    app.post('/funcdef/save', async (req, res) => {
+    
+    app.post('/funcdef/save', async (req, res, next) => {
         const data = req.body;
         try {
             await Schema.validate(data, Schema.jsonSchemas.funcDefSchema);
@@ -116,11 +157,20 @@ async function main() {
             console.log(InvalidTypeError.message)
             res.status(400);
             res.send(InvalidTypeError.message);
-            return
+            return;
         }
         const databaseOps = await mongoController.funcDefHandler.save(data)
         res.status(200)
         res.json(Response("Save function definition", databaseOps));
+    });
+    
+    app.get('/funcdef/:id/:version?', async(req, res, next) => {
+        try {
+            const databaseOps = await mongoController.funcDefHandler.getOne(req.params.id, req.params.version); // kan behöva kallas på från någon annanstans om det blir större
+            res.json(Response("", databaseOps));
+        } catch(err) {
+            next(err);
+        }
     });
 
     app.listen(serverConfig.port, () => console.log(`Foran Flowchart server listening on port ${serverConfig.port}!`))

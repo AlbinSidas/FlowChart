@@ -34,7 +34,6 @@ async function setup(url, dbName) { // kan abstraheras om man vill
         MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true } , function(err, client) {
             assert.equal(null, err);
             const db = client.db(dbName); 
-            //client.close();
             accept(db)
         });
     })

@@ -1,3 +1,5 @@
+const logError = require('../util/logger').error;
+
 const Response = (message, data = null) => {
     const res = {
         message
@@ -10,4 +12,11 @@ const Response = (message, data = null) => {
     return res;
 }
 
-module.exports = {Response}
+
+
+function ServerError(str, error) {
+    const e =  new Error(`${str} [BASED ON] --> ${error.toString()}`);
+    return e;
+}
+
+module.exports = {Response, ServerError}
