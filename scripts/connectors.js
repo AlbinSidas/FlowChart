@@ -47,7 +47,7 @@ class Connector extends View {
     }
 
     _calculateLine(outX, outY, inX, inY) {
-        //Calculaties the line between one nodes output(red) and another nodes input(green).
+        //Calculates the line between a nodes output and another nodes input.
         let preAbsLenX = outX - inX;
         let preAbsLenY = outY - inY;
 
