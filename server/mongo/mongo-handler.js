@@ -2,7 +2,7 @@ const _promisify = require('../util/promisify');
 const ObjectID = require('mongodb').ObjectID;
 const ServerError = require('../api/api_auxiliary').ServerError;
 
-// Handlers extend MongoProtocol
+// Handlers bases
 class MongoHandler {
     constructor(db, collectionName) {
         this.collectionName = collectionName;
@@ -16,6 +16,13 @@ class MongoHandler {
     }
 
     // ================== PRIVATE =====================
+    /*
+        Gets an entityId by the chosen version number if exists.
+        Always called with a valid ID.
+
+        @param id The id of the wanted entityId(FlowchartId/funcdefId).
+        @param versionNumber The version number for the wanted entity id.
+    */
     async _getByVersion(id, versionNumber) {
         const aggregateVersion = _promisify((...args) => {
             this.collection.aggregate(...args);
@@ -32,7 +39,12 @@ class MongoHandler {
         const data = await result.limit(1).next();
         return data;
     }
+    
+    /*
+        Gets an entity by its id if exists.
 
+        @param id The id of the wanted entityId(FlowchartId/funcdefId).
+    */
     async _getById(id) {
         const findById = _promisify((...args) => {
             this.collection.aggregate(...args);
@@ -50,42 +62,20 @@ class MongoHandler {
         }
     }
 
-    // ======= UPSERT ====== id är ObjeectId redan, DEPRICATED
-    async upsertVersion(id) {
-        try {
-            const entry = await this._getById(id);
-            if (entry) {
-                const latestVersionNumber = entry.latestVersionNumber + 1;
-                const updateOne = _promisify((...args) => {
-                    this.collection.updateOne(...args);
-                });
-                const result = await updateOne(
-                    { _id: ObjectID(id) },
-                    { $set: { latestVersionNumber: latestVersionNumber } },
-                );
-                const data = result;
-                return data;
-            } else {
-                const latestVersionNumber = 1;
-                const insertOne = _promisify((...args) => {
-                    this.collection.insertOne(...args);
-                });
-                const result = await insertOne({
-                    _id: id, // TODO: kommer den behöva bli objectID eller är det allid bara en intermediary steg som mongo lägger på som lager?
-                    latestVersionNumber: latestVersionNumber,
-                });
 
-                const data = await result.ops;
-                return data;
-            }
-        } catch (e) {
-            throw ServerError('Failed to updated version', e);
-        }
-    }
-
-    // ============= PUBLIC ==================
-    async addToVersionControl() {} // overridden Never used
-
+    // ================== PUBLIC =====================
+    /*
+        Saves an entity data in the form 
+        {...data, versionNumber: vNum, Keyname: Generated id or given}
+        
+        @param data The meta data of the entity.
+        @param id   Given if the vNum also is given,
+                    because it's in that point saving a new version
+                    for an existing entity.
+        @param vNum The new version of the saved entity,
+                    Must be provided if the id is provided otherwise an
+                    Overwrite will happen.
+    */
     async save(data, id = null, vNum = 1) {
         const versionNumber = vNum;
         const insertOne = _promisify((...args) => {
@@ -108,11 +98,23 @@ class MongoHandler {
         return null;
     }
 
+
+    /*
+        Gets the latese version of the given entity id.
+        
+        @param id The id of the entity that the latest version is asked for.
+    */
     async getLatestVersion(id) {
         const data = await this._getById(id);
         return data.versionNumber;
     }
 
+    /*
+        Adds a new version of a given entity.
+        This function gets the latest version and does a save with a version and entityId provided 
+
+        @param data The data here is a full collection entry that has an id of the this.keyname.
+    */
     async addVersion(data) {
         try {
             const versionNumber =
@@ -128,6 +130,14 @@ class MongoHandler {
         }
     }
 
+    /*
+        General function that gets an entity with a given `id`,
+        If the`versionNumber` is provided it fetches the specific version
+        for the given id.
+
+        @param id            Hex id for the entity (the keyname field)
+        @param versionNumber Number for the wanted version.
+    */
     async getOne(id, versionNumber) {
         try {
             if (versionNumber) {
@@ -140,6 +150,10 @@ class MongoHandler {
         }
     }
 
+
+    /*
+        Gets everything from the colleciton of the dervided entity type.
+    */
     async getAll() {
         const findAll = _promisify((...args) => {
             this.collection.aggregate(...args);
@@ -160,6 +174,10 @@ class MongoHandler {
         return flatAll;
     }
 
+    /*
+        Gets a list of all the versions of the provided entity id.
+        @param id The entity id.
+    */
     async getVersionSnpashot(id) {
         const findById = _promisify((...args) => {
             this.collection.aggregate(...args);
