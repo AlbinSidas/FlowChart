@@ -38,3 +38,13 @@ Then open your browser and go to http://localhost:9000/.
 ```sh
 ./start_server_and_client.sh <PORTNUMBER>
 ```
+## Prettier
+
+* Install<br>
+`npm install --global prettier`
+
+* Run prettier
+```bash
+ prettier --single-quote --trailing-comma all --tab-width 4 --write docs package.json "scripts/**/*.js"
+ prettier --single-quote --trailing-comma all --tab-width 4 --write docs package.json "server/**/*.js"
+```
