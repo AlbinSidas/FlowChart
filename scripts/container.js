@@ -365,7 +365,10 @@ class Container extends View {
             const pasteObject = this.copyObject[i].clone();
             let offsetX = i > 0 ? (this.copyObject[i].posX-this.copyObject[0].posX) : 0;
             let offsetY = i > 0 ? (this.copyObject[i].posY-this.copyObject[0].posY) : 0;
-            pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, false, this.mouseX + offsetX, this.mouseY + offsetY); //[]);
+            let newXPos = this.validateXPos(this.mouseX + offsetX);
+            let newYPos = this.valdateYPos(this.mouseY + offsetY, this.copyObject[i].height);
+
+            pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, false, newXPos, newYPos); //[]);
             this.addBox(pasteObject);
             tempRef[i] = pasteObject;
         }
@@ -387,6 +390,28 @@ class Container extends View {
             });
         });
     }
+
+    valdateYPos(yValue, objHeight) {
+        let offset = window.pageYOffset;
+        if(yValue < 0){
+            yValue = 0;
+        }
+        else if(yValue > this.height - offset - objHeight){
+            yValue = this.height - offset - objHeight;
+        }
+        return yValue;
+    }
+
+    validateXPos(xValue) {
+        if(xValue < 0){
+            xValue = 0;
+        }
+        else if(xValue > this.width - 250){
+            xValue = this.width - 250;
+        }
+        return xValue;
+    }
+
 
     onKeyPress(e){
 
