@@ -18,7 +18,6 @@ class FlowchartNode extends Node {
         this.mouseDown = this.mouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
 
-        //{};
         this.functionNameView = InlineView(
             `<p id='${this.id}_function'>${this.id} \n has no function</p>`,
         );
@@ -32,7 +31,7 @@ class FlowchartNode extends Node {
     }
 
     refreshPreview() {
-        // NOTE: allt som ska vara tillgängligt i preview dynamiskt ändras här ..
+        // Everything that should be available dynamicly in preview is changed here.
         this.functionNameView.changeHtml(
             `<p id='${this.id}_function'>${
                 this.id
@@ -61,17 +60,15 @@ class FlowchartNode extends Node {
         mposX = other.posX,
         mposY = other.posY,
     ) {
-        //, cRef = other.output.connections) {
         this.posX = mposX + event.view.scrollX - 50;
         this.posY = mposY + event.view.scrollY - 50;
         this.offsetX = other.offsetX;
         this.offsetY = other.offsetY;
         this.height = other.height;
-        //flow
+        //Flow
         this.idRef = rid;
         this._name = other.getName();
         this.functionDescription = other.functionDescription;
-        //this.output.connections = cRef;
         if (copyRef) {
             this.copyConnections(other);
         }
@@ -89,19 +86,12 @@ class FlowchartNode extends Node {
 
     // ======================== END COPY ================
     fillNode(other) {
-        // incomplete state med this är farligt, vi gör om de här till Static funktioner sen
-        //fyller i data för en node baserat på ett metaobjekt från servern
+        //Incomplete state with 'this' is dangerous, we change these functions to static
+        //then fill in the data for a node based upon a metaobject from the server
         this.posX = other.pX;
         this.posY = other.pY;
         this.id = other.id;
-        //this.functionVariables = other.functionVariables
 
-        //this.functionDefinitionInstance = other.functionDefinitionInstance
-        // if(other.functionDefinitionInstance) {
-        //     other.functionDefinitionInstance.functionVariables.forEach((element, i) => {
-        //         this.functionDefinitionInstance.functionVariables[i] = other.functionDefinitionInstance.functionVariables[i];
-        //     });
-        // }
         this.setName(other.nodeName);
         this.funcDefId = other.funDefId;
         this.nodeDescription = other.nodeDescription;
@@ -233,7 +223,6 @@ class FlowchartNode extends Node {
         document
             .getElementById(this.id)
             .setAttribute('style', elementStyle + shadow);
-        //eventEmitter.emit("dragged", e);
     }
 
     removeHighlight() {

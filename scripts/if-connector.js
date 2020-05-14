@@ -14,7 +14,6 @@ class IfConnector extends Connector {
     }
 
     updateConnections() {
-        //prevNode, currNode){
         // Aligns the connector with the input/output parts of a node
         let outX = this.prevNode.posX;
         let outY = this.prevNode.posY + 75;

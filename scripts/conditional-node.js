@@ -19,9 +19,9 @@ class ConditionalNode extends FlowchartNode {
         this.onOutputElseClicked = this.onOutputElseClicked.bind(this);
         this.onOutputIfClicked   = this.onOutputIfClicked.bind(this);
 
-        //ui
+        // Ui
         this.height = 150;
-        //flow
+        // Flow
         this.id = id;
         this.output = null;
         this.outputIf = new NodeIO(
@@ -89,8 +89,6 @@ class ConditionalNode extends FlowchartNode {
     }
 
     onOutputElseClicked(myId) {
-        // väntar jag på att en annan ska tryckas
-        // jag blev tryckt innan nästa
         eventEmitter.emit('prevClicked', this.onDestElseClicked, this.id);
     }
 

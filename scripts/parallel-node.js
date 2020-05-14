@@ -12,7 +12,7 @@ class ParallelNode extends FlowchartNode {
         super(id, functionDefinitionInstance);
         this.setHtml('<div></div>');
 
-        //functions
+        //Functions
         this.onClick = this.onClick.bind(this);
         this.elementDrag = this.elementDrag.bind(this);
         this.mouseDown = this.mouseDown.bind(this);
@@ -20,9 +20,9 @@ class ParallelNode extends FlowchartNode {
         this.getMetaInfo = this.getMetaInfo.bind(this);
         this.onOutputClicked = this.onOutputClicked.bind(this);
         this.onDestClicked = this.onDestClicked.bind(this);
-        //ui
+        //Ui
         this.height = 250;
-        //flow
+        //Flow
         this.id = id;
         this.output = null;
         this.outputParallel = new NodeIO(
@@ -71,13 +71,6 @@ class ParallelNode extends FlowchartNode {
         return 'parallel_node';
     }
 
-    // Ett hack, det går att lösa på mycket finare sätt om man mechar med NodeIO lite
-    /* 
-        Kan lösas med
-        Allt är input/output
-        när en sak kopplas så vet noden vad en output för sig är 
-        och input osv, .....
-    */
     getMetaConnections() {
         return [
             this.input.connections,
@@ -89,7 +82,6 @@ class ParallelNode extends FlowchartNode {
     }
 
     onOutputClicked(markedOutputId) {
-        //if else vem som är previous , jag väntar på nästa click
         eventEmitter.emit('prevClicked', this.onDestClicked, this.id);
     }
 

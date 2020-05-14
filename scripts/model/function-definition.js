@@ -1,4 +1,4 @@
-// functionVariables  en array med object av functionVariable som är en basklass eller en vanlig klass som äger en special feature klass
+// functionVariables an array with objects of functionVariable class that owns a special class feature
 class FunctionDefinition {
     constructor(id, name, description, versionNumber, functionVariables) {
         this.id = id;

@@ -21,7 +21,7 @@ class Node extends View {
         this.onInputClicked = this.onInputClicked.bind(this);
         this.getMetaConnections = this.getMetaConnections.bind(this);
 
-        //ui
+        //Ui
         this.posX = window.scrollX + 100;
         this.posY = window.scrollY + 100;
         this.height = 250;
@@ -30,7 +30,7 @@ class Node extends View {
         this.idRef = '';
         this._connectorUpdaters = {};
 
-        //flow
+        //Flow
         this.id = id;
         this._name = '';
         this.functionDescription = 'No function yet';
@@ -71,7 +71,6 @@ class Node extends View {
     }
 
     onOutputClicked(markedOutputId) {
-        //if else vem som är previous , jag väntar på nästa click
         eventEmitter.emit('prevClicked', this.onDestClicked, this.id);
     }
 
@@ -95,29 +94,6 @@ class Node extends View {
         connector.element.classList.add('connector');
         return connector;
     }
-
-    /*
-
-    copyOther(other, rid = other.id, mposX = other.posX, mposY = other.posY, cRef = other.output.connections) {
-        this.posX = mposX + event.view.scrollX -50;
-        this.posY = mposY + event.view.scrollY -50;
-        this.offsetX = other.offsetX;
-        this.offsetY = other.offsetY;
-        this.height = other.height;
-        //flow
-        this.idRef = rid;
-        this._name = other.getName();
-        this.functionDescription = other.functionDescription;
-        this.output.connections = cRef;
-        this.functionDefinitionInstance = other.functionDefinitionInstance;
-        if(this.functionDefinitionInstance) {
-            other.functionDefinitionInstance.functionVariables.forEach((element, i) => {
-                this.functionDefinitionInstance.functionVariables[i] = other.functionDefinitionInstance.functionVariables[i];
-            });
-        }
-            
-    }
-    */
 
     getName() {
         return this._name;
@@ -175,7 +151,7 @@ class Node extends View {
             this.id,
             this.posX,
             this.posY,
-            connections[0], //this.input.connections,
+            connections[0],
             connections[1],
             this.functionDefinitionInstance,
             connections[2],

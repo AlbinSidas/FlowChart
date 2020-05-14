@@ -19,13 +19,11 @@ class NodeMetaInfo {
         outputParallelConnectionsList,
     ) {
         this.type = type;
-        //this.funDefId = funDefId;
         this.pX = pX;
         this.pY = pY;
         this.id = id;
         this.outputConnectionList = outputConnectionList;
         this.inputConnectionList = inputConnectionList;
-        //this.functionVariables = functionVariables;
         this.functionDefinitionInstance = functionDefinitionInstance;
         this.nodeName = nodeName;
         this.nodeDescription = nodeDescription;

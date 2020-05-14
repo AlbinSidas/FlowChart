@@ -14,7 +14,7 @@ class Connector extends View {
         this.updateConnections = this.updateConnections.bind(this);
         this.glowing = false;
 
-        //is "" if a regular node, "if" if a if out and "else" if a else out
+        //Nodetype is "" if a regular node, "if" if an if out and "else" if an else out
         this.nodeType = nodeType;
     }
 
@@ -23,8 +23,7 @@ class Connector extends View {
     }
 
     updateConnections() {
-        //prevNode, currNode){
-        // Aligning the connector with the input/output of a node
+        // Aligns the connector with the input/output of a node
 
         let outX = this.prevNode.posX + 150;
         let outY = this.prevNode.posY + 250;
@@ -35,7 +34,7 @@ class Connector extends View {
             outX = this.prevNode.posX + 50;
             outY = this.prevNode.posY + 50;
         }
-        // line contains the length, position x and y, and the angle
+        // Line contains the length, position x and y, and the angle
         let line = this._calculateLine(outX, outY, inX, inY);
         this.element.setAttribute(
             'style',

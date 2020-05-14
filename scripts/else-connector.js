@@ -14,14 +14,13 @@ class ElseConnector extends Connector {
     }
 
     updateConnections() {
-        //prevNode, currNode){
         // Aligning the connector with the input/output of a node
         let outX = this.prevNode.posX + 300;
         let outY = this.prevNode.posY + 75;
         let inX = this.currNode.posX + 150;
         let inY = this.currNode.posY - 15;
 
-        // line contains the length, position x and y, and the angle
+        // Line contains the length, position x and y, and the angle
         let line = this._calculateLine(outX, outY, inX, inY);
         this.element.setAttribute(
             'style',

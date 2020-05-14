@@ -63,7 +63,6 @@ class Container extends View {
         this.incVer = this.incVer.bind(this);
         this.decVer = this.decVer.bind(this);
 
-        // Lägg dessa lyssnare i ett objekt eller i en egen funktion ?
         eventEmitter.on('clicked', this.objectClicked);
         eventEmitter.on('connectorClicked', this.connectorClicked);
         eventEmitter.on('outputClicked', (id) => (this.markedOutput = id));
@@ -131,8 +130,6 @@ class Container extends View {
 
             if (this.markedObject.length > 1) {
                 this.highlightConnector(obj);
-            } else {
-                // this.removeMarkedConnector();
             }
         }
     }
@@ -177,10 +174,6 @@ class Container extends View {
             this.attach(connector);
             this.connectorList.push(connector);
         } else {
-            //const prevNode = this.objects.find(iter => iter.id == this.markedOutput )
-            /*
-            sålänge markeOuptut har ett värde, så borde det vara garanterat att den finns
-            */
             connector = this.connectorList.find((c) => {
                 return c.id == currNode.id + this.markedOutput; // prevNode.id; // TODO FIXA DENNa
             });
@@ -188,7 +181,6 @@ class Container extends View {
 
         this.sourceNodeHandler = () => null;
         this.markedOutput = '';
-        //this.nodeType = "";
         connector.updateConnections();
     }
 
@@ -325,7 +317,7 @@ class Container extends View {
     }
 
     removeNode() {
-        // 68
+        // 68 = the number for key 'D'
         if (this.markedObject.length != 0) {
             for (let j = this.markedObject.length - 1; j >= 0; j--) {
                 this.objects.splice(
@@ -341,9 +333,6 @@ class Container extends View {
                         let connector = this.connectorList[i];
                         this.markedConnector[0] = connector;
                         this.removeConnector();
-                        //this.connectorList.splice(i, 1);
-                        //let connectorElement = document.getElementById(connector.id);
-                        //connectorElement.parentElement.removeChild(connectorElement);
                     }
                 }
                 let nodeElement = document.getElementById(
@@ -366,7 +355,7 @@ class Container extends View {
                 this.mouseY = e.clientY;
             });
             for (let i = 0; i < this.markedObject.length; i++) {
-                this.copyObject[i] = this.markedObject[i].clone(); //new FlowchartNode(uuidv1());
+                this.copyObject[i] = this.markedObject[i].clone();
                 this.copyObject[i].copyOther(
                     this.markedObject[i],
                     this.markedObject[i].id,
@@ -466,7 +455,7 @@ class Container extends View {
     removeConnector() {
         let removed = this.markedConnector[0];
         let startNodeTest = RegExp('start-node');
-        // this loop removes the connector id from nodes
+        // This loop removes the connector id from nodes
         for (let i = 0; i < this.objects.length; i++) {
             // For regular nodes
             this.removeConnectorFromNode(
@@ -516,7 +505,6 @@ class Container extends View {
         }
     }
     render() {
-        //this.child_views.forEach(c => c.render());
         this.setHeight(this.height);
         this.setWidth(this.width);
         return this.element;
@@ -564,10 +552,6 @@ class Container extends View {
         if (this.toolboxVisible) {
             this.toolbox.hide();
             this.toolboxVisible = false;
-            console.log('ScreenX: ' + window.screenX);
-            console.log('ScreenY: ' + window.screenY);
-            console.log('ScrollX: ' + window.scrollX);
-            console.log('ScrollY: ' + window.scrollY);
         } else {
             this.toolbox.show();
             this.toolboxVisible = true;

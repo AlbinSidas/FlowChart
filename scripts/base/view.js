@@ -26,7 +26,6 @@ function ViewInterface(object) {
             }
             object.element.innerHTML = template;
         },
-        // TODO: Sånt bör finnas i Button Interface
         enable: function (bool = true) {
             this.element.disabled = !bool;
         },
@@ -48,8 +47,6 @@ export function InlineClickableView(elementString, clickCb) {
     return Object.assign(object, ViewInterface(object));
 }
 
-// EN binding är skapad från ene redan existerande element
-// Eventet triggas sist för det spelar ingen roll om den triggas först
 export function InlineClickableViewBinding(element, eventName, styleClass, cb) {
     const object = {
         element: element,
@@ -68,17 +65,6 @@ export function InlineClickableViewBinding(element, eventName, styleClass, cb) {
 
     return Object.assign(object, ViewInterface(object));
 }
-
-// export class ButtonBinding extends Button{
-//   constructor(element) {
-//     this.setElement(element);
-//     this.element.classList.add(styleClasses.buttonFooter);
-//   }
-
-//   onClick(e) {
-
-//   }
-// }
 
 class View {
     constructor() {

@@ -132,7 +132,7 @@ class Modal extends View {
                 this._saveScreenVariables(),
             );
             try {
-                const data = await funcDefAPI.save(funcDef); // transform
+                const data = await funcDefAPI.save(funcDef);
 
                 this.functionDefinitions.push(data);
                 this.loadList.push(data);

@@ -30,7 +30,6 @@ class SNode extends Node {
         this.inputValue = 'hej';
         this.functionDescription = 'STARTNODE FTW';
 
-        //this.input = null;
         this.output = new NodeIO(this, 'box-start', this.onOutputClicked);
 
         this.onScrolledCallbacks = [];
@@ -43,8 +42,6 @@ class SNode extends Node {
     attachIO() {
         this.attach(this.output);
     }
-
-    //reconnect(ch) {}
 
     getMetaType() {
         return 'start_node';
