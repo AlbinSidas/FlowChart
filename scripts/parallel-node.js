@@ -9,7 +9,7 @@ const uuidv1 = require('uuid/v1');
 
 class ParallelNode extends FlowchartNode {
     constructor(id, functionDefinitionInstance = null) {
-        super(id, null);
+        super(id, functionDefinitionInstance);
         this.setHtml('<div></div>');
 
         //functions

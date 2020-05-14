@@ -10,14 +10,14 @@ const uuidv1 = require('uuid/v1');
 
 class ConditionalNode extends FlowchartNode {
     constructor(id, functionDefinitionInstance = null) {
-        super(id, null);
+        super(id, functionDefinitionInstance);
         this.setHtml('<div></div>');
 
         // Binding
-        this.onDestElseClicked = this.onDestElseClicked.bind(this);
-        this.onDestIfClicked = this.onDestIfClicked.bind(this);
+        this.onDestElseClicked   = this.onDestElseClicked.bind(this);
+        this.onDestIfClicked     = this.onDestIfClicked.bind(this);
         this.onOutputElseClicked = this.onOutputElseClicked.bind(this);
-        this.onOutputIfClicked = this.onOutputIfClicked.bind(this);
+        this.onOutputIfClicked   = this.onOutputIfClicked.bind(this);
 
         //ui
         this.height = 150;

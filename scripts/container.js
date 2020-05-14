@@ -606,7 +606,7 @@ class Container extends View {
             );
             let max_num_requests = 0;
             while (
-                ver.length == this.currentFlowchartVer ||
+                 this.currentFlowchartVer <= ver.length||
                 max_num_requests == 1000
             ) {
                 await this.uppdateVerNum();
@@ -643,6 +643,7 @@ class Container extends View {
     getCurrFlowId() {
         return this.flowchartId;
     }
+    
     async syncVerNum() {
         let ver = await API.flowchartAPI.getVerNums(this.flowchartId);
         for (let i = 0; i < ver.length; i++) {
