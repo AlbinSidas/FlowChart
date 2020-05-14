@@ -1,9 +1,7 @@
-const FuncDefHandler = require('./funcdef-handler');
+const FuncDefHandler   = require('./funcdef-handler');
 const FlowchartHandler = require('./flowchart-handler');
-// const FuncDefVCionHandler  = require('./funcdef-vc-handler')
-// const FlowchartVCHandler = require('./flowchart-vc-handler')
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
+const MongoClient      = require('mongodb').MongoClient;
+const assert           = require('assert');
 
 class MongoController {
     constructor(db) {
@@ -24,16 +22,17 @@ class MongoController {
         */
     }
 
-    //async addToFuncdefVersionControl(id) {
-    //   this.funcDefHandler.save(id);
-    // }
     /*
-        controller methods to handle joins between collection
+        controller methods to handle foreign id joins between collection
     */
 }
 
+
+/*
+    Database setup and connection,
+    Does not handle errors, need to be done.
+*/
 async function setup(url, dbName) {
-    // kan abstraheras om man vill
     return await new Promise((accept, reject) => {
         MongoClient.connect(
             url,
