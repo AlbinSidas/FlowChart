@@ -25,9 +25,15 @@ class ParallelNode extends FlowchartNode{
         //flow
         this.id    = id;
         this.output = null;
-        this.outputParallel = new NodeIO(this, "box-parallel", this.onOutputClicked);
-        this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id}</p>`);
-    
+        this.outputParallel = new NodeIO(
+            this,
+            'box-parallel',
+            this.onOutputClicked,
+        );
+        this.functionNameView = InlineView(
+            `<p id='${this.id}_function'>Parallell node</p>`,
+        );
+
         this.element.classList.add(style.parallelnode);
         this.element.id = id;
     }

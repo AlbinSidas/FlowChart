@@ -28,22 +28,28 @@ class ConditionalNode extends FlowchartNode {
         //flow
         this.id    = id;
         this.output = null;
-        this.outputIf = new NodeIO(this, "box-outputIf", this.onOutputIfClicked);
-        this.outputElse = new NodeIO(this, "box-outputElse", this.onOutputElseClicked);
-        this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id}</p>`);
+        this.outputIf = new NodeIO(
+            this,
+            'box-outputIf',
+            this.onOutputIfClicked,
+        );
+        this.outputElse = new NodeIO(
+            this,
+            'box-outputElse',
+            this.onOutputElseClicked,
+        );
+        this.functionNameView = InlineView(
+            `<p id='${this.id}_function'>Conditional node</p>`,
+        );
 
         this.element.classList.add(style.conditionalnode);
         this.element.id = id;
-
     }
 
     // ==================== Create same connections ====================
     getOutputNodeIOs() {
         return [this.outputIf, this.outputElse];
     }
-
-
-
 
     // ======== COPY ========
 

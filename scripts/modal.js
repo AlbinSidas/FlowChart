@@ -414,116 +414,128 @@ class Modal extends View
                               Variables:
                               <ul id="cVarList"></ul>
                             </div>`);
-
-
+      
       this.lowerVersion  = new EarlierVersionButton();
       this.higherVersion = new LaterVersionButton();
       document.getElementById('cVarList').innerHTML = '';
       this.updateList();
   }
 
-  _updateFooterNode() {
-    let footer = document.getElementsByClassName("modalFooter")[0];
-    if(footer.innerHTML.includes("Add variable")) {
-      footer.removeChild(footer.children[0]);
-      footer.removeChild(footer.children[0]);
-      footer.removeChild(footer.children[0]);
-      let createButton = '<button id ="createFunctionButton" style="background-color: var(--button-color)" class="btn"> Create function </button>';
-      footer.insertAdjacentHTML('afterbegin', createButton);
-      this.createButton = InlineClickableViewBinding(document.getElementById('createFunctionButton'), 
-                          'createFunction', styleClasses.buttonFooter);
-      this.createButton.element.classList.add(style.buttonVisual);
-      
+
+    _updateFooterNode() {
+        let footer = document.getElementsByClassName('modalFooter')[0];
+        if (footer.innerHTML.includes('Add variable')) {
+            footer.removeChild(footer.children[0]);
+            footer.removeChild(footer.children[0]);
+            footer.removeChild(footer.children[0]);
+            let createButton =
+                '<button id ="createFunctionButton" style="background-color: var(--button-color)" class="btn"> Create function </button>';
+            footer.insertAdjacentHTML('afterbegin', createButton);
+            this.createButton = InlineClickableViewBinding(
+                document.getElementById('createFunctionButton'),
+                'createFunction',
+                styleClasses.buttonFooter,
+            );
+            this.createButton.element.classList.add(style.buttonVisual);
+        }
     }
-  }
 
-  _updateHeaderNode() {
-    let header = document.getElementsByClassName("modalHeader")[0];
-    if(header.innerHTML.includes("Back")) {
-      header.removeChild(header.children[0]);
+    _updateHeaderNode() {
+        let header = document.getElementsByClassName('modalHeader')[0];
+        if (header.innerHTML.includes('Back')) {
+            header.removeChild(header.children[0]);
+        }
     }
-  }
 
-  async _saveNewFuncDef(saveObject) {
-    try {
-        const res = await funcDefAPI.save( saveObject );
-        return res;
-    } catch(e) {
-      throw new Error('Failed to save functiondefinition');
+    async _saveNewFuncDef(saveObject) {
+        try {
+            const res = await funcDefAPI.save(saveObject);
+            return res;
+        } catch (e) {
+            throw new Error('Failed to save functiondefinition');
+        }
     }
-  }
 
-  async _saveVersionFuncDef(saveObject) {
-    if(saveObject[1]) {
-      // If a there is a previously saved version this must be removed.
-      delete(saveObject[1])
+    async _saveVersionFuncDef(saveObject) {
+        if (saveObject[0]) {
+            // If a there is a previously saved version this must be removed.
+            delete saveObject[0];
+        }
+        let data = {
+            funcdef_id: saveObject.id,
+            content: { ...saveObject },
+        };
+        try {
+            let res = await funcDefAPI.saveVersion(data);
+            return res;
+        } catch (e) {
+            throw new Error(e);
+        }
     }
-    let data = {
-      "funcdef_id": saveObject.id,
-      "content": { ...saveObject }
-    };
-    try {
-        let res =  await funcDefAPI.saveVersion(data);
-        return res;
-    } catch(e) {
-      throw new Error(e);
+
+    async _getVersionSnapShot(id, version) {
+        try {
+            let res = await funcDefAPI.getVersion(id, version);
+            return res;
+        } catch (e) {
+            throw new Error('Failed to get version');
+        }
     }
-  }
 
-  async _getVersionSnapShot(id, version) {
-    try {
-      let res =  await funcDefAPI.getVersion(id, version);
-      return res;
-    } catch(e) {
-      throw new Error('Failed to get version');
+    _saveNode() {
+        this.obj.setName(
+            document.getElementById('name').value
+                ? document.getElementById('name').value
+                : '',
+        );
+
+        this.obj.functionDescription = document.getElementById(
+            'nodeDescriptionBox',
+        ).value;
+        if (this.obj.functionDefinitionInstance) {
+            let definitionVariables = this.obj.functionDefinitionInstance
+                .functionVariables;
+            for (let i = 0; i < definitionVariables.length; i++) {
+                definitionVariables[i].value = document.getElementById(
+                    definitionVariables[i].name,
+                ).value;
+            }
+        }
     }
-  }
 
-  _saveNode() {
-    this.obj.setName(document.getElementById("name").value ? 
-                     document.getElementById("name").value : "" );
+    _saveScreenVariables() {
+        let variableList = [];
+        const variables = document.getElementById('cVarList').children;
+        for (let i = 0; i < variables.length; i++) {
+            let nameAndType = variables[i].textContent.split(': ');
 
-    this.obj.functionDescription = document.getElementById("nodeDescriptionBox").value;
-    if (this.obj.functionDefinitionInstance) {
-      let definitionVariables = this.obj.functionDefinitionInstance.functionVariables;
-      for (let i = 0; i < definitionVariables.length; i++) {
-        definitionVariables[i].value = document.getElementById(definitionVariables[i].name).value;
-      }
+            // Substring here because the split also cathes "Remove variable" which is removed here.
+            let type = nameAndType[0].substring(15);
+            let name = nameAndType[1];
+            variableList.push(
+                new FunctionVariable(name, type, 'Not yet added'),
+            );
+        }
+        return variableList;
     }
-  }
 
-  _saveScreenVariables() {
-    let variableList = [];
-    const variables = document.getElementById('cVarList').children;
-    for(let i=0; i < variables.length ; i++) {
-      let nameAndType = variables[i].textContent.split(": ");
-
-      // Substring here because the split also cathes "Remove variable" which is removed here.
-      let type = nameAndType[0].substring(15);
-      let name = nameAndType[1];
-      variableList.push( 
-        new FunctionVariable(name, type, 'Not yet added')
-      );
+    close() {
+        if (this.mode == 'Node') {
+            this._saveNode();
+        }
+        this._updateFooterNode();
+        this._updateHeaderNode();
+        this.currentFunctionDefinition.obj = {};
+        this.element.style.display = 'none';
+        if(this.obj.getMetaType() == "flowchart_node") {
+          this.obj.refreshPreview();
+        }
+        
     }
-    return variableList;
-  }
 
-  close() {
-    if(this.mode == "Node") {
-      // Logik för att se om det finns ickesparade förändringar? 
-      /* När en node öppnas kan en version sparas och jämföras mot nuvarande state av noden */
-      this._saveNode();
+    render() {
+        return this.element;
     }
-    this._updateFooterNode();
-    this._updateHeaderNode();
-    this.currentFunctionDefinition.obj = {};
-    this.element.style.display = "none";
-    this.obj.refreshPreview();
-  }
-
-  render() {
-    return this.element;
-  }
 }
 
 class LoadButton extends Button {

@@ -17,9 +17,10 @@ class FlowchartNode extends Node {
         this.elementDrag      = this.elementDrag.bind(this);
         this.mouseDown        = this.mouseDown.bind(this);
         this.closeDragElement = this.closeDragElement.bind(this);
-       
-        //{};
-        this.functionNameView = InlineView(`<p id='${this.id}_function'>${this.id} \n has no function</p>`);
+
+        this.functionNameView = InlineView(
+            `<p id='${this.id}_function'>${this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"}</p>`,
+        );  
 
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
@@ -29,10 +30,13 @@ class FlowchartNode extends Node {
         return new FlowchartNode(uuidv1());
     }
 
-
-    refreshPreview(){
-        // NOTE: allt som ska vara tillgängligt i preview dynamiskt ändras här ..
-        this.functionNameView.changeHtml(`<p id='${this.id}_function'>${this.id}\n has ${this.getName()}</p>`);
+    refreshPreview() {
+        // Everything that should be available dynamicly in preview is changed here.
+        this.functionNameView.changeHtml(
+            `<p id='${this.id}_function'>${
+                this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"
+            }\n </p>`,
+        );
     }
 
 
@@ -75,26 +79,31 @@ class FlowchartNode extends Node {
 
     // ======================== END COPY ================
     fillNode(other) {
-        // incomplete state med this är farligt, vi gör om de här till Static funktioner sen
-        //fyller i data för en node baserat på ett metaobjekt från servern
+        //Incomplete state with 'this' is dangerous, we change these functions to static
+        //then fill in the data for a node based upon a metaobject from the server
+
         this.posX              = other.pX;
         this.posY              = other.pY;
         this.id                = other.id;
-        //this.functionVariables = other.functionVariables
 
-        //this.functionDefinitionInstance = other.functionDefinitionInstance
-        // if(other.functionDefinitionInstance) {
-        //     other.functionDefinitionInstance.functionVariables.forEach((element, i) => {
-        //         this.functionDefinitionInstance.functionVariables[i] = other.functionDefinitionInstance.functionVariables[i];
-        //     });
-        // }
         this.setName(other.nodeName);
         this.funcDefId         = other.funDefId;
         this.nodeDescription   = other.nodeDescription;
         this.element.classList.add(style.flowchart_square);
-        this.offsetX           = other.offsetX;
-        this.offsetY           = other.offsetY;
-        this.functionNameView  = InlineView(`<p id='${this.id}_function'>${this.id}\n has ${this.getName()}</p>`);
+        this.offsetX = other.offsetX;
+        this.offsetY = other.offsetY;
+        if(this.getMetaType() == "flowchart_node"){
+            this.functionNameView = InlineView(
+                `<p id='${this.id}_function'>${
+                    this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition." }\n</p>`,
+            );
+        } else if (this.getMetaType() == "parallell_node") {
+            this.functionNameView = InlineView(
+                `<p id='${this.id}_function'> Parallell node </p>`);
+        } else if (this.getMetaType() == "conditional_node") {
+            this.functionNameView = InlineView(
+                `<p id='${this.id}_function'> Conditional node </p>`);
+        }
         this.functionDescription = other.funDefId;
     }
 
