@@ -393,20 +393,25 @@ class Container extends View {
             return;
         }
         //Create new objects based on the copies and add them to the workspace
+        /* 
+         * KNOWN BUGG:
+         * When pasting a node the positioning can be located outside of the window.
+         * A fix for this would be to check the positioning in a similar way as in 
+         * the flowchart-node file in the "dragElement" function but the problem here
+         * is that we don't have the mouseposition. A fix for that would be to always
+         * have a mouseeventlistener as in the copyNode function where we always have a 
+         * listener checking the mouseposition. This have been downprioritized as this 
+         * could also affect performance.
+        */
         let tempRef = [];
         for (let i = 0; i < this.copyObject.length; i++) {
             const pasteObject = this.copyObject[i].clone();
-            let offsetX =
-                i > 0 ? this.copyObject[i].posX - this.copyObject[0].posX : 0;
-            let offsetY =
-                i > 0 ? this.copyObject[i].posY - this.copyObject[0].posY : 0;
-            pasteObject.copyOther(
-                this.copyObject[i],
-                this.copyObject[i].idRef,
-                false,
-                this.mouseX + offsetX,
-                this.mouseY + offsetY,
-            ); //[]);
+            let offsetX = i > 0 ? (this.copyObject[i].posX-this.copyObject[0].posX) : 0;
+            let offsetY = i > 0 ? (this.copyObject[i].posY-this.copyObject[0].posY) : 0;
+            let newXPos = this.validateXPos(this.mouseX + offsetX);
+            let newYPos = this.valdateYPos(this.mouseY + offsetY, this.copyObject[i].height);
+
+            pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, false, newXPos, newYPos); //[]);
             this.addBox(pasteObject);
             tempRef[i] = pasteObject;
         }
@@ -433,10 +438,33 @@ class Container extends View {
         });
     }
 
-    onKeyPress(e) {
-        if (e.ctrlKey) {
-            switch (e.keyCode) {
-                case 67:
+    valdateYPos(yValue, objHeight) {
+        let offset = window.pageYOffset;
+        if(yValue < 0){
+            yValue = 0;
+        }
+        else if(yValue > this.height - offset - objHeight){
+            yValue = this.height - offset - objHeight;
+        }
+        return yValue;
+    }
+
+    validateXPos(xValue) {
+        if(xValue < 0){
+            xValue = 0;
+        }
+        else if(xValue > this.width - 250){
+            xValue = this.width - 250;
+        }
+        return xValue;
+    }
+
+
+    onKeyPress(e){
+
+        if(e.ctrlKey){
+            switch(e.keyCode) {
+                case 67: 
                     // 67 = C Copy
                     this.copyNode();
                     break;

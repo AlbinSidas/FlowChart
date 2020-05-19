@@ -19,8 +19,8 @@ class FlowchartNode extends Node {
         this.closeDragElement = this.closeDragElement.bind(this);
 
         this.functionNameView = InlineView(
-            `<p id='${this.id}_function'>${this.id} \n has no function</p>`,
-        );
+            `<p id='${this.id}_function'>${this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"}</p>`,
+        );  
 
         this.element.classList.add(style.flowchart_square);
         this.element.id = id;
@@ -34,8 +34,8 @@ class FlowchartNode extends Node {
         // Everything that should be available dynamicly in preview is changed here.
         this.functionNameView.changeHtml(
             `<p id='${this.id}_function'>${
-                this.id
-            }\n has ${this.getName()}</p>`,
+                this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"
+            }\n </p>`,
         );
     }
 
@@ -98,11 +98,18 @@ class FlowchartNode extends Node {
         this.element.classList.add(style.flowchart_square);
         this.offsetX = other.offsetX;
         this.offsetY = other.offsetY;
-        this.functionNameView = InlineView(
-            `<p id='${this.id}_function'>${
-                this.id
-            }\n has ${this.getName()}</p>`,
-        );
+        if(this.getMetaType() == "flowchart_node"){
+            this.functionNameView = InlineView(
+                `<p id='${this.id}_function'>${
+                    this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition." }\n</p>`,
+            );
+        } else if (this.getMetaType() == "parallell_node") {
+            this.functionNameView = InlineView(
+                `<p id='${this.id}_function'> Parallell node </p>`);
+        } else if (this.getMetaType() == "conditional_node") {
+            this.functionNameView = InlineView(
+                `<p id='${this.id}_function'> Conditional node </p>`);
+        }
         this.functionDescription = other.funDefId;
     }
 

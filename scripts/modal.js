@@ -606,7 +606,10 @@ class Modal extends View {
         this._updateHeaderNode();
         this.currentFunctionDefinition.obj = {};
         this.element.style.display = 'none';
-        this.obj.refreshPreview();
+        if(this.obj.getMetaType() == "flowchart_node") {
+          this.obj.refreshPreview();
+        }
+        
     }
 
     render() {

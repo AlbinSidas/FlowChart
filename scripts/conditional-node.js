@@ -35,7 +35,7 @@ class ConditionalNode extends FlowchartNode {
             this.onOutputElseClicked,
         );
         this.functionNameView = InlineView(
-            `<p id='${this.id}_function'>${this.id}</p>`,
+            `<p id='${this.id}_function'>Conditional node</p>`,
         );
 
         this.element.classList.add(style.conditionalnode);

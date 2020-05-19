@@ -31,7 +31,7 @@ class ParallelNode extends FlowchartNode {
             this.onOutputClicked,
         );
         this.functionNameView = InlineView(
-            `<p id='${this.id}_function'>${this.id}</p>`,
+            `<p id='${this.id}_function'>Parallell node</p>`,
         );
 
         this.element.classList.add(style.parallelnode);
