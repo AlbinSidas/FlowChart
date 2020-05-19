@@ -6,7 +6,7 @@ class SaveButton extends Button {
     constructor() {
         super();
         this.setHtml(
-            '<button type="button" class="btn" id="saveChart" style="background-color:var(--button-color); width:40%; name="button">Save</button>',
+            '<button type="button" class="btn" id="saveChart" style="background-color:var(--button-color); width:90%; margin-top:15%; margin-left: 5%" name="button">Save</button>',
         );
         this.render = this.render.bind(this);
         this.name = 'Save';
