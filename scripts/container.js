@@ -43,7 +43,7 @@ class Container extends View {
         this.nodeType       = "";
         this.connectorList  = [];
         this.objectClick    = {};
-        this.connectorClick = {};        
+        this.connectorClick = {};
         this.copyObject     = [];
         this.toolboxVisible = false;
         this.flowchartList  = [];
@@ -77,7 +77,6 @@ class Container extends View {
             this.flowchartList = [];
             this.flowchartList.length = 0;           
             
-            recursiveFlowchartCreation(id, this.objects, this.flowchartList);
         })
         eventEmitter.on("newFlowchart", (name) => {
             this.newFlowSetup(name);   
@@ -199,11 +198,12 @@ class Container extends View {
         looseObjects.forEach(iter => {
             const source = this.objects.find(i=> iter.id == i.id);
             source.reconnect(this.inputClicked, iter);
+            
         });
     }
 
 
-    // ##################
+    // ##########LOAD FLOW########
     async loadFlow() {
         this.clearFlowchart();
         const loadedObjects = await this.saveClass.loadFlowVer(this.flowchartId, this.currentFlowchartVer);
@@ -632,30 +632,5 @@ class Container extends View {
         }
     }
 }
-
-function recursiveFlowchartCreation(id, objects, flowchartList) {
-    //Recursivly runs through all nodes and adds them to a list in the order of left to right from lowest and up.
-    let outputNode = objects.find((temp) => {
-        return temp.id == id;
-    });
-    let add = true
-    for (let i = 0; i < flowchartList.length; i++){
-        if (outputNode.id == flowchartList[i].id){
-            add = false;
-        }     
-    }     
-    if (add) {flowchartList.push(outputNode);}
-    
-
-    for (let i = 0; i < outputNode.output.connections.length; i++){
-        let inputNode = objects.find((temp) => {
-            return temp.id == outputNode.output.connections[i];
-        
-        });
-        //flowchartList.push(inputNode)       
-        recursiveFlowchartCreation(inputNode.id, objects, flowchartList);
-    }
-}
-
 
 export default Container;
