@@ -17,12 +17,12 @@ class Toolbox extends View {
     didAttach(parent) {
         super.didAttach(parent);
         //Load
-        this.loadButton = InlineClickableView(
+        /*this.loadButton = InlineClickableView(
             '<button type="button" class="btn" id="loadChart" style="background-color:var(--button-color); margin:5%; margin-right:10%; width:40%;" name="button">Load</button>',
             this.boxEventhandlerDelegate.loadFlow,
         ); //new LoadButton();
         this.attach(this.loadButton);
-        this.loadButton.element.classList.add(style.buttonVisual);
+        this.loadButton.element.classList.add(style.buttonVisual);*/
         //Save
         this.saveButton = new SaveButton();
         this.attach(this.saveButton);
