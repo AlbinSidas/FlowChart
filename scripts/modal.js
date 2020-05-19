@@ -20,6 +20,7 @@ class Modal extends View {
         this.mode = 'Node';
         this.render = this.render.bind(this);
         this.saveVersionButton = null;
+        this.isOpen = false;
 
         const validator = {
             set: (target, key, value) => {
@@ -455,6 +456,7 @@ class Modal extends View {
     }
 
     show(object) {
+        this.isOpen = true;
         this.mode = 'Node';
         this.obj = object;
 
@@ -596,6 +598,7 @@ class Modal extends View {
     }
 
     close() {
+        this.isOpen = false;
         if (this.mode == 'Node') {
             this._saveNode();
         }
