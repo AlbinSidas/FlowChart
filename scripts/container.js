@@ -28,6 +28,9 @@ class Container extends View {
         this.height = 3000;
         this.width = window.innerWidth;
         this.childScrolled = this.childScrolled.bind(this);
+        
+        this.canOpenModal = true;
+        this.doubleClickTime = 300;
 
         this.saveClass = new Saving();
         this.flowchartName = '';
@@ -58,6 +61,7 @@ class Container extends View {
         this.connectorClicked = this.connectorClicked.bind(this);
         this.inputClicked = this.inputClicked.bind(this);
         this.prevClicked = this.prevClicked.bind(this);
+        this.doubleClickStart = this.doubleClickStart.bind(this);
 
         this.loadFlow = this.loadFlow.bind(this);
         this.incVer = this.incVer.bind(this);
@@ -97,12 +101,21 @@ class Container extends View {
         });
     }
 
+
+    doubleClickStart() {
+        setTimeout(() => {this.canOpenModal = false;}, this.doubleClickTime)
+    }
+
+    doubleClickReset() {
+        this.canOpenModal = true;
+    }
+
     objectClicked(id, e) {
         /*
             Set the mouseevent to objectClick to compare the
             event on workspace to determine if it's a "mark off" or click on object.
         */
-
+        this.doubleClickStart();
         this.objectClick = e;
         // Finds the correct node in the created nodes.
 
@@ -111,21 +124,28 @@ class Container extends View {
         });
 
         // If the click is on the marked object it's a doubleclick and will open the modal.
-        if (this.markedObject.includes(obj)) {
+        if (this.markedObject.includes(obj) && this.canOpenModal) {
             // Prevents further draging after doubleclick.
-
+            //this.canOpenModal = true;
             obj.closeDragElement();
             this.modal.show(obj);
+     
+            /*
+            // This functionality will close the modal if click happends outside
+            // the modal window.
             window.onclick = function (event) {
                 if (event.target == this.modal.element) {
                     this.modal.close();
                 }
             }.bind(this);
+            */
         } else {
             if (this.markedObject.length != 0 && e.ctrlKey == false) {
                 this.removeMarked();
                 this.removeMarkedConnector();
             }
+
+            this.doubleClickReset();
             this.markedObject[this.markedObject.length] = obj;
 
             if (this.markedObject.length > 1) {
@@ -278,6 +298,8 @@ class Container extends View {
     }
 
     onClick(e) {
+        if(this.modal.isOpen) { return; }
+    
         if (
             (e.clientX != this.objectClick.clientX ||
                 e.clientY != this.objectClick.clientY) &&
