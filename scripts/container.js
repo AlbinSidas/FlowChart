@@ -384,26 +384,12 @@ class Container extends View {
         let tempRef = [];
         for (let i = 0; i < this.copyObject.length; i++) {
             const pasteObject = this.copyObject[i].clone();
-<<<<<<< HEAD
             let offsetX = i > 0 ? (this.copyObject[i].posX-this.copyObject[0].posX) : 0;
             let offsetY = i > 0 ? (this.copyObject[i].posY-this.copyObject[0].posY) : 0;
             let newXPos = this.validateXPos(this.mouseX + offsetX);
             let newYPos = this.valdateYPos(this.mouseY + offsetY, this.copyObject[i].height);
 
             pasteObject.copyOther(this.copyObject[i], this.copyObject[i].idRef, false, newXPos, newYPos); //[]);
-=======
-            let offsetX =
-                i > 0 ? this.copyObject[i].posX - this.copyObject[0].posX : 0;
-            let offsetY =
-                i > 0 ? this.copyObject[i].posY - this.copyObject[0].posY : 0;
-            pasteObject.copyOther(
-                this.copyObject[i],
-                this.copyObject[i].idRef,
-                false,
-                this.mouseX + offsetX,
-                this.mouseY + offsetY,
-            ); //[]);
->>>>>>> origin/develop
             this.addBox(pasteObject);
             tempRef[i] = pasteObject;
         }
@@ -430,7 +416,6 @@ class Container extends View {
         });
     }
 
-<<<<<<< HEAD
     valdateYPos(yValue, objHeight) {
         let offset = window.pageYOffset;
         if(yValue < 0){
@@ -458,12 +443,6 @@ class Container extends View {
         if(e.ctrlKey){
             switch(e.keyCode) {
                 case 67: 
-=======
-    onKeyPress(e) {
-        if (e.ctrlKey) {
-            switch (e.keyCode) {
-                case 67:
->>>>>>> origin/develop
                     // 67 = C Copy
                     this.copyNode();
                     break;

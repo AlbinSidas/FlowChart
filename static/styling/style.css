@@ -35,11 +35,8 @@ body{
     margin:0;
     padding:0;
     border:0;
-<<<<<<< HEAD
     font-family: monospace;
-=======
     background-color: rgb(71, 110, 119);
->>>>>>> origin/develop
 }
 
 :global #container-root {
