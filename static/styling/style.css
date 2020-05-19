@@ -35,7 +35,11 @@ body{
     margin:0;
     padding:0;
     border:0;
+<<<<<<< HEAD
     font-family: monospace;
+=======
+    background-color: rgb(71, 110, 119);
+>>>>>>> origin/develop
 }
 
 :global #container-root {
@@ -217,7 +221,7 @@ body{
     border-radius: 50px 50px 0 0;
     width: 50px;
     height: 25px;
-    margin-top: -25px;
+    margin-top: -26px;
     margin-left: 125px;
     background-color: var(--node-input);
     cursor: pointer;
@@ -230,7 +234,7 @@ body{
     width: 50px;
     height: 50px;
     margin-top: -100px;
-    margin-left: -25px;
+    margin-left: -26px;
     background-color: var(--node-ifinput);
     cursor: pointer;
     position: absolute;
@@ -241,7 +245,7 @@ body{
     border-radius: 0 0 50px 50px;
     width: 50px;
     height: 25px;
-    margin-top: 250px;
+    margin-top: 249px;
     margin-left: 125px;
     background-color: var(--node-output);
     cursor: pointer;
@@ -254,7 +258,7 @@ body{
     width: 25px;
     height: 50px;
     margin-top: 50px;
-    margin-left: -25px;
+    margin-left: -26px;
     background-color: var(--node-outputif);
     cursor: pointer;
     position: absolute;
@@ -268,7 +272,7 @@ body{
     /* margin-top: -100px;
     margin-left: 125px; */
     margin-top: 50px;
-    margin-left: 300px;
+    margin-left: 299px;
     background-color: var(--node-outputelse);
     cursor: pointer;
     position: absolute;
@@ -279,7 +283,7 @@ body{
     width: 75px;
     height: 32.5px;
     margin-top: 250px;
-    margin-left: 112.5px;
+    margin-left: 113.5px;
     background-color: var(--node-outputParallel);
     cursor: pointer;
     position: absolute;
@@ -306,6 +310,7 @@ body{
 
 .flowchart_square {
     z-index: 9;
+    border: solid 1px var(--accent-color);
     width: 300px;
     border-radius: 20px;
     cursor: move;
@@ -322,6 +327,7 @@ body{
 .conditionalnode {
     z-index: 9;
     width: 300px;
+    border: solid 1px var(--accent-color);
     border-radius: 20px;
     cursor: move;
     position: absolute;
@@ -337,6 +343,7 @@ body{
 .parallelnode {
     z-index: 9;
     width: 300px;
+    border: solid 1px var(--accent-color);
     border-radius: 20px;
     cursor: move;
     position: absolute;

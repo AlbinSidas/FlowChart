@@ -1,2 +1,2 @@
-const data = {apa: "ok"};
+const data = { apa: 'ok' };
 export default data;
