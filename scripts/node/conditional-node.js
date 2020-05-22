@@ -1,11 +1,11 @@
 import FlowchartNode from './flowchart-node';
 import style from 'Styles/style.css';
-import NodeIO from './nodeIO.js';
+import NodeIO from '../nodeIO.js';
 import NodeMetaInfo from 'Model/node-meta-info.js';
-import { InlineView } from './base/view.js';
+import { InlineView } from '../base/view.js';
 import eventEmitter from 'Singletons/event-emitter.js';
-import IfConnector from './if-connector.js';
-import ElseConnector from './else-connector.js';
+import IfConnector from '../if-connector.js';
+import ElseConnector from '../else-connector.js';
 const uuidv1 = require('uuid/v1');
 
 class ConditionalNode extends FlowchartNode {
@@ -35,12 +35,24 @@ class ConditionalNode extends FlowchartNode {
             this.onOutputElseClicked,
         );
         this.functionNameView = InlineView(
-            `<p id='${this.id}_function'>Conditional node</p>`,
+            `<p  class="node_type_title" id='${this.id}_function_title'>Conditional node</p> <br> <p id='${this.id}_function'>${
+                this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"
+            }\n </p>`,
         );
 
         this.element.classList.add(style.conditionalnode);
         this.element.id = id;
     }
+
+    refreshPreview() {
+        // Everything that should be available dynamicly in preview is changed here.
+        this.functionNameView.changeHtml(
+            `<p  class="node_type_title" id='${this.id}_function_title'>Conditional node</p> <br><p id='${this.id}_function'>${
+                this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"
+            }\n </p>`,
+        );
+    }
+
 
     // ==================== Create same connections ====================
     getOutputNodeIOs() {

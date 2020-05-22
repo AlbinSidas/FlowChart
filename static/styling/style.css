@@ -65,6 +65,7 @@ body{
 }
 
 :global #workspace-root {
+    outline: 0;
     flex-grow: 8;
     position: relative;
     background-color: var(--background-color);
@@ -429,6 +430,10 @@ body{
     border-bottom:1px solid black;
     background-color: var(--modal-dropdown);
 }
+
+/* :global .node_type_title {
+    color: white;
+ } */
 
 /*Buttons*/
 

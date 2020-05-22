@@ -1,11 +1,11 @@
-import FlowchartNode from './flowchart-node';
+import FlowchartNode from 'Node/flowchart-node';
 import Container from './container';
 const uuidv1 = require('uuid/v1');
 import Root from 'Base/root.js';
 import 'Styles/style.css';
-import ConditionalNode from './conditional-node';
-import ParallelNode from './parallel-node';
-import SNode from './s_node';
+import ConditionalNode from 'Node/conditional-node';
+import ParallelNode from 'Node/parallel-node';
+import SNode from 'Node/s_node';
 
 function main() {
     const workspaceObject = new Container();
