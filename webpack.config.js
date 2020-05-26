@@ -19,7 +19,8 @@ module.exports = {
           Styles:     path.resolve(__dirname,  'static/styling'),
           Model:      path.resolve(__dirname,  'scripts/model'),
           Network:    path.resolve(__dirname,  'scripts/network'),
-          Scripts:    path.resolve(__dirname,  'scripts/')
+          Scripts:    path.resolve(__dirname,  'scripts/'),
+          Node:       path.resolve(__dirname,  'scripts/node')
         }
     },
     module: {

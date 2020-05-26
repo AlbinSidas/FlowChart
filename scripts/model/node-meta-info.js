@@ -1,7 +1,7 @@
 import View from 'Base/view.js';
 import eventEmitter from 'Singletons/event-emitter.js';
 const uuidv1 = require('uuid/v1');
-import FlowchartNode from '../flowchart-node';
+import FlowchartNode from 'Node/flowchart-node';
 
 class NodeMetaInfo {
     constructor(

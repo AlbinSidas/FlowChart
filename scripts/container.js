@@ -1,5 +1,4 @@
 import Toolbox from './toolbox.js';
-import FlowchartNode from './flowchart-node';
 const uuidv1 = require('uuid/v1');
 import Modal from './modal.js';
 import StartBox from './start-box.js';
@@ -12,8 +11,9 @@ import IfConnector from './if-connector.js';
 import ElseConnector from './else-connector.js';
 import ParaConnector from './para-connector.js';
 import ShowHideButton from './showHideButton.js';
-import ConditionalNode from './conditional-node';
-import ParallelNode from './parallel-node';
+import FlowchartNode from 'Node/flowchart-node';
+import ConditionalNode from 'Node/conditional-node';
+import ParallelNode from 'Node/parallel-node';
 import API from 'Network/network.js';
 
 class Container extends View {

@@ -1,11 +1,11 @@
-import data from './test.js';
+import data from '../test.js';
 import View from 'Base/view.js';
 import style from 'Styles/style.css';
 import eventEmitter from 'Singletons/event-emitter.js';
-import NodeIO from './nodeIO.js';
+import NodeIO from '../nodeIO.js';
 import NodeMetaInfo from 'Model/node-meta-info.js';
-import { InlineView } from './base/view.js';
-import Connector from './connectors.js';
+import { InlineView } from '../base/view.js';
+import Connector from '../connectors.js';
 import Node from './node';
 const uuidv1 = require('uuid/v1');
 
@@ -19,7 +19,7 @@ class FlowchartNode extends Node {
         this.closeDragElement = this.closeDragElement.bind(this);
 
         this.functionNameView = InlineView(
-            `<p id='${this.id}_function'>${this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"}</p>`,
+            `<p id='${this.id}_function'>${this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"}\n </p>`,
         );  
 
         this.element.classList.add(style.flowchart_square);

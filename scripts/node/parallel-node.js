@@ -1,10 +1,10 @@
 import FlowchartNode from './flowchart-node';
 import style from 'Styles/style.css';
-import NodeIO from './nodeIO';
+import NodeIO from '../nodeIO';
 import NodeMetaInfo from 'Model/node-meta-info.js';
-import { InlineView } from './base/view.js';
+import { InlineView } from '../base/view.js';
 import eventEmitter from 'Singletons/event-emitter.js';
-import ParaConnector from './para-connector.js';
+import ParaConnector from '../para-connector.js';
 const uuidv1 = require('uuid/v1');
 
 class ParallelNode extends FlowchartNode {
@@ -31,11 +31,23 @@ class ParallelNode extends FlowchartNode {
             this.onOutputClicked,
         );
         this.functionNameView = InlineView(
-            `<p id='${this.id}_function'>Parallell node</p>`,
+            `<p class="node_type_title" id='${this.id}_function_title'>Parallell node</p> <br> <p id='${this.id}_function'>${
+                this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"
+            }\n </p>`,
         );
 
         this.element.classList.add(style.parallelnode);
         this.element.id = id;
+    }
+
+
+    refreshPreview() {
+        // Everything that should be available dynamicly in preview is changed here.
+        this.functionNameView.changeHtml(
+            `<p class="node_type_title" id='${this.id}_function_title'>Parallell node</p> <br> <p id='${this.id}_function'>${
+                this.functionDefinitionInstance ? this.functionDefinitionInstance.name : "Has no function definition"
+            }\n </p>`,
+        );
     }
 
     getOutputNodeIOs() {

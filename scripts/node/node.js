@@ -1,11 +1,11 @@
-import data from './test.js';
+import data from '../test.js';
 import View from 'Base/view.js';
 import style from 'Styles/style.css';
 import eventEmitter from 'Singletons/event-emitter.js';
-import NodeIO from './nodeIO.js';
+import NodeIO from '../nodeIO.js';
 import NodeMetaInfo from 'Model/node-meta-info.js';
-import { InlineView } from './base/view.js';
-import Connector from './connectors.js';
+import { InlineView } from '../base/view.js';
+import Connector from '../connectors.js';
 
 class Node extends View {
     constructor(id, funcdef) {
